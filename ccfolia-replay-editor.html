@@ -17661,7 +17661,7 @@
 					const characters = extractCharacters(state.editedMessages);
 					const options = ['<option value="">全部角色</option>'];
 					// 添加骰子筛选选项
-					options.push('<option value="__dice__">🎲 骰子消息</option>');
+					options.push('<option value="__dice__">骰点消息</option>');
 					characters.forEach((_, name) => {
 						options.push(`<option value="${name}">${name}</option>`);
 					});
