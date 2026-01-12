@@ -1416,17 +1416,57 @@
 
 			/* Editor Sections */
 			.editor-section {
-				padding: 16px;
+				padding: 0;
 				border-bottom: 1px solid var(--border-color);
+			}
+
+			.section-header {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				padding: 12px 16px;
+				cursor: pointer;
+				user-select: none;
+				transition: background 0.2s;
+			}
+
+			.section-header:hover {
+				background: var(--bg-secondary);
+			}
+
+			.section-arrow {
+				font-size: 0.7rem;
+				color: var(--text-secondary);
+				transition: transform 0.25s ease;
+				flex-shrink: 0;
+			}
+
+			.editor-section.expanded .section-arrow {
+				transform: rotate(90deg);
 			}
 
 			.section-title {
 				font-size: 0.875rem;
 				font-weight: 600;
 				color: var(--text-secondary);
-				margin-bottom: 12px;
+				margin: 0;
 				text-transform: uppercase;
 				letter-spacing: 0.05em;
+				flex: 1;
+			}
+
+			.section-body {
+				max-height: 0;
+				overflow: hidden;
+				transition: max-height 0.3s ease;
+			}
+
+			.editor-section.expanded .section-body {
+				max-height: 2000px; /* 足够大的值 */
+			}
+
+			.section-body-inner {
+				padding: 0 16px 16px 16px;
 			}
 
 			/* === Buttons === */
@@ -3297,7 +3337,7 @@
 				display: block;
 			}
 
-			.section-title {
+			.detail-content .section-title {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -4109,426 +4149,539 @@
 
 					<div class="editor-header">
 						<span class="editor-title">编辑面板</span>
+						<button
+							class="btn btn-secondary"
+							id="btn-toggle-sections"
+							style="padding: 4px 8px; font-size: 0.75rem"
+							title="展开/收起所有">
+							▼ 展开
+						</button>
 					</div>
 
 					<div class="editor-content">
 						<!-- Data Fetch Section -->
-						<section class="editor-section" id="section-fetch">
-							<h3 class="section-title">获取数据</h3>
-							<div class="form-group">
-								<label class="form-label">房间号 / URL</label>
-								<input type="text" class="form-input" id="input-room" placeholder="输入房间号或粘贴URL" />
+						<section class="editor-section" id="section-fetch" data-section-id="fetch">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">获取数据</h3>
 							</div>
-							<button class="btn btn-primary" id="btn-fetch" style="width: 100%">获取日志</button>
+							<div class="section-body">
+								<div class="section-body-inner">
+									<div class="form-group">
+										<label class="form-label">房间号 / URL</label>
+										<input type="text" class="form-input" id="input-room" placeholder="输入房间号或粘贴URL" />
+									</div>
+									<button class="btn btn-primary" id="btn-fetch" style="width: 100%">获取日志</button>
+								</div>
+							</div>
 						</section>
 
 						<!-- Filter Section -->
-						<section class="editor-section" id="section-filter">
-							<h3 class="section-title">过滤规则</h3>
-							<div class="form-group">
-								<label class="flex items-center gap-2">
-									<input type="checkbox" id="filter-empty" checked />
-									<span>过滤空白消息</span>
-								</label>
+						<section class="editor-section" id="section-filter" data-section-id="filter">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">过滤规则</h3>
 							</div>
-							<div class="form-group">
-								<label class="flex items-center gap-2">
-									<input type="checkbox" id="filter-onoff" />
-									<span>标记区间过滤</span>
-								</label>
-								<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; padding-left: 20px">
-									只保留开始标记和结束标记之间的消息
-								</div>
-								<div id="onoff-settings" style="margin-top: 8px; padding-left: 20px; display: none">
-									<div style="display: flex; gap: 8px; margin-bottom: 4px">
-										<input
-											type="text"
-											class="form-input"
-											id="marker-start"
-											placeholder="开始标记"
-											value="on"
-											style="flex: 1; padding: 4px 8px; font-size: 0.8rem" />
-										<input
-											type="text"
-											class="form-input"
-											id="marker-end"
-											placeholder="结束标记"
-											value="off"
-											style="flex: 1; padding: 4px 8px; font-size: 0.8rem" />
+							<div class="section-body">
+								<div class="section-body-inner">
+									<div class="form-group">
+										<label class="flex items-center gap-2">
+											<input type="checkbox" id="filter-empty" checked />
+											<span>过滤空白消息</span>
+										</label>
 									</div>
-									<div style="font-size: 0.7rem; color: var(--text-secondary)">
-										支持格式: ——on——、==开始==、-off- 等（自动匹配前后的符号）
+									<div class="form-group">
+										<label class="flex items-center gap-2">
+											<input type="checkbox" id="filter-onoff" />
+											<span>标记区间过滤</span>
+										</label>
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; padding-left: 20px">
+											只保留开始标记和结束标记之间的消息
+										</div>
+										<div id="onoff-settings" style="margin-top: 8px; padding-left: 20px; display: none">
+											<div style="display: flex; gap: 8px; margin-bottom: 4px">
+												<input
+													type="text"
+													class="form-input"
+													id="marker-start"
+													placeholder="开始标记"
+													value="on"
+													style="flex: 1; padding: 4px 8px; font-size: 0.8rem" />
+												<input
+													type="text"
+													class="form-input"
+													id="marker-end"
+													placeholder="结束标记"
+													value="off"
+													style="flex: 1; padding: 4px 8px; font-size: 0.8rem" />
+											</div>
+											<div style="font-size: 0.7rem; color: var(--text-secondary)">
+												支持格式: ——on——、==开始==、-off- 等（自动匹配前后的符号）
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="form-label">前缀黑名单</label>
-								<div class="prefix-tags-container">
-									<div class="prefix-tags" id="prefix-tags"></div>
-									<div class="prefix-input-container">
-										<input
-											type="text"
-											class="form-input prefix-input"
-											id="prefix-input"
-											placeholder="输入前缀后按回车添加" />
-										<button type="button" class="btn btn-secondary btn-sm" id="add-prefix-btn">添加</button>
+									<div class="form-group">
+										<label class="form-label">前缀黑名单</label>
+										<div class="prefix-tags-container">
+											<div class="prefix-tags" id="prefix-tags"></div>
+											<div class="prefix-input-container">
+												<input
+													type="text"
+													class="form-input prefix-input"
+													id="prefix-input"
+													placeholder="输入前缀后按回车添加" />
+												<button type="button" class="btn btn-secondary btn-sm" id="add-prefix-btn">添加</button>
+											</div>
+										</div>
 									</div>
+									<div class="form-group">
+										<label class="form-label">排除频道</label>
+										<div
+											id="channel-checkboxes"
+											style="
+												max-height: 150px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">请先获取日志数据</span>
+										</div>
+									</div>
+									<button class="btn btn-secondary" id="btn-apply-filter" style="width: 100%">应用过滤</button>
+									<div id="filter-stats" style="margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary)"></div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="form-label">排除频道</label>
-								<div
-									id="channel-checkboxes"
-									style="
-										max-height: 150px;
-										overflow-y: auto;
-										padding: 8px;
-										background: var(--bg-input);
-										border-radius: var(--radius-md);
-										border: 1px solid var(--border-color);
-									">
-									<span style="color: var(--text-secondary); font-size: 0.8rem">请先获取日志数据</span>
-								</div>
-							</div>
-							<button class="btn btn-secondary" id="btn-apply-filter" style="width: 100%">应用过滤</button>
-							<div id="filter-stats" style="margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary)"></div>
 						</section>
 
 						<!-- House Rules Section (村规设置) -->
-						<section class="editor-section" id="section-house-rules">
-							<h3 class="section-title">🎲 村规设置</h3>
-							<div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px">
-								自定义大成功/大失败的判定范围，应用后会修改所有CC检定的结果
+						<section class="editor-section" id="section-house-rules" data-section-id="house-rules">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">村规设置</h3>
 							</div>
-							<div class="form-group">
-								<label class="form-label">大成功范围</label>
-								<div style="display: flex; gap: 8px; align-items: center">
-									<input
-										type="number"
-										class="form-input"
-										id="critical-min"
-										value="1"
-										min="1"
-										max="100"
-										style="width: 70px" />
-									<span>~</span>
-									<input
-										type="number"
-										class="form-input"
-										id="critical-max"
-										value="5"
-										min="1"
-										max="100"
-										style="width: 70px" />
-									<span style="font-size: 0.8rem; color: var(--text-secondary)">（含边界）</span>
+							<div class="section-body">
+								<div class="section-body-inner">
+									<div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px">
+										自定义大成功/大失败的判定范围，应用后会修改所有CC检定的结果
+									</div>
+									<div class="form-group">
+										<label class="form-label">大成功范围</label>
+										<div style="display: flex; gap: 8px; align-items: center">
+											<input
+												type="number"
+												class="form-input"
+												id="critical-min"
+												value="1"
+												min="1"
+												max="100"
+												style="width: 70px" />
+											<span>~</span>
+											<input
+												type="number"
+												class="form-input"
+												id="critical-max"
+												value="5"
+												min="1"
+												max="100"
+												style="width: 70px" />
+											<span style="font-size: 0.8rem; color: var(--text-secondary)">（含边界）</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="form-label">大失败范围</label>
+										<div style="display: flex; gap: 8px; align-items: center">
+											<input
+												type="number"
+												class="form-input"
+												id="fumble-min"
+												value="96"
+												min="1"
+												max="100"
+												style="width: 70px" />
+											<span>~</span>
+											<input
+												type="number"
+												class="form-input"
+												id="fumble-max"
+												value="100"
+												min="1"
+												max="100"
+												style="width: 70px" />
+											<span style="font-size: 0.8rem; color: var(--text-secondary)">（含边界）</span>
+										</div>
+									</div>
+									<div style="display: flex; gap: 8px">
+										<button class="btn btn-primary" id="btn-apply-house-rules" style="flex: 1">应用村规</button>
+										<button class="btn btn-secondary" id="btn-reset-house-rules" style="flex: 1">重置</button>
+									</div>
+									<div
+										id="house-rules-stats"
+										style="margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary)"></div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="form-label">大失败范围</label>
-								<div style="display: flex; gap: 8px; align-items: center">
-									<input
-										type="number"
-										class="form-input"
-										id="fumble-min"
-										value="96"
-										min="1"
-										max="100"
-										style="width: 70px" />
-									<span>~</span>
-									<input
-										type="number"
-										class="form-input"
-										id="fumble-max"
-										value="100"
-										min="1"
-										max="100"
-										style="width: 70px" />
-									<span style="font-size: 0.8rem; color: var(--text-secondary)">（含边界）</span>
-								</div>
-							</div>
-							<div style="display: flex; gap: 8px">
-								<button class="btn btn-primary" id="btn-apply-house-rules" style="flex: 1">应用村规</button>
-								<button class="btn btn-secondary" id="btn-reset-house-rules" style="flex: 1">重置</button>
-							</div>
-							<div
-								id="house-rules-stats"
-								style="margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary)"></div>
 						</section>
 
 						<!-- Portrait Config Section -->
-						<section class="editor-section" id="section-portrait">
-							<h3 class="section-title">差分配置</h3>
-							<div id="multi-mode-settings">
-								<div class="form-group">
-									<label class="form-label">缩放模式</label>
-									<select class="form-input" id="scale-mode">
-										<option value="percent">百分比自适应（位置随窗口缩放）</option>
-										<option value="canvas" selected>固定画布（保持比例，可能有黑边）</option>
-									</select>
-								</div>
-								<div id="canvas-settings" style="margin-bottom: 12px">
-									<label class="form-label">画布尺寸</label>
-									<div style="display: flex; gap: 8px; align-items: center">
-										<input type="number" class="form-input" id="canvas-width" value="1920" style="width: 80px" />
-										<span>×</span>
-										<input type="number" class="form-input" id="canvas-height" value="1080" style="width: 80px" />
-										<select class="form-input" id="canvas-preset" style="flex: 1">
-											<option value="">自定义</option>
-											<option value="1920x1080" selected>1080p (16:9)</option>
-											<option value="1280x720">720p (16:9)</option>
-											<option value="1600x900">900p (16:9)</option>
-											<option value="800x600">800×600 (4:3)</option>
-										</select>
-									</div>
-									<div style="margin-top: 12px">
-										<label class="form-label">对话框样式</label>
-										<div style="display: flex; gap: 8px; margin-bottom: 8px">
-											<div style="flex: 1">
-												<label style="font-size: 0.75rem; color: var(--text-secondary)">字体大小</label>
-												<input type="number" class="form-input" id="dialogue-font-size" value="24" min="12" max="72" />
-											</div>
-											<div style="flex: 1">
-												<label style="font-size: 0.75rem; color: var(--text-secondary)">名字大小</label>
-												<input type="number" class="form-input" id="dialogue-name-size" value="20" min="12" max="48" />
+						<section class="editor-section" id="section-portrait" data-section-id="portrait">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">差分配置</h3>
+							</div>
+							<div class="section-body">
+								<div class="section-body-inner">
+									<div id="multi-mode-settings">
+										<div class="form-group">
+											<label class="form-label">差分显示模式</label>
+											<select class="form-input" id="portrait-display-mode">
+												<option value="stage">出入场模式（手动控制角色进退场）</option>
+												<option value="perMessage">一句话显示（发言时出现，结束后消失）</option>
+											</select>
+											<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
+												一句话显示模式下，角色仅在发言时显示差分
 											</div>
 										</div>
-										<div style="display: flex; gap: 8px; margin-bottom: 8px">
-											<div style="flex: 1">
-												<label style="font-size: 0.75rem; color: var(--text-secondary)">背景透明度</label>
-												<input type="range" id="dialogue-bg-opacity" min="0" max="100" value="70" style="width: 100%" />
-											</div>
-											<div style="width: 50px">
-												<span id="dialogue-bg-opacity-value" style="font-size: 0.8rem">70%</span>
-											</div>
+										<div class="form-group">
+											<label class="form-label">缩放模式</label>
+											<select class="form-input" id="scale-mode">
+												<option value="percent">百分比自适应（位置随窗口缩放）</option>
+												<option value="canvas" selected>固定画布（保持比例，可能有黑边）</option>
+											</select>
 										</div>
-										<div style="margin-bottom: 8px">
-											<label style="font-size: 0.75rem; color: var(--text-secondary)">
-												背景图片 URL（留空使用纯色）
-											</label>
-											<input
-												type="text"
-												class="form-input"
-												id="dialogue-bg-image"
-												placeholder="https://example.com/image.png"
-												style="width: 100%" />
-										</div>
-										<div style="display: flex; gap: 8px; margin-bottom: 8px">
-											<div style="flex: 1">
-												<label style="font-size: 0.75rem; color: var(--text-secondary)">对话框高度</label>
-												<input type="number" class="form-input" id="dialogue-height" value="150" min="80" max="400" />
+										<div id="canvas-settings" style="margin-bottom: 12px">
+											<label class="form-label">画布尺寸</label>
+											<div style="display: flex; gap: 8px; align-items: center">
+												<input type="number" class="form-input" id="canvas-width" value="1920" style="width: 80px" />
+												<span>×</span>
+												<input type="number" class="form-input" id="canvas-height" value="1080" style="width: 80px" />
+												<select class="form-input" id="canvas-preset" style="flex: 1">
+													<option value="">自定义</option>
+													<option value="1920x1080" selected>1080p (16:9)</option>
+													<option value="1280x720">720p (16:9)</option>
+													<option value="1600x900">900p (16:9)</option>
+													<option value="800x600">800×600 (4:3)</option>
+												</select>
 											</div>
-											<div style="flex: 1">
-												<label style="font-size: 0.75rem; color: var(--text-secondary)">左右边距</label>
-												<input type="number" class="form-input" id="dialogue-padding-x" value="20" min="4" max="80" />
+											<div style="margin-top: 12px">
+												<label class="form-label">对话框样式</label>
+												<div style="display: flex; gap: 8px; margin-bottom: 8px">
+													<div style="flex: 1">
+														<label style="font-size: 0.75rem; color: var(--text-secondary)">字体大小</label>
+														<input
+															type="number"
+															class="form-input"
+															id="dialogue-font-size"
+															value="24"
+															min="12"
+															max="72" />
+													</div>
+													<div style="flex: 1">
+														<label style="font-size: 0.75rem; color: var(--text-secondary)">名字大小</label>
+														<input
+															type="number"
+															class="form-input"
+															id="dialogue-name-size"
+															value="20"
+															min="12"
+															max="48" />
+													</div>
+												</div>
+												<div style="display: flex; gap: 8px; margin-bottom: 8px">
+													<div style="flex: 1">
+														<label style="font-size: 0.75rem; color: var(--text-secondary)">背景透明度</label>
+														<input
+															type="range"
+															id="dialogue-bg-opacity"
+															min="0"
+															max="100"
+															value="70"
+															style="width: 100%" />
+													</div>
+													<div style="width: 50px">
+														<span id="dialogue-bg-opacity-value" style="font-size: 0.8rem">70%</span>
+													</div>
+												</div>
+												<div style="margin-bottom: 8px">
+													<label style="font-size: 0.75rem; color: var(--text-secondary)">
+														背景图片 URL（留空使用纯色）
+													</label>
+													<input
+														type="text"
+														class="form-input"
+														id="dialogue-bg-image"
+														placeholder="https://example.com/image.png"
+														style="width: 100%" />
+												</div>
+												<div style="display: flex; gap: 8px; margin-bottom: 8px">
+													<div style="flex: 1">
+														<label style="font-size: 0.75rem; color: var(--text-secondary)">对话框高度</label>
+														<input
+															type="number"
+															class="form-input"
+															id="dialogue-height"
+															value="150"
+															min="80"
+															max="400" />
+													</div>
+													<div style="flex: 1">
+														<label style="font-size: 0.75rem; color: var(--text-secondary)">左右边距</label>
+														<input
+															type="number"
+															class="form-input"
+															id="dialogue-padding-x"
+															value="20"
+															min="4"
+															max="80" />
+													</div>
+													<div style="flex: 1">
+														<label style="font-size: 0.75rem; color: var(--text-secondary)">上下边距</label>
+														<input
+															type="number"
+															class="form-input"
+															id="dialogue-padding-y"
+															value="16"
+															min="4"
+															max="60" />
+													</div>
+												</div>
+												<button
+													class="btn btn-secondary"
+													id="btn-reset-dialogue-pos"
+													style="width: 100%; margin-top: 8px; font-size: 0.8rem">
+													重置对话框位置
+												</button>
 											</div>
-											<div style="flex: 1">
-												<label style="font-size: 0.75rem; color: var(--text-secondary)">上下边距</label>
-												<input type="number" class="form-input" id="dialogue-padding-y" value="16" min="4" max="60" />
-											</div>
-										</div>
-										<button
-											class="btn btn-secondary"
-											id="btn-reset-dialogue-pos"
-											style="width: 100%; margin-top: 8px; font-size: 0.8rem">
-											重置对话框位置
-										</button>
-									</div>
 
-									<!-- 文字样式设置 -->
-									<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color)">
-										<div style="font-weight: 500; margin-bottom: 10px; font-size: 0.85rem">📝 文字样式</div>
+											<!-- 文字样式设置 -->
+											<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color)">
+												<div style="font-weight: 500; margin-bottom: 10px; font-size: 0.85rem">📝 文字样式</div>
 
-										<!-- 全局颜色 - 紧凑布局 -->
-										<div style="display: flex; gap: 12px; margin-bottom: 10px; align-items: center">
-											<div style="display: flex; align-items: center; gap: 6px; flex: 1">
-												<input
-													type="color"
-													id="dialogue-name-color"
-													value="#ffffff"
-													style="
-														width: 24px;
-														height: 24px;
-														padding: 0;
-														border: 2px solid var(--border-color);
-														border-radius: 4px;
-														cursor: pointer;
-														background: none;
-													" />
-												<input
-													type="text"
-													id="dialogue-name-color-text"
-													value="#ffffff"
+												<!-- 全局颜色 - 紧凑布局 -->
+												<div style="display: flex; gap: 12px; margin-bottom: 10px; align-items: center">
+													<div style="display: flex; align-items: center; gap: 6px; flex: 1">
+														<input
+															type="color"
+															id="dialogue-name-color"
+															value="#ffffff"
+															style="
+																width: 24px;
+																height: 24px;
+																padding: 0;
+																border: 2px solid var(--border-color);
+																border-radius: 4px;
+																cursor: pointer;
+																background: none;
+															" />
+														<input
+															type="text"
+															id="dialogue-name-color-text"
+															value="#ffffff"
+															class="form-input"
+															style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
+															placeholder="名称色" />
+													</div>
+													<div style="display: flex; align-items: center; gap: 6px; flex: 1">
+														<input
+															type="color"
+															id="dialogue-text-color"
+															value="#ffffff"
+															style="
+																width: 24px;
+																height: 24px;
+																padding: 0;
+																border: 2px solid var(--border-color);
+																border-radius: 4px;
+																cursor: pointer;
+																background: none;
+															" />
+														<input
+															type="text"
+															id="dialogue-text-color-text"
+															value="#ffffff"
+															class="form-input"
+															style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
+															placeholder="内容色" />
+													</div>
+												</div>
+
+												<!-- 字体选择 -->
+												<select
 													class="form-input"
-													style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
-													placeholder="名称色" />
-											</div>
-											<div style="display: flex; align-items: center; gap: 6px; flex: 1">
-												<input
-													type="color"
-													id="dialogue-text-color"
-													value="#ffffff"
+													id="dialogue-font-family"
+													style="width: 100%; margin-bottom: 10px; font-size: 0.8rem">
+													<option value="">默认字体</option>
+													<option value="serif">衬线体</option>
+													<option value="sans-serif">无衬线</option>
+													<option value="monospace">等宽</option>
+													<option value="cursive">手写</option>
+												</select>
+
+												<!-- 角色样式列表 -->
+												<div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px">
+													点击角色设置专属样式
+												</div>
+												<div
+													id="character-style-list"
 													style="
-														width: 24px;
-														height: 24px;
-														padding: 0;
-														border: 2px solid var(--border-color);
-														border-radius: 4px;
-														cursor: pointer;
-														background: none;
-													" />
-												<input
-													type="text"
-													id="dialogue-text-color-text"
-													value="#ffffff"
-													class="form-input"
-													style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
-													placeholder="内容色" />
+														max-height: 180px;
+														overflow-y: auto;
+														background: var(--bg-dark);
+														border-radius: 6px;
+													"></div>
+											</div>
+
+											<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
+												💡 滚轮缩放画布，拖拽空白移动画布，拖拽对话框移动位置，双击重置视图
 											</div>
 										</div>
-
-										<!-- 字体选择 -->
-										<select
-											class="form-input"
-											id="dialogue-font-family"
-											style="width: 100%; margin-bottom: 10px; font-size: 0.8rem">
-											<option value="">默认字体</option>
-											<option value="serif">衬线体</option>
-											<option value="sans-serif">无衬线</option>
-											<option value="monospace">等宽</option>
-											<option value="cursive">手写</option>
-										</select>
-
-										<!-- 角色样式列表 -->
-										<div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px">
-											点击角色设置专属样式
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px">
+											💡 在回放视图中拖拽差分可调整位置，拖拽角落可调整大小
 										</div>
-										<div
-											id="character-style-list"
-											style="max-height: 180px; overflow-y: auto; background: var(--bg-dark); border-radius: 6px"></div>
-									</div>
-
-									<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
-										💡 滚轮缩放画布，拖拽空白移动画布，拖拽对话框移动位置，双击重置视图
+										<button class="btn btn-secondary" id="btn-reset-positions" style="width: 100%">重置差分位置</button>
 									</div>
 								</div>
-								<div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px">
-									💡 在回放视图中拖拽差分可调整位置，拖拽角落可调整大小
-								</div>
-								<button class="btn btn-secondary" id="btn-reset-positions" style="width: 100%">重置差分位置</button>
 							</div>
 						</section>
 
 						<!-- Background Config Section -->
-						<section class="editor-section" id="section-background">
-							<h3 class="section-title">背景配置</h3>
-							<div class="form-group">
-								<label class="form-label">默认背景</label>
-								<input type="text" class="form-input" id="default-bg" placeholder="背景图片URL" />
-								<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
-									未设置切换点的消息将使用此背景
-								</div>
+						<section class="editor-section" id="section-background" data-section-id="background">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">背景配置</h3>
 							</div>
-							<div class="form-group">
-								<label class="form-label">背景切换点</label>
-								<div
-									id="background-switch-list"
-									style="
-										max-height: 200px;
-										overflow-y: auto;
-										padding: 8px;
-										background: var(--bg-input);
-										border-radius: var(--radius-md);
-										border: 1px solid var(--border-color);
-									">
-									<span style="color: var(--text-secondary); font-size: 0.8rem">暂无背景切换点</span>
+							<div class="section-body">
+								<div class="section-body-inner">
+									<div class="form-group">
+										<label class="form-label">默认背景</label>
+										<input type="text" class="form-input" id="default-bg" placeholder="背景图片URL" />
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
+											未设置切换点的消息将使用此背景
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="form-label">背景切换点</label>
+										<div
+											id="background-switch-list"
+											style="
+												max-height: 200px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">暂无背景切换点</span>
+										</div>
+									</div>
+									<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
+										💡 在消息列表中点击 🖼️ 按钮为消息设置背景切换点
+									</div>
 								</div>
-							</div>
-							<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
-								💡 在消息列表中点击 🖼️ 按钮为消息设置背景切换点
 							</div>
 						</section>
 
 						<!-- BGM Config Section -->
-						<section class="editor-section" id="section-bgm">
-							<h3 class="section-title">🎵 背景音乐</h3>
-							<div class="form-group">
-								<label class="form-label">默认 BGM</label>
-								<div class="custom-select" id="default-bgm-select">
-									<button type="button" class="custom-select-trigger placeholder">无（不播放背景音乐）</button>
-									<div class="custom-select-dropdown"></div>
-								</div>
-								<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
-									未设置切换点时播放此音乐，请先在下方音乐库添加 BGM
-								</div>
+						<section class="editor-section" id="section-bgm" data-section-id="bgm">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">背景音乐</h3>
 							</div>
-							<div class="form-group">
-								<label class="form-label">全局控制</label>
-								<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px">
-									<button class="btn btn-secondary btn-icon" id="bgm-mute-btn" title="静音/取消静音">🔊</button>
-									<input
-										type="range"
-										id="bgm-volume-slider"
-										min="0"
-										max="100"
-										value="50"
-										style="flex: 1"
-										title="音量" />
-									<span id="bgm-volume-value" style="font-size: 0.8rem; color: var(--text-secondary); min-width: 35px">
-										50%
-									</span>
-								</div>
-								<div style="display: flex; align-items: center; gap: 8px">
-									<label style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer">
-										<input type="checkbox" id="bgm-loop-checkbox" checked />
-										循环播放
-									</label>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="form-label" style="display: flex; align-items: center; justify-content: space-between">
-									<span>BGM 音乐库</span>
-									<div style="display: flex; gap: 4px">
-										<button class="btn btn-secondary" id="btn-bgm-import" style="padding: 4px 8px; font-size: 0.75rem">
-											从房间导入
-										</button>
-										<button class="btn btn-secondary" id="btn-bgm-account" style="padding: 4px 8px; font-size: 0.75rem">
-											从账号导入
-										</button>
-										<button class="btn btn-secondary" id="btn-bgm-custom" style="padding: 4px 8px; font-size: 0.75rem">
-											+ 自定义
-										</button>
+							<div class="section-body">
+								<div class="section-body-inner">
+									<div class="form-group">
+										<label class="form-label">默认 BGM</label>
+										<div class="custom-select" id="default-bgm-select">
+											<button type="button" class="custom-select-trigger placeholder">无（不播放背景音乐）</button>
+											<div class="custom-select-dropdown"></div>
+										</div>
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
+											未设置切换点时播放此音乐，请先在下方音乐库添加 BGM
+										</div>
 									</div>
-								</label>
-								<div
-									id="bgm-library-list"
-									style="
-										max-height: 180px;
-										overflow-y: auto;
-										padding: 8px;
-										background: var(--bg-input);
-										border-radius: var(--radius-md);
-										border: 1px solid var(--border-color);
-									">
-									<span style="color: var(--text-secondary); font-size: 0.8rem">暂无 BGM，点击上方按钮添加</span>
+									<div class="form-group">
+										<label class="form-label">全局控制</label>
+										<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px">
+											<button class="btn btn-secondary btn-icon" id="bgm-mute-btn" title="静音/取消静音">🔊</button>
+											<input
+												type="range"
+												id="bgm-volume-slider"
+												min="0"
+												max="100"
+												value="50"
+												style="flex: 1"
+												title="音量" />
+											<span
+												id="bgm-volume-value"
+												style="font-size: 0.8rem; color: var(--text-secondary); min-width: 35px">
+												50%
+											</span>
+										</div>
+										<div style="display: flex; align-items: center; gap: 8px">
+											<label style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer">
+												<input type="checkbox" id="bgm-loop-checkbox" checked />
+												循环播放
+											</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<label
+											class="form-label"
+											style="display: flex; align-items: center; justify-content: space-between">
+											<span>BGM 音乐库</span>
+											<div style="display: flex; gap: 4px">
+												<button
+													class="btn btn-secondary"
+													id="btn-bgm-import"
+													style="padding: 4px 8px; font-size: 0.75rem">
+													从房间导入
+												</button>
+												<button
+													class="btn btn-secondary"
+													id="btn-bgm-account"
+													style="padding: 4px 8px; font-size: 0.75rem">
+													从账号导入
+												</button>
+												<button
+													class="btn btn-secondary"
+													id="btn-bgm-custom"
+													style="padding: 4px 8px; font-size: 0.75rem">
+													+ 自定义
+												</button>
+											</div>
+										</label>
+										<div
+											id="bgm-library-list"
+											style="
+												max-height: 180px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">暂无 BGM，点击上方按钮添加</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="form-label">BGM 切换点</label>
+										<div
+											id="bgm-switch-list"
+											style="
+												max-height: 200px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">暂无 BGM 切换点</span>
+										</div>
+									</div>
+									<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
+										💡 在消息列表中点击 🎵 按钮为消息设置 BGM 切换点
+									</div>
 								</div>
-							</div>
-							<div class="form-group">
-								<label class="form-label">BGM 切换点</label>
-								<div
-									id="bgm-switch-list"
-									style="
-										max-height: 200px;
-										overflow-y: auto;
-										padding: 8px;
-										background: var(--bg-input);
-										border-radius: var(--radius-md);
-										border: 1px solid var(--border-color);
-									">
-									<span style="color: var(--text-secondary); font-size: 0.8rem">暂无 BGM 切换点</span>
-								</div>
-							</div>
-							<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
-								💡 在消息列表中点击 🎵 按钮为消息设置 BGM 切换点
 							</div>
 						</section>
 					</div>
@@ -5354,7 +5507,7 @@
 
 		<!-- Canvas Area Context Menu (for portrait area) -->
 		<div class="context-menu" id="canvas-context-menu">
-			<div class="context-menu-item" data-action="stage">🎭 进退场设置</div>
+			<div class="context-menu-item stage-menu-item" data-action="stage">🎭 进退场设置</div>
 			<div class="context-menu-item" data-action="background">🌄 设置背景</div>
 			<div class="context-menu-item" data-action="bgm">🎵 设置BGM</div>
 		</div>
@@ -5630,6 +5783,7 @@
 					canvasHeight: 1080,
 					positions: {},
 					stageConfig: [],
+					displayMode: "stage", // "stage" = 出入场模式, "perMessage" = 一句话显示模式
 					dialogueStyle: {
 						fontSize: 24,
 						nameSize: 20,
@@ -5872,6 +6026,7 @@
 				addPrefixBtn: document.getElementById("add-prefix-btn"),
 				channelCheckboxes: document.getElementById("channel-checkboxes"),
 				filterStats: document.getElementById("filter-stats"),
+				portraitDisplayMode: document.getElementById("portrait-display-mode"),
 				scaleMode: document.getElementById("scale-mode"),
 				canvasSettings: document.getElementById("canvas-settings"),
 				canvasWidth: document.getElementById("canvas-width"),
@@ -8867,11 +9022,13 @@
 
 					// Stage badges
 					let stageBadges = "";
-					if (msg.stageEnter && msg.stageEnter.length > 0) {
-						stageBadges += '<span class="message-item-badge stage-enter">进场</span>';
-					}
-					if (msg.stageExit && msg.stageExit.length > 0) {
-						stageBadges += '<span class="message-item-badge stage-exit">退场</span>';
+					if (state.portraitConfig.displayMode !== "perMessage") {
+						if (msg.stageEnter && msg.stageEnter.length > 0) {
+							stageBadges += '<span class="message-item-badge stage-enter">进场</span>';
+						}
+						if (msg.stageExit && msg.stageExit.length > 0) {
+							stageBadges += '<span class="message-item-badge stage-exit">退场</span>';
+						}
 					}
 
 					// Background badge
@@ -8903,15 +9060,17 @@
 						msg.bgmUrl !== undefined
 					) {
 						stageMarkersHtml = '<div class="stage-markers">';
-						if (msg.stageEnter) {
-							msg.stageEnter.forEach((name) => {
-								stageMarkersHtml += `<span class="stage-marker enter" data-name="${name}" data-type="enter">🟢 ${name} 进场 <span class="remove-marker" title="移除">×</span></span>`;
-							});
-						}
-						if (msg.stageExit) {
-							msg.stageExit.forEach((name) => {
-								stageMarkersHtml += `<span class="stage-marker exit" data-name="${name}" data-type="exit">🔴 ${name} 退场 <span class="remove-marker" title="移除">×</span></span>`;
-							});
+						if (state.portraitConfig.displayMode !== "perMessage") {
+							if (msg.stageEnter) {
+								msg.stageEnter.forEach((name) => {
+									stageMarkersHtml += `<span class="stage-marker enter" data-name="${name}" data-type="enter">🟢 ${name} 进场 <span class="remove-marker" title="移除">×</span></span>`;
+								});
+							}
+							if (msg.stageExit) {
+								msg.stageExit.forEach((name) => {
+									stageMarkersHtml += `<span class="stage-marker exit" data-name="${name}" data-type="exit">🔴 ${name} 退场 <span class="remove-marker" title="移除">×</span></span>`;
+								});
+							}
 						}
 						if (msg.backgroundUrl) {
 							const truncatedUrl =
@@ -8963,7 +9122,9 @@
 							<button class="message-action-btn" data-action="portrait" title="设置差分">🖼️ 差分</button>
 							<button class="message-action-btn" data-action="bgm" title="设置BGM">🎵 BGM</button>
 							<button class="message-action-btn" data-action="background" title="设置背景">🎬 背景</button>
-							<button class="message-action-btn" data-action="stage" title="进退场设置">🎭 进退场</button>
+							<button class="message-action-btn stage-action-btn" data-action="stage" title="进退场设置" style="${
+								state.portraitConfig.displayMode === "perMessage" ? "display: none;" : ""
+							}">🎭 进退场</button>
 							<button class="message-action-btn" data-action="insert" title="在此后插入消息">➕ 插入消息</button>
 							<button class="message-action-btn" data-action="insert-dice" title="在此后插入骰点">🎲 插入骰点</button>
 							<button class="message-action-btn" data-action="edit" title="编辑">✏️ 编辑</button>
@@ -15298,23 +15459,34 @@
 			function updateMultiModePortraits(msg) {
 				const speakerName = msg.name;
 				const speakerIconUrl = msg.iconUrl;
+				const isPerMessageMode = state.portraitConfig.displayMode === "perMessage";
 
 				// Update display state for all portraits based on activeCharacters set
 				portraitWrappers.forEach((wrapper, name) => {
-					const isOnStage = activeCharacters.has(name); // 是否在场
 					const isSpeaker = name === speakerName; // 是否是当前发言者
 
-					// 不在场 - 完全不显示
-					wrapper.classList.toggle("offstage", !isOnStage);
+					if (isPerMessageMode) {
+						// 一句话显示模式：只显示当前发言者
+						wrapper.classList.toggle("offstage", !isSpeaker);
+						wrapper.classList.remove("inactive");
+						wrapper.classList.toggle("speaking", isSpeaker);
+						wrapper.style.zIndex = isSpeaker ? "10" : "1";
+					} else {
+						// 出入场模式：根据 activeCharacters 显示
+						const isOnStage = activeCharacters.has(name); // 是否在场
 
-					// 在场但不是发言者 - 半透明
-					wrapper.classList.toggle("inactive", isOnStage && !isSpeaker);
+						// 不在场 - 完全不显示
+						wrapper.classList.toggle("offstage", !isOnStage);
 
-					// 当前发言者 - 完全显示并高亮
-					wrapper.classList.toggle("speaking", isOnStage && isSpeaker);
+						// 在场但不是发言者 - 半透明
+						wrapper.classList.toggle("inactive", isOnStage && !isSpeaker);
 
-					// 发言者在最上层
-					wrapper.style.zIndex = isOnStage && isSpeaker ? "10" : "1";
+						// 当前发言者 - 完全显示并高亮
+						wrapper.classList.toggle("speaking", isOnStage && isSpeaker);
+
+						// 发言者在最上层
+						wrapper.style.zIndex = isOnStage && isSpeaker ? "10" : "1";
+					}
 
 					// 更新发言者的立绘差分图片
 					if (isSpeaker && speakerIconUrl) {
@@ -16000,6 +16172,11 @@
 
 				// Render prefix tags
 				renderPrefixTags();
+
+				// Sync portrait display mode UI with state
+				if (DOM.portraitDisplayMode) {
+					DOM.portraitDisplayMode.value = state.portraitConfig.displayMode || "stage";
+				}
 
 				// Sync BGM UI with state
 				DOM.bgmVolumeSlider.value = state.bgmSettings.volume * 100;
@@ -16761,6 +16938,22 @@
 				}
 			});
 
+			// Portrait display mode change
+			DOM.portraitDisplayMode.addEventListener("change", (e) => {
+				const mode = e.target.value;
+				state.portraitConfig.displayMode = mode;
+				state.meta.lastModified = Date.now();
+
+				// 刷新消息列表以更新出入场按钮和标记的显示
+				renderMessageListFull();
+
+				// 更新当前消息的差分显示
+				if (state.editedMessages.length > 0 && currentMessageIndex >= 0) {
+					const msg = state.editedMessages[currentMessageIndex];
+					updateMultiModePortraits(msg);
+				}
+			});
+
 			// Scale mode change
 			DOM.scaleMode.addEventListener("change", (e) => {
 				const mode = e.target.value;
@@ -17039,6 +17232,13 @@
 				if (state.editedMessages.length === 0 || currentMessageIndex < 0) return;
 
 				hideAllContextMenus();
+
+				// 根据差分显示模式隐藏/显示出入场选项
+				const stageMenuItem = DOM.canvasContextMenu.querySelector(".stage-menu-item");
+				if (stageMenuItem) {
+					stageMenuItem.style.display = state.portraitConfig.displayMode === "perMessage" ? "none" : "";
+				}
+
 				showContextMenu(DOM.canvasContextMenu, e.clientX, e.clientY);
 			}
 
@@ -17877,6 +18077,158 @@
 
 			// Render BGM library list
 			renderBgmLibraryList();
+
+			// Initialize portrait display mode dropdown
+			if (DOM.portraitDisplayMode) {
+				DOM.portraitDisplayMode.value = state.portraitConfig.displayMode || "stage";
+			}
+
+			// ============================================================
+			// Section Collapse/Expand Functionality
+			// ============================================================
+
+			const SECTION_STATE_KEY = "ccfolia-section-states";
+
+			/**
+			 * Get saved section states from localStorage
+			 * @returns {Object} Section states object
+			 */
+			function getSectionStates() {
+				try {
+					const saved = localStorage.getItem(SECTION_STATE_KEY);
+					return saved ? JSON.parse(saved) : {};
+				} catch {
+					return {};
+				}
+			}
+
+			/**
+			 * Save section states to localStorage
+			 * @param {Object} states - Section states object
+			 */
+			function saveSectionStates(states) {
+				try {
+					localStorage.setItem(SECTION_STATE_KEY, JSON.stringify(states));
+				} catch (e) {
+					console.warn("Failed to save section states:", e);
+				}
+			}
+
+			/**
+			 * Toggle a section's expanded state
+			 * @param {HTMLElement} section - The section element
+			 * @param {boolean} [forceState] - Optional forced state (true=expand, false=collapse)
+			 */
+			function toggleSection(section, forceState) {
+				const sectionId = section.dataset.sectionId;
+				if (!sectionId) return;
+
+				const isExpanded = forceState !== undefined ? forceState : !section.classList.contains("expanded");
+
+				section.classList.toggle("expanded", isExpanded);
+
+				// Save state
+				const states = getSectionStates();
+				states[sectionId] = isExpanded;
+				saveSectionStates(states);
+			}
+
+			/**
+			 * Expand all sections
+			 */
+			function expandAllSections() {
+				const sections = document.querySelectorAll(".editor-section[data-section-id]");
+				const states = getSectionStates();
+
+				sections.forEach((section) => {
+					section.classList.add("expanded");
+					const sectionId = section.dataset.sectionId;
+					if (sectionId) states[sectionId] = true;
+				});
+
+				saveSectionStates(states);
+				updateToggleSectionsButton();
+			}
+
+			/**
+			 * Collapse all sections
+			 */
+			function collapseAllSections() {
+				const sections = document.querySelectorAll(".editor-section[data-section-id]");
+				const states = getSectionStates();
+
+				sections.forEach((section) => {
+					section.classList.remove("expanded");
+					const sectionId = section.dataset.sectionId;
+					if (sectionId) states[sectionId] = false;
+				});
+
+				saveSectionStates(states);
+				updateToggleSectionsButton();
+			}
+
+			/**
+			 * Check if all sections are expanded
+			 * @returns {boolean}
+			 */
+			function areAllSectionsExpanded() {
+				const sections = document.querySelectorAll(".editor-section[data-section-id]");
+				return Array.from(sections).every((s) => s.classList.contains("expanded"));
+			}
+
+			/**
+			 * Update toggle button text based on current state
+			 */
+			function updateToggleSectionsButton() {
+				const btn = document.getElementById("btn-toggle-sections");
+				if (!btn) return;
+
+				const allExpanded = areAllSectionsExpanded();
+				btn.textContent = allExpanded ? "▶ 收起" : "▼ 展开";
+			}
+
+			/**
+			 * Toggle all sections (expand if any collapsed, collapse if all expanded)
+			 */
+			function toggleAllSections() {
+				if (areAllSectionsExpanded()) {
+					collapseAllSections();
+				} else {
+					expandAllSections();
+				}
+			}
+
+			/**
+			 * Initialize section collapse states
+			 */
+			function initSectionStates() {
+				const sections = document.querySelectorAll(".editor-section[data-section-id]");
+				const states = getSectionStates();
+
+				sections.forEach((section) => {
+					const sectionId = section.dataset.sectionId;
+					// Default to collapsed if no saved state
+					const isExpanded = states[sectionId] === true;
+					section.classList.toggle("expanded", isExpanded);
+
+					// Add click handler to section header
+					const header = section.querySelector(".section-header");
+					if (header) {
+						header.addEventListener("click", () => {
+							toggleSection(section);
+							updateToggleSectionsButton();
+						});
+					}
+				});
+
+				updateToggleSectionsButton();
+			}
+
+			// Initialize section states
+			initSectionStates();
+
+			// Bind toggle all button
+			document.getElementById("btn-toggle-sections")?.addEventListener("click", toggleAllSections);
 
 			// Initialize canvas mode if it's the default
 			if (state.portraitConfig.scaleMode === "canvas") {
