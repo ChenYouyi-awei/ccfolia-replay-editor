@@ -934,10 +934,46 @@
 				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 			}
 
+			/* 使用伪元素实现背景图片透明度，不影响子元素 */
+			.portrait-canvas-inner .canvas-dialogue-box.has-bg-image {
+				position: relative;
+				background: transparent !important;
+			}
+
+			.portrait-canvas-inner .canvas-dialogue-box.has-bg-image::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-image: var(--bg-image);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				opacity: var(--bg-opacity, 0.7);
+				border-radius: 6px;
+				z-index: -1;
+				pointer-events: none;
+			}
+
 			.portrait-canvas-inner .canvas-dialogue-box.custom-position {
 				transform: none;
 				left: auto;
 				bottom: auto;
+			}
+
+			/* 锁定状态 */
+			.portrait-canvas-inner .canvas-dialogue-box.locked {
+				cursor: default;
+			}
+
+			.portrait-canvas-inner .canvas-dialogue-box.locked .dialogue-resize-handle {
+				display: none;
+			}
+
+			.portrait-canvas-inner .canvas-dialogue-box.locked .drag-hint {
+				display: none;
 			}
 
 			.portrait-canvas-inner .canvas-dialogue-box.dragging {
@@ -1033,16 +1069,199 @@
 			}
 
 			.portrait-canvas-inner .canvas-dialogue-name {
+				position: absolute;
 				font-size: 1rem;
 				font-weight: 600;
 				color: var(--primary-color);
-				margin-bottom: 8px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-width: 100%;
+				margin-top: 4px; /* 补偿与预览的位置偏差 */
+				z-index: 1;
 			}
 
 			.portrait-canvas-inner .canvas-dialogue-text {
+				position: absolute;
 				font-size: 1.1rem;
 				line-height: 1.7;
 				color: var(--text-primary);
+				overflow: hidden;
+				margin-top: 4px; /* 补偿与预览的位置偏差 */
+				z-index: 1;
+			}
+
+			/* Dialogue Layout Editor Modal */
+			.dialogue-layout-editor {
+				position: relative;
+				background: var(--bg-secondary);
+				border-radius: 8px;
+				overflow: hidden;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 16px;
+			}
+
+			.dialogue-layout-preview {
+				position: relative;
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				border-radius: 4px;
+			}
+
+			/* 使用伪元素实现背景图片透明度，不影响子元素 */
+			.dialogue-layout-preview.has-bg-image {
+				position: relative;
+			}
+
+			.dialogue-layout-preview.has-bg-image::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-image: var(--bg-image);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				opacity: var(--bg-opacity, 0.7);
+				border-radius: 4px;
+				z-index: 0;
+				pointer-events: none;
+			}
+
+			.dialogue-layout-preview .layout-element {
+				position: absolute;
+				cursor: move;
+				border-radius: 4px;
+				outline: 2px dashed transparent;
+				z-index: 2;
+				outline-offset: -2px;
+				transition: outline-color 0.15s, background-color 0.15s;
+				user-select: none;
+				box-sizing: border-box;
+				margin-top: -2px;
+			}
+
+			.dialogue-layout-preview .layout-element:hover {
+				outline-color: var(--primary-color);
+				background: rgba(94, 129, 172, 0.1);
+			}
+
+			.dialogue-layout-preview .layout-element.dragging {
+				outline-color: var(--primary-color);
+				background: rgba(94, 129, 172, 0.2);
+				z-index: 10;
+			}
+
+			.dialogue-layout-preview .layout-element.resizing {
+				outline-color: var(--primary-color);
+				background: rgba(94, 129, 172, 0.15);
+				z-index: 10;
+			}
+
+			.dialogue-layout-preview .layout-element.layout-name {
+				font-weight: 600;
+				color: var(--primary-color);
+			}
+
+			.dialogue-layout-preview .layout-element.layout-text {
+				color: var(--text-primary);
+				line-height: 1.5;
+				min-width: 60px;
+				min-height: 30px;
+				overflow: hidden;
+			}
+
+			/* Character count display */
+			.layout-char-count {
+				position: absolute;
+				top: 4px;
+				right: 6px;
+				font-size: 0.75rem;
+				color: #fff;
+				background: rgba(0, 0, 0, 0.6);
+				padding: 2px 6px;
+				border-radius: 3px;
+				opacity: 0;
+				transition: opacity 0.15s;
+				pointer-events: none;
+			}
+
+			.layout-element.layout-text:hover .layout-char-count,
+			.layout-element.layout-text.resizing .layout-char-count {
+				opacity: 1;
+			}
+
+			/* Resize handles for text element */
+			.layout-element .resize-handle {
+				position: absolute;
+				width: 10px;
+				height: 10px;
+				background: var(--primary-color);
+				border: 2px solid var(--bg-panel);
+				border-radius: 2px;
+				opacity: 0;
+				transition: opacity 0.15s;
+				z-index: 20;
+			}
+
+			.layout-element:hover .resize-handle,
+			.layout-element.dragging .resize-handle,
+			.layout-element.resizing .resize-handle {
+				opacity: 1;
+			}
+
+			.resize-handle-nw {
+				top: -5px;
+				left: -5px;
+				cursor: nw-resize;
+			}
+
+			.resize-handle-ne {
+				top: -5px;
+				right: -5px;
+				cursor: ne-resize;
+			}
+
+			.resize-handle-sw {
+				bottom: -5px;
+				left: -5px;
+				cursor: sw-resize;
+			}
+
+			.resize-handle-se {
+				bottom: -5px;
+				right: -5px;
+				cursor: se-resize;
+			}
+
+			.layout-element-label {
+				position: absolute;
+				top: -18px;
+				left: 2px;
+				font-size: 0.65rem;
+				color: var(--text-secondary);
+				background: var(--bg-panel);
+				padding: 2px 6px;
+				border-radius: 3px;
+				opacity: 0;
+				transition: opacity 0.15s;
+				pointer-events: none;
+			}
+
+			.dialogue-layout-preview .layout-element:hover .layout-element-label {
+				opacity: 1;
+			}
+
+			.layout-size-info {
+				font-size: 0.75rem;
+				color: var(--text-secondary);
+				margin-top: 8px;
+				text-align: center;
 			}
 
 			/* Multi-portrait mode */
@@ -3690,7 +3909,7 @@
 			}
 
 			.modal-header {
-				padding: 16px;
+				padding: 10px 14px;
 				border-bottom: 1px solid var(--border-color);
 				display: flex;
 				align-items: center;
@@ -3698,7 +3917,7 @@
 			}
 
 			.modal-title {
-				font-size: 1.1rem;
+				font-size: 0.95rem;
 				font-weight: 600;
 			}
 
@@ -3706,9 +3925,9 @@
 				background: none;
 				border: none;
 				color: var(--text-secondary);
-				font-size: 1.5rem;
+				font-size: 1.25rem;
 				cursor: pointer;
-				padding: 4px;
+				padding: 2px;
 				line-height: 1;
 			}
 
@@ -3717,15 +3936,20 @@
 			}
 
 			.modal-body {
-				padding: 16px;
+				padding: 14px;
 			}
 
 			.modal-footer {
-				padding: 16px;
+				padding: 10px 14px;
 				border-top: 1px solid var(--border-color);
 				display: flex;
 				justify-content: flex-end;
 				gap: 8px;
+			}
+
+			.modal-footer .btn {
+				font-size: 0.8rem;
+				padding: 6px 14px;
 			}
 
 			.form-textarea {
@@ -4294,168 +4518,79 @@
 													<option value="800x600">800×600 (4:3)</option>
 												</select>
 											</div>
-											<div style="margin-top: 12px">
-												<label class="form-label">对话框样式</label>
-												<div style="display: flex; gap: 8px; margin-bottom: 8px">
-													<div style="flex: 1">
-														<label style="font-size: 0.75rem; color: var(--text-secondary)">字体大小</label>
-														<input
-															type="number"
-															class="form-input"
-															id="dialogue-font-size"
-															value="24"
-															min="12"
-															max="72" />
-													</div>
-													<div style="flex: 1">
-														<label style="font-size: 0.75rem; color: var(--text-secondary)">名字大小</label>
-														<input
-															type="number"
-															class="form-input"
-															id="dialogue-name-size"
-															value="20"
-															min="12"
-															max="48" />
-													</div>
-												</div>
-												<div style="display: flex; gap: 8px; margin-bottom: 8px">
-													<div style="flex: 1">
-														<label style="font-size: 0.75rem; color: var(--text-secondary)">背景透明度</label>
-														<input
-															type="range"
-															id="dialogue-bg-opacity"
-															min="0"
-															max="100"
-															value="70"
-															style="width: 100%" />
-													</div>
-													<div style="width: 50px">
-														<span id="dialogue-bg-opacity-value" style="font-size: 0.8rem">70%</span>
-													</div>
-												</div>
-												<div style="margin-bottom: 8px">
-													<label style="font-size: 0.75rem; color: var(--text-secondary)">
-														背景图片 URL（留空使用纯色）
-													</label>
+										</div>
+
+										<!-- 文字样式设置 -->
+										<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color)">
+											<div style="font-weight: 500; margin-bottom: 10px; font-size: 0.85rem">📝 文字样式</div>
+
+											<!-- 全局颜色 - 紧凑布局 -->
+											<div style="display: flex; gap: 12px; margin-bottom: 10px; align-items: center">
+												<div style="display: flex; align-items: center; gap: 6px; flex: 1">
+													<input
+														type="color"
+														id="dialogue-name-color"
+														value="#ffffff"
+														style="
+															width: 24px;
+															height: 24px;
+															padding: 0;
+															border: 2px solid var(--border-color);
+															border-radius: 4px;
+															cursor: pointer;
+															background: none;
+														" />
 													<input
 														type="text"
+														id="dialogue-name-color-text"
+														value="#ffffff"
 														class="form-input"
-														id="dialogue-bg-image"
-														placeholder="https://example.com/image.png"
-														style="width: 100%" />
+														style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
+														placeholder="名称色" />
 												</div>
-												<div style="display: flex; gap: 8px; margin-bottom: 8px">
-													<div style="flex: 1">
-														<label style="font-size: 0.75rem; color: var(--text-secondary)">对话框高度</label>
-														<input
-															type="number"
-															class="form-input"
-															id="dialogue-height"
-															value="150"
-															min="80"
-															max="400" />
-													</div>
-													<div style="flex: 1">
-														<label style="font-size: 0.75rem; color: var(--text-secondary)">左右边距</label>
-														<input
-															type="number"
-															class="form-input"
-															id="dialogue-padding-x"
-															value="20"
-															min="4"
-															max="80" />
-													</div>
-													<div style="flex: 1">
-														<label style="font-size: 0.75rem; color: var(--text-secondary)">上下边距</label>
-														<input
-															type="number"
-															class="form-input"
-															id="dialogue-padding-y"
-															value="16"
-															min="4"
-															max="60" />
-													</div>
-												</div>
-												<button
-													class="btn btn-secondary"
-													id="btn-reset-dialogue-pos"
-													style="width: 100%; margin-top: 8px; font-size: 0.8rem">
-													重置对话框位置
-												</button>
-											</div>
-
-											<!-- 文字样式设置 -->
-											<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color)">
-												<div style="font-weight: 500; margin-bottom: 10px; font-size: 0.85rem">📝 文字样式</div>
-
-												<!-- 全局颜色 - 紧凑布局 -->
-												<div style="display: flex; gap: 12px; margin-bottom: 10px; align-items: center">
-													<div style="display: flex; align-items: center; gap: 6px; flex: 1">
-														<input
-															type="color"
-															id="dialogue-name-color"
-															value="#ffffff"
-															style="
-																width: 24px;
-																height: 24px;
-																padding: 0;
-																border: 2px solid var(--border-color);
-																border-radius: 4px;
-																cursor: pointer;
-																background: none;
-															" />
-														<input
-															type="text"
-															id="dialogue-name-color-text"
-															value="#ffffff"
-															class="form-input"
-															style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
-															placeholder="名称色" />
-													</div>
-													<div style="display: flex; align-items: center; gap: 6px; flex: 1">
-														<input
-															type="color"
-															id="dialogue-text-color"
-															value="#ffffff"
-															style="
-																width: 24px;
-																height: 24px;
-																padding: 0;
-																border: 2px solid var(--border-color);
-																border-radius: 4px;
-																cursor: pointer;
-																background: none;
-															" />
-														<input
-															type="text"
-															id="dialogue-text-color-text"
-															value="#ffffff"
-															class="form-input"
-															style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
-															placeholder="内容色" />
-													</div>
-												</div>
-
-												<!-- 字体选择 -->
-												<select
-													class="form-input"
-													id="dialogue-font-family"
-													style="width: 100%; margin-bottom: 10px; font-size: 0.8rem">
-													<option value="">默认字体</option>
-													<option value="serif">衬线体</option>
-													<option value="sans-serif">无衬线</option>
-													<option value="monospace">等宽</option>
-													<option value="cursive">手写</option>
-												</select>
-
-												<div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 8px">
-													💡 角色专属样式请在角色详情页的"样式"标签中设置
+												<div style="display: flex; align-items: center; gap: 6px; flex: 1">
+													<input
+														type="color"
+														id="dialogue-text-color"
+														value="#ffffff"
+														style="
+															width: 24px;
+															height: 24px;
+															padding: 0;
+															border: 2px solid var(--border-color);
+															border-radius: 4px;
+															cursor: pointer;
+															background: none;
+														" />
+													<input
+														type="text"
+														id="dialogue-text-color-text"
+														value="#ffffff"
+														class="form-input"
+														style="flex: 1; font-size: 0.75rem; padding: 4px 6px; font-family: monospace"
+														placeholder="内容色" />
 												</div>
 											</div>
 
-											<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px">
-												💡 滚轮缩放画布，拖拽空白移动画布，拖拽对话框移动位置，双击重置视图
+											<!-- 字体选择 -->
+											<select
+												class="form-input"
+												id="dialogue-font-family"
+												style="width: 100%; margin-bottom: 10px; font-size: 0.8rem">
+												<option value="">默认字体</option>
+												<option value="serif">衬线体</option>
+												<option value="sans-serif">无衬线</option>
+												<option value="monospace">等宽</option>
+												<option value="cursive">手写</option>
+											</select>
+
+											<div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 8px">
+												💡 角色专属样式请在角色详情页的"样式"标签中设置
 											</div>
+										</div>
+
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px; margin-bottom: 8px">
+											💡 滚轮缩放画布，拖拽空白移动画布，拖拽对话框移动位置，双击重置视图
 										</div>
 										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px">
 											💡 在回放视图中拖拽差分可调整位置，拖拽角落可调整大小
@@ -5421,10 +5556,299 @@
 			</div>
 		</div>
 
+		<!-- Dialogue Settings Modal -->
+		<div class="modal-overlay" id="modal-dialogue-layout">
+			<div class="modal" style="max-width: 520px; max-height: 80vh; display: flex; flex-direction: column">
+				<div class="modal-header">
+					<span class="modal-title">对话框设置</span>
+					<button class="modal-close" id="modal-dialogue-layout-close">&times;</button>
+				</div>
+				<div
+					class="modal-body"
+					style="padding: 0; flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0">
+					<!-- 布局预览区域（固定，限制高度） -->
+					<div
+						style="
+							padding: 12px;
+							padding-bottom: 6px;
+							background: var(--bg-secondary);
+							flex-shrink: 0;
+							max-height: 200px;
+							overflow: hidden;
+						">
+						<div class="dialogue-layout-editor" id="dialogue-layout-editor" style="padding: 0">
+							<div class="dialogue-layout-preview" id="dialogue-layout-preview">
+								<div class="layout-element layout-name" id="layout-name-element" data-element="name">
+									<span class="layout-element-label">角色名</span>
+									<span class="layout-element-content">角色名称</span>
+								</div>
+								<div class="layout-element layout-text" id="layout-text-element" data-element="text">
+									<span class="layout-element-label">消息内容</span>
+									<span class="layout-element-content">
+										这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。
+									</span>
+									<span class="layout-char-count"></span>
+									<div class="resize-handle resize-handle-nw" data-handle="nw"></div>
+									<div class="resize-handle resize-handle-ne" data-handle="ne"></div>
+									<div class="resize-handle resize-handle-sw" data-handle="sw"></div>
+									<div class="resize-handle resize-handle-se" data-handle="se"></div>
+								</div>
+							</div>
+						</div>
+						<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px">
+							<span class="layout-size-info" id="layout-size-info" style="margin: 0; font-size: 0.7rem">
+								尺寸: -- × --
+							</span>
+							<span style="font-size: 0.65rem; color: var(--text-secondary)">拖拽调整位置和大小</span>
+							<button
+								class="btn btn-secondary"
+								id="btn-layout-reset"
+								style="
+									font-size: 0.7rem;
+									padding: 4px 10px;
+									border: 1px solid var(--primary-color);
+									color: var(--primary-color);
+								">
+								重置位置
+							</button>
+						</div>
+					</div>
+
+					<!-- 设置区域（可滚动） -->
+					<div style="padding: 12px; flex: 1; overflow-y: auto; min-height: 120px">
+						<!-- 背景设置 - 整行 -->
+						<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap">
+							<span style="font-size: 0.85rem; white-space: nowrap">🎨 背景</span>
+							<input
+								type="text"
+								class="form-input"
+								id="modal-dialogue-bg-image"
+								placeholder="背景图片 URL"
+								style="flex: 1; min-width: 150px; font-size: 0.8rem" />
+							<button
+								class="btn btn-secondary"
+								id="btn-dialogue-bg-file"
+								title="选择本地图片"
+								style="padding: 4px 10px; font-size: 0.9rem; min-width: auto; height: 32px">
+								...
+							</button>
+							<input type="file" id="dialogue-bg-file-input" accept="image/*" style="display: none" />
+							<span style="font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap">透明度</span>
+							<input type="range" id="modal-dialogue-bg-opacity" min="0" max="100" value="70" style="width: 100px" />
+							<span id="modal-dialogue-bg-opacity-value" style="font-size: 0.8rem; width: 32px">70%</span>
+						</div>
+
+						<!-- 名称和内容 - 左右两个卡片 -->
+						<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+							<!-- 名称卡片 -->
+							<div
+								style="
+									background: var(--bg-secondary);
+									border-radius: 6px;
+									padding: 10px;
+									border: 1px solid var(--border-color);
+								">
+								<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+									<span style="font-size: 0.8rem; font-weight: 500">📝 角色名称</span>
+									<button
+										class="btn btn-secondary"
+										id="btn-reset-name-style"
+										style="
+											font-size: 0.65rem;
+											padding: 2px 6px;
+											border: 1px solid var(--border-color);
+											color: var(--text-secondary);
+										">
+										重置
+									</button>
+								</div>
+								<div style="display: flex; flex-direction: column; gap: 6px">
+									<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
+										<div style="display: flex; align-items: center; gap: 4px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">大小</label>
+											<input
+												type="number"
+												class="form-input"
+												id="modal-dialogue-name-size"
+												value="20"
+												min="12"
+												max="48"
+												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+										</div>
+										<div style="display: flex; align-items: center; gap: 4px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">字距</label>
+											<input
+												type="number"
+												class="form-input"
+												id="modal-dialogue-name-letter-spacing"
+												value="0"
+												min="-5"
+												max="20"
+												step="0.5"
+												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+										</div>
+									</div>
+									<div style="display: flex; align-items: center; gap: 6px">
+										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">颜色</label>
+										<input
+											type="color"
+											id="modal-dialogue-name-color"
+											value="#5e81ac"
+											style="
+												width: 26px;
+												height: 24px;
+												padding: 0;
+												border: 1px solid var(--border-color);
+												border-radius: 4px;
+												cursor: pointer;
+												background: none;
+											" />
+										<input
+											type="text"
+											id="modal-dialogue-name-color-text"
+											value="#5e81ac"
+											class="form-input"
+											style="flex: 1; font-size: 0.75rem; padding: 4px 5px; font-family: monospace" />
+									</div>
+									<div style="display: flex; align-items: center; gap: 6px">
+										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">透明</label>
+										<input
+											type="range"
+											id="modal-dialogue-name-opacity"
+											min="0"
+											max="100"
+											value="100"
+											style="flex: 1" />
+										<span id="modal-dialogue-name-opacity-value" style="font-size: 0.75rem; width: 32px">100%</span>
+									</div>
+									<div style="display: flex; align-items: center; gap: 6px">
+										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">字体</label>
+										<select
+											class="form-input"
+											id="modal-dialogue-name-font-family"
+											style="flex: 1; font-size: 0.8rem; padding: 4px 6px">
+											<option value="">默认</option>
+											<option value="serif">衬线</option>
+											<option value="sans-serif">无衬线</option>
+											<option value="monospace">等宽</option>
+											<option value="cursive">手写</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<!-- 内容卡片 -->
+							<div
+								style="
+									background: var(--bg-secondary);
+									border-radius: 6px;
+									padding: 10px;
+									border: 1px solid var(--border-color);
+								">
+								<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+									<span style="font-size: 0.8rem; font-weight: 500">📝 内容</span>
+									<button
+										class="btn btn-secondary"
+										id="btn-reset-text-style"
+										style="
+											font-size: 0.65rem;
+											padding: 2px 6px;
+											border: 1px solid var(--border-color);
+											color: var(--text-secondary);
+										">
+										重置
+									</button>
+								</div>
+								<div style="display: flex; flex-direction: column; gap: 6px">
+									<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
+										<div style="display: flex; align-items: center; gap: 4px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">大小</label>
+											<input
+												type="number"
+												class="form-input"
+												id="modal-dialogue-font-size"
+												value="24"
+												min="12"
+												max="72"
+												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+										</div>
+										<div style="display: flex; align-items: center; gap: 4px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">字距</label>
+											<input
+												type="number"
+												class="form-input"
+												id="modal-dialogue-text-letter-spacing"
+												value="0"
+												min="-5"
+												max="20"
+												step="0.5"
+												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+										</div>
+									</div>
+									<div style="display: flex; align-items: center; gap: 6px">
+										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">颜色</label>
+										<input
+											type="color"
+											id="modal-dialogue-text-color"
+											value="#ffffff"
+											style="
+												width: 26px;
+												height: 24px;
+												padding: 0;
+												border: 1px solid var(--border-color);
+												border-radius: 4px;
+												cursor: pointer;
+												background: none;
+											" />
+										<input
+											type="text"
+											id="modal-dialogue-text-color-text"
+											value="#ffffff"
+											class="form-input"
+											style="flex: 1; font-size: 0.75rem; padding: 4px 5px; font-family: monospace" />
+									</div>
+									<div style="display: flex; align-items: center; gap: 6px">
+										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">透明</label>
+										<input
+											type="range"
+											id="modal-dialogue-text-opacity"
+											min="0"
+											max="100"
+											value="100"
+											style="flex: 1" />
+										<span id="modal-dialogue-text-opacity-value" style="font-size: 0.75rem; width: 32px">100%</span>
+									</div>
+									<div style="display: flex; align-items: center; gap: 6px">
+										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">字体</label>
+										<select
+											class="form-input"
+											id="modal-dialogue-font-family"
+											style="flex: 1; font-size: 0.8rem; padding: 4px 6px">
+											<option value="">默认</option>
+											<option value="serif">衬线</option>
+											<option value="sans-serif">无衬线</option>
+											<option value="monospace">等宽</option>
+											<option value="cursive">手写</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" id="modal-dialogue-layout-cancel">取消</button>
+					<button class="btn btn-primary" id="modal-dialogue-layout-save">保存</button>
+				</div>
+			</div>
+		</div>
+
 		<!-- Dialogue Context Menu (for dialogue box only) -->
 		<div class="context-menu" id="dialogue-context-menu">
 			<div class="context-menu-item" data-action="edit">✏️ 编辑消息</div>
-			<div class="context-menu-item" data-action="dialogue-bg">🎨 对话框背景</div>
+			<div class="context-menu-item" data-action="dialogue-settings">⚙️ 对话框设置</div>
+			<div class="context-menu-divider"></div>
+			<div class="context-menu-item" data-action="toggle-lock" id="dialogue-lock-toggle">🔒 锁定位置和大小</div>
 		</div>
 
 		<!-- Canvas Area Context Menu (for portrait area) -->
@@ -5436,7 +5860,9 @@
 
 		<!-- Portrait Context Menu (for portrait image) -->
 		<div class="context-menu" id="portrait-context-menu">
-			<div class="context-menu-item" data-action="edit-portrait">🖼️ 编辑立绘</div>
+			<div class="context-menu-item" data-action="edit-portrait">🖼️ 改差分</div>
+			<div class="context-menu-item" data-action="toggle-layer" id="portrait-layer-toggle">📐 移到对话框后面</div>
+			<div class="context-menu-divider"></div>
 			<div class="context-menu-item" data-action="edit-tts">🔊 TTS设置</div>
 		</div>
 
@@ -5716,6 +6142,7 @@
 						x: null,
 						y: null,
 						width: 100, // percentage of canvas width
+						locked: false, // 锁定对话框位置和大小
 						// 文字样式
 						nameColor: "#ffffff",
 						textColor: "#ffffff",
@@ -5803,6 +6230,7 @@
 				startOverlay: document.getElementById("start-overlay"),
 				portraitArea: document.getElementById("portrait-area"),
 				dialogueContextMenu: document.getElementById("dialogue-context-menu"),
+				dialogueLockToggle: document.getElementById("dialogue-lock-toggle"),
 				canvasContextMenu: document.getElementById("canvas-context-menu"),
 				portraitContextMenu: document.getElementById("portrait-context-menu"),
 				portraitItemContextMenu: document.getElementById("portrait-item-context-menu"),
@@ -5964,6 +6392,7 @@
 				dialogueTextColorText: document.getElementById("dialogue-text-color-text"),
 				dialogueFontFamily: document.getElementById("dialogue-font-family"),
 				btnResetDialoguePos: document.getElementById("btn-reset-dialogue-pos"),
+				btnEditDialogueLayout: document.getElementById("btn-edit-dialogue-layout"),
 				multiModeSettings: document.getElementById("multi-mode-settings"),
 				btnResetPositions: document.getElementById("btn-reset-positions"),
 				defaultBg: document.getElementById("default-bg"),
@@ -6108,6 +6537,39 @@
 				importRulesStatus: document.getElementById("import-rules-status"),
 				btnExportVoiceConfig: document.getElementById("btn-export-voice-config"),
 				btnResetVoiceConfig: document.getElementById("btn-reset-voice-config"),
+
+				// Dialogue settings modal
+				modalDialogueLayout: document.getElementById("modal-dialogue-layout"),
+				modalDialogueLayoutClose: document.getElementById("modal-dialogue-layout-close"),
+				modalDialogueLayoutCancel: document.getElementById("modal-dialogue-layout-cancel"),
+				modalDialogueLayoutSave: document.getElementById("modal-dialogue-layout-save"),
+				dialogueLayoutEditor: document.getElementById("dialogue-layout-editor"),
+				dialogueLayoutPreview: document.getElementById("dialogue-layout-preview"),
+				layoutNameElement: document.getElementById("layout-name-element"),
+				layoutTextElement: document.getElementById("layout-text-element"),
+				layoutSizeInfo: document.getElementById("layout-size-info"),
+				btnLayoutReset: document.getElementById("btn-layout-reset"),
+				btnResetNameStyle: document.getElementById("btn-reset-name-style"),
+				btnResetTextStyle: document.getElementById("btn-reset-text-style"),
+				// Modal dialogue settings inputs
+				modalDialogueBgImage: document.getElementById("modal-dialogue-bg-image"),
+				btnDialogueBgFile: document.getElementById("btn-dialogue-bg-file"),
+				dialogueBgFileInput: document.getElementById("dialogue-bg-file-input"),
+				modalDialogueBgOpacity: document.getElementById("modal-dialogue-bg-opacity"),
+				modalDialogueBgOpacityValue: document.getElementById("modal-dialogue-bg-opacity-value"),
+				modalDialogueNameSize: document.getElementById("modal-dialogue-name-size"),
+				modalDialogueNameOpacity: document.getElementById("modal-dialogue-name-opacity"),
+				modalDialogueNameOpacityValue: document.getElementById("modal-dialogue-name-opacity-value"),
+				modalDialogueNameLetterSpacing: document.getElementById("modal-dialogue-name-letter-spacing"),
+				modalDialogueFontSize: document.getElementById("modal-dialogue-font-size"),
+				modalDialogueTextOpacity: document.getElementById("modal-dialogue-text-opacity"),
+				modalDialogueTextOpacityValue: document.getElementById("modal-dialogue-text-opacity-value"),
+				modalDialogueTextLetterSpacing: document.getElementById("modal-dialogue-text-letter-spacing"),
+				modalDialogueFontFamily: document.getElementById("modal-dialogue-font-family"),
+				modalDialogueNameColor: document.getElementById("modal-dialogue-name-color"),
+				modalDialogueNameColorText: document.getElementById("modal-dialogue-name-color-text"),
+				modalDialogueTextColor: document.getElementById("modal-dialogue-text-color"),
+				modalDialogueTextColorText: document.getElementById("modal-dialogue-text-color-text"),
 
 				// Category filter elements
 				characterFilterTabs: document.getElementById("character-filter-tabs"),
@@ -8985,6 +9447,9 @@
 				portraitIndex: -1,
 			};
 
+			// Portrait context menu state (for portrait wrapper right-click)
+			let portraitContextTarget = null;
+
 			/**
 			 * Show portrait item context menu
 			 * @param {MouseEvent} e - Right click event
@@ -10038,6 +10503,810 @@
 					DOM.editDiceCcPreview.style.color = "var(--text-secondary)";
 				}
 			}
+
+			// ==================== Dialogue Layout Editor ====================
+
+			// Layout editor state
+			let layoutEditorState = {
+				dragging: null,
+				resizing: null, // 'nw', 'ne', 'sw', 'se'
+				startX: 0,
+				startY: 0,
+				startLeft: 0,
+				startTop: 0,
+				startWidth: 0,
+				startHeight: 0,
+				previewWidth: 0,
+				previewHeight: 0,
+				tempLayout: null,
+			};
+
+			/**
+			 * Open dialogue settings modal
+			 */
+			function openDialogueLayoutModal() {
+				const style = state.portraitConfig.dialogueStyle || {};
+				const layout = style.layout || {};
+
+				// 初始化临时布局数据
+				layoutEditorState.tempLayout = {
+					name: { ...{ x: null, y: null, width: 90 }, ...(layout.name || {}) },
+					text: { ...{ x: null, y: null, width: 90, height: 70 }, ...(layout.text || {}) },
+				};
+
+				// 加载当前设置到模态框
+				loadDialogueSettingsToModal();
+
+				// 更新预览
+				updateLayoutPreview();
+
+				// 绑定拖拽事件
+				setupLayoutDragEvents();
+
+				// 绑定ESC键关闭
+				document.addEventListener("keydown", handleLayoutEsc);
+
+				DOM.modalDialogueLayout.classList.add("visible");
+			}
+
+			/**
+			 * Load current dialogue settings to modal inputs
+			 */
+			function loadDialogueSettingsToModal() {
+				const style = state.portraitConfig.dialogueStyle || {};
+
+				// 背景
+				if (DOM.modalDialogueBgImage) DOM.modalDialogueBgImage.value = style.bgImage || "";
+				if (DOM.modalDialogueBgOpacity) DOM.modalDialogueBgOpacity.value = style.bgOpacity ?? 70;
+				if (DOM.modalDialogueBgOpacityValue) DOM.modalDialogueBgOpacityValue.textContent = `${style.bgOpacity ?? 70}%`;
+
+				// 字体
+				if (DOM.modalDialogueNameSize) DOM.modalDialogueNameSize.value = style.nameSize ?? 20;
+				if (DOM.modalDialogueFontSize) DOM.modalDialogueFontSize.value = style.fontSize ?? 24;
+				if (DOM.modalDialogueFontFamily) DOM.modalDialogueFontFamily.value = style.fontFamily || "";
+
+				// 颜色
+				const nameColor = style.nameColor || "#5e81ac";
+				const textColor = style.textColor || "#ffffff";
+				if (DOM.modalDialogueNameColor) DOM.modalDialogueNameColor.value = nameColor;
+				if (DOM.modalDialogueNameColorText) DOM.modalDialogueNameColorText.value = nameColor;
+				if (DOM.modalDialogueTextColor) DOM.modalDialogueTextColor.value = textColor;
+				if (DOM.modalDialogueTextColorText) DOM.modalDialogueTextColorText.value = textColor;
+
+				// 透明度
+				if (DOM.modalDialogueNameOpacity) DOM.modalDialogueNameOpacity.value = style.nameOpacity ?? 100;
+				if (DOM.modalDialogueNameOpacityValue)
+					DOM.modalDialogueNameOpacityValue.textContent = `${style.nameOpacity ?? 100}%`;
+				if (DOM.modalDialogueTextOpacity) DOM.modalDialogueTextOpacity.value = style.textOpacity ?? 100;
+				if (DOM.modalDialogueTextOpacityValue)
+					DOM.modalDialogueTextOpacityValue.textContent = `${style.textOpacity ?? 100}%`;
+
+				// 字间距
+				if (DOM.modalDialogueNameLetterSpacing) DOM.modalDialogueNameLetterSpacing.value = style.nameLetterSpacing ?? 0;
+				if (DOM.modalDialogueTextLetterSpacing) DOM.modalDialogueTextLetterSpacing.value = style.textLetterSpacing ?? 0;
+
+				// 边距
+				if (DOM.modalDialoguePaddingX) DOM.modalDialoguePaddingX.value = style.paddingX ?? 20;
+				if (DOM.modalDialoguePaddingY) DOM.modalDialoguePaddingY.value = style.paddingY ?? 16;
+			}
+
+			/**
+			 * Close dialogue settings modal
+			 */
+			function closeDialogueLayoutModal() {
+				DOM.modalDialogueLayout.classList.remove("visible");
+				layoutEditorState.tempLayout = null;
+				layoutEditorState.dragging = null;
+				layoutEditorState.resizing = null;
+				// 移除全局事件监听器
+				document.removeEventListener("mousemove", handleLayoutDrag);
+				document.removeEventListener("mousemove", handleLayoutResize);
+				document.removeEventListener("mouseup", endLayoutDrag);
+				document.removeEventListener("mouseup", endLayoutResize);
+				document.removeEventListener("keydown", handleLayoutEsc);
+			}
+
+			/**
+			 * Handle ESC key to close layout modal
+			 */
+			function handleLayoutEsc(e) {
+				if (e.key === "Escape") {
+					closeDialogueLayoutModal();
+				}
+			}
+
+			/**
+			 * Update layout preview based on modal inputs
+			 */
+			function updateLayoutPreview() {
+				const style = state.portraitConfig.dialogueStyle || {};
+
+				// 从模态框输入获取值（背景、字体等）
+				const bgImage = DOM.modalDialogueBgImage?.value || "";
+				const bgOpacityValue = DOM.modalDialogueBgOpacity?.value;
+				const bgOpacity =
+					(bgOpacityValue !== null && bgOpacityValue !== undefined && bgOpacityValue !== ""
+						? parseInt(bgOpacityValue)
+						: 70) / 100;
+				const fontSize = parseInt(DOM.modalDialogueFontSize?.value) || 24;
+				const nameSize = parseInt(DOM.modalDialogueNameSize?.value) || 20;
+				const nameColor = DOM.modalDialogueNameColor?.value || "#5e81ac";
+				const textColor = DOM.modalDialogueTextColor?.value || "#ffffff";
+				const nameOpacityValue = DOM.modalDialogueNameOpacity?.value;
+				const nameOpacity =
+					(nameOpacityValue !== null && nameOpacityValue !== undefined && nameOpacityValue !== ""
+						? parseInt(nameOpacityValue)
+						: 100) / 100;
+				const textOpacityValue = DOM.modalDialogueTextOpacity?.value;
+				const textOpacity =
+					(textOpacityValue !== null && textOpacityValue !== undefined && textOpacityValue !== ""
+						? parseInt(textOpacityValue)
+						: 100) / 100;
+				const nameLetterSpacing = parseFloat(DOM.modalDialogueNameLetterSpacing?.value) || 0;
+				const textLetterSpacing = parseFloat(DOM.modalDialogueTextLetterSpacing?.value) || 0;
+
+				// 固定边距值
+				const paddingX = 20;
+				const paddingY = 16;
+
+				// 从state获取宽高（画布上调整的）
+				const height = style.height ?? 150;
+				const width = style.width ?? 80;
+				const canvasWidth = state.portraitConfig.canvasWidth || 1920;
+
+				// 计算对话框实际尺寸
+				const dialogueWidth = (width / 100) * canvasWidth;
+				const dialogueHeight = height;
+
+				// 计算预览区域的缩放比例（保持宽高比，适应模态框宽度和高度限制）
+				const previewMaxWidth = 460;
+				const previewMaxHeight = 120;
+				const scaleW = previewMaxWidth / dialogueWidth;
+				const scaleH = previewMaxHeight / dialogueHeight;
+				const scale = Math.min(scaleW, scaleH, 1);
+				const previewWidth = dialogueWidth * scale;
+				const previewHeight = dialogueHeight * scale;
+
+				const preview = DOM.dialogueLayoutPreview;
+				const nameEl = DOM.layoutNameElement;
+				const textEl = DOM.layoutTextElement;
+
+				// 设置预览区域样式
+				preview.style.width = `${previewWidth}px`;
+				preview.style.height = `${previewHeight}px`;
+				preview.style.position = "relative";
+
+				if (bgImage) {
+					// 使用 ::before 伪元素来实现背景透明度
+					preview.style.background = "transparent";
+					preview.style.backgroundImage = "none";
+					preview.style.opacity = 1;
+					// 通过 CSS 变量传递背景图和透明度
+					preview.style.setProperty("--bg-image", `url(${bgImage})`);
+					preview.style.setProperty("--bg-opacity", bgOpacity);
+					preview.classList.add("has-bg-image");
+				} else {
+					preview.style.background = `rgba(0, 0, 0, ${bgOpacity})`;
+					preview.style.backgroundImage = "none";
+					preview.style.opacity = 1;
+					preview.classList.remove("has-bg-image");
+				}
+
+				// 更新尺寸信息
+				DOM.layoutSizeInfo.textContent = `尺寸: ${Math.round(dialogueWidth)} × ${Math.round(dialogueHeight)}`;
+
+				// 缩放字体大小
+				const scaledNameSize = Math.max(10, nameSize * scale);
+				const scaledFontSize = Math.max(10, fontSize * scale);
+
+				// 应用名称元素样式
+				const nameContent = nameEl.querySelector(".layout-element-content");
+				nameContent.style.fontSize = `${scaledNameSize}px`;
+				nameContent.style.color = nameColor;
+				nameContent.style.opacity = nameOpacity;
+				nameContent.style.letterSpacing = `${nameLetterSpacing}px`;
+
+				// 应用内容元素样式
+				const textContent = textEl.querySelector(".layout-element-content");
+				textContent.style.fontSize = `${scaledFontSize}px`;
+				textContent.style.color = textColor;
+				textContent.style.opacity = textOpacity;
+				textContent.style.letterSpacing = `${textLetterSpacing}px`;
+
+				// 应用布局位置
+				const tempLayout = layoutEditorState.tempLayout;
+				if (tempLayout) {
+					// 名称位置
+					if (tempLayout.name.x !== null && tempLayout.name.y !== null) {
+						nameEl.style.left = `${tempLayout.name.x}%`;
+						nameEl.style.top = `${tempLayout.name.y}%`;
+					} else {
+						// 默认位置
+						const defaultNameX = (paddingX / dialogueWidth) * 100;
+						const defaultNameY = (paddingY / dialogueHeight) * 100;
+						nameEl.style.left = `${defaultNameX}%`;
+						nameEl.style.top = `${defaultNameY}%`;
+						tempLayout.name.x = defaultNameX;
+						tempLayout.name.y = defaultNameY;
+					}
+
+					// 内容位置和尺寸
+					if (tempLayout.text.x !== null && tempLayout.text.y !== null) {
+						textEl.style.left = `${tempLayout.text.x}%`;
+						textEl.style.top = `${tempLayout.text.y}%`;
+					} else {
+						// 默认位置（名称下方）
+						const nameHeight = nameSize * 1.5;
+						const defaultTextX = (paddingX / dialogueWidth) * 100;
+						const defaultTextY = ((paddingY + nameHeight) / dialogueHeight) * 100;
+						textEl.style.left = `${defaultTextX}%`;
+						textEl.style.top = `${defaultTextY}%`;
+						tempLayout.text.x = defaultTextX;
+						tempLayout.text.y = defaultTextY;
+					}
+
+					// 应用文本元素的宽高
+					const textWidth = tempLayout.text.width ?? 90;
+					const textHeight = tempLayout.text.height ?? 70;
+					textEl.style.width = `${textWidth}%`;
+					textEl.style.height = `${textHeight}%`;
+				}
+
+				// 更新字数显示
+				updateCharCount();
+			}
+
+			/**
+			 * Setup drag events for layout elements
+			 */
+			function setupLayoutDragEvents() {
+				const preview = DOM.dialogueLayoutPreview;
+				const nameEl = DOM.layoutNameElement;
+				const textEl = DOM.layoutTextElement;
+
+				// 移除旧的事件监听器
+				nameEl.onmousedown = null;
+				textEl.onmousedown = null;
+
+				// 名称元素拖拽
+				nameEl.onmousedown = (e) => startLayoutDrag(e, "name");
+
+				// 文本元素拖拽和调整大小
+				textEl.onmousedown = (e) => {
+					const handle = e.target.closest(".resize-handle");
+					if (handle) {
+						startLayoutResize(e, handle.dataset.handle);
+					} else {
+						startLayoutDrag(e, "text");
+					}
+				};
+
+				// 全局移动和释放事件
+				document.addEventListener("mousemove", handleLayoutDrag);
+				document.addEventListener("mousemove", handleLayoutResize);
+				document.addEventListener("mouseup", endLayoutDrag);
+				document.addEventListener("mouseup", endLayoutResize);
+			}
+
+			/**
+			 * Start dragging a layout element
+			 */
+			function startLayoutDrag(e, elementType) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				const element = elementType === "name" ? DOM.layoutNameElement : DOM.layoutTextElement;
+				const preview = DOM.dialogueLayoutPreview;
+				const previewRect = preview.getBoundingClientRect();
+
+				layoutEditorState.dragging = elementType;
+				layoutEditorState.startX = e.clientX;
+				layoutEditorState.startY = e.clientY;
+				layoutEditorState.startLeft = parseFloat(element.style.left) || 0;
+				layoutEditorState.startTop = parseFloat(element.style.top) || 0;
+				layoutEditorState.previewWidth = previewRect.width;
+				layoutEditorState.previewHeight = previewRect.height;
+
+				element.classList.add("dragging");
+			}
+
+			/**
+			 * Handle layout element drag
+			 */
+			function handleLayoutDrag(e) {
+				if (!layoutEditorState.dragging) return;
+
+				const elementType = layoutEditorState.dragging;
+				const element = elementType === "name" ? DOM.layoutNameElement : DOM.layoutTextElement;
+
+				const deltaX = e.clientX - layoutEditorState.startX;
+				const deltaY = e.clientY - layoutEditorState.startY;
+
+				// 转换为百分比
+				const deltaXPct = (deltaX / layoutEditorState.previewWidth) * 100;
+				const deltaYPct = (deltaY / layoutEditorState.previewHeight) * 100;
+
+				let newX = layoutEditorState.startLeft + deltaXPct;
+				let newY = layoutEditorState.startTop + deltaYPct;
+
+				// 边界限制（允许稍微超出10px范围）
+				const style = state.portraitConfig.dialogueStyle || {};
+				const height = style.height ?? 150;
+				const width = style.width ?? 80;
+				const canvasWidth = state.portraitConfig.canvasWidth || 1920;
+				const dialogueWidth = (width / 100) * canvasWidth;
+				const dialogueHeight = height;
+				const marginX = (10 / dialogueWidth) * 100;
+				const marginY = (10 / dialogueHeight) * 100;
+
+				newX = Math.max(-marginX, Math.min(100 - marginX, newX));
+				newY = Math.max(-marginY, Math.min(100 - marginY, newY));
+
+				element.style.left = `${newX}%`;
+				element.style.top = `${newY}%`;
+
+				// 更新临时布局数据
+				if (layoutEditorState.tempLayout) {
+					layoutEditorState.tempLayout[elementType].x = newX;
+					layoutEditorState.tempLayout[elementType].y = newY;
+				}
+			}
+
+			/**
+			 * End layout element drag
+			 */
+			function endLayoutDrag() {
+				if (!layoutEditorState.dragging) return;
+
+				const elementType = layoutEditorState.dragging;
+				const element = elementType === "name" ? DOM.layoutNameElement : DOM.layoutTextElement;
+
+				element.classList.remove("dragging");
+				layoutEditorState.dragging = null;
+			}
+
+			/**
+			 * Start resizing text element
+			 */
+			function startLayoutResize(e, handle) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				const textEl = DOM.layoutTextElement;
+				const preview = DOM.dialogueLayoutPreview;
+				const previewRect = preview.getBoundingClientRect();
+
+				layoutEditorState.resizing = handle;
+				layoutEditorState.startX = e.clientX;
+				layoutEditorState.startY = e.clientY;
+				layoutEditorState.startLeft = parseFloat(textEl.style.left) || 0;
+				layoutEditorState.startTop = parseFloat(textEl.style.top) || 0;
+				layoutEditorState.startWidth = layoutEditorState.tempLayout?.text?.width || 90;
+				layoutEditorState.startHeight = layoutEditorState.tempLayout?.text?.height || 70;
+				layoutEditorState.previewWidth = previewRect.width;
+				layoutEditorState.previewHeight = previewRect.height;
+
+				textEl.classList.add("resizing");
+			}
+
+			/**
+			 * Handle text element resize
+			 */
+			function handleLayoutResize(e) {
+				if (!layoutEditorState.resizing) return;
+
+				const handle = layoutEditorState.resizing;
+				const textEl = DOM.layoutTextElement;
+
+				const deltaX = e.clientX - layoutEditorState.startX;
+				const deltaY = e.clientY - layoutEditorState.startY;
+
+				// 转换为百分比
+				const deltaXPct = (deltaX / layoutEditorState.previewWidth) * 100;
+				const deltaYPct = (deltaY / layoutEditorState.previewHeight) * 100;
+
+				let newX = layoutEditorState.startLeft;
+				let newY = layoutEditorState.startTop;
+				let newWidth = layoutEditorState.startWidth;
+				let newHeight = layoutEditorState.startHeight;
+
+				// 根据手柄位置计算新的尺寸和位置
+				if (handle.includes("w")) {
+					// 左侧手柄：调整位置和宽度
+					newX = layoutEditorState.startLeft + deltaXPct;
+					newWidth = layoutEditorState.startWidth - deltaXPct;
+				}
+				if (handle.includes("e")) {
+					// 右侧手柄：只调整宽度
+					newWidth = layoutEditorState.startWidth + deltaXPct;
+				}
+				if (handle.includes("n")) {
+					// 上侧手柄：调整位置和高度
+					newY = layoutEditorState.startTop + deltaYPct;
+					newHeight = layoutEditorState.startHeight - deltaYPct;
+				}
+				if (handle.includes("s")) {
+					// 下侧手柄：只调整高度
+					newHeight = layoutEditorState.startHeight + deltaYPct;
+				}
+
+				// 最小尺寸限制
+				const minWidth = 20;
+				const minHeight = 20;
+
+				if (newWidth < minWidth) {
+					if (handle.includes("w")) {
+						newX = layoutEditorState.startLeft + layoutEditorState.startWidth - minWidth;
+					}
+					newWidth = minWidth;
+				}
+				if (newHeight < minHeight) {
+					if (handle.includes("n")) {
+						newY = layoutEditorState.startTop + layoutEditorState.startHeight - minHeight;
+					}
+					newHeight = minHeight;
+				}
+
+				// 边界限制
+				const marginPct = 5; // 允许稍微超出
+				newX = Math.max(-marginPct, Math.min(100 - minWidth, newX));
+				newY = Math.max(-marginPct, Math.min(100 - minHeight, newY));
+				newWidth = Math.min(100 - newX + marginPct, newWidth);
+				newHeight = Math.min(100 - newY + marginPct, newHeight);
+
+				// 应用样式
+				textEl.style.left = `${newX}%`;
+				textEl.style.top = `${newY}%`;
+				textEl.style.width = `${newWidth}%`;
+				textEl.style.height = `${newHeight}%`;
+
+				// 更新临时布局数据
+				if (layoutEditorState.tempLayout) {
+					layoutEditorState.tempLayout.text.x = newX;
+					layoutEditorState.tempLayout.text.y = newY;
+					layoutEditorState.tempLayout.text.width = newWidth;
+					layoutEditorState.tempLayout.text.height = newHeight;
+				}
+
+				// 更新字数显示
+				updateCharCount();
+			}
+
+			/**
+			 * Update character count display
+			 */
+			function updateCharCount() {
+				const textEl = DOM.layoutTextElement;
+				const charCountEl = textEl.querySelector(".layout-char-count");
+				if (!charCountEl) return;
+
+				const style = state.portraitConfig.dialogueStyle || {};
+				const fontSize = parseInt(DOM.modalDialogueFontSize?.value) || 24;
+				const lineHeight = 1.7;
+				const height = style.height ?? 150;
+				const width = style.width ?? 80;
+				const canvasWidth = state.portraitConfig.canvasWidth || 1920;
+
+				// 计算实际对话框尺寸
+				const dialogueWidth = (width / 100) * canvasWidth;
+				const dialogueHeight = height;
+
+				// 获取文本区域的百分比尺寸
+				const textWidth = layoutEditorState.tempLayout?.text?.width || 90;
+				const textHeight = layoutEditorState.tempLayout?.text?.height || 70;
+
+				// 计算实际文本区域尺寸
+				const actualTextWidth = (textWidth / 100) * dialogueWidth;
+				const actualTextHeight = (textHeight / 100) * dialogueHeight;
+
+				// 估算字数：每行字数 × 行数
+				const charsPerLine = Math.floor(actualTextWidth / fontSize);
+				const lines = Math.floor(actualTextHeight / (fontSize * lineHeight));
+				const maxChars = charsPerLine * lines;
+
+				charCountEl.textContent = `≈${maxChars}字`;
+			}
+
+			/**
+			 * End text element resize
+			 */
+			function endLayoutResize() {
+				if (!layoutEditorState.resizing) return;
+
+				DOM.layoutTextElement.classList.remove("resizing");
+				layoutEditorState.resizing = null;
+			}
+
+			/**
+			 * Save all dialogue settings
+			 */
+			function saveDialogueLayout() {
+				const style = state.portraitConfig.dialogueStyle;
+
+				// 保存背景
+				style.bgImage = DOM.modalDialogueBgImage?.value || "";
+				const bgOpacityValue = DOM.modalDialogueBgOpacity?.value;
+				style.bgOpacity =
+					bgOpacityValue !== null && bgOpacityValue !== undefined && bgOpacityValue !== ""
+						? parseInt(bgOpacityValue)
+						: 70;
+
+				// 保存字体
+				style.nameSize = parseInt(DOM.modalDialogueNameSize?.value) || 20;
+				style.fontSize = parseInt(DOM.modalDialogueFontSize?.value) || 24;
+				style.fontFamily = DOM.modalDialogueFontFamily?.value || "";
+
+				// 保存颜色
+				style.nameColor = DOM.modalDialogueNameColor?.value || "#5e81ac";
+				style.textColor = DOM.modalDialogueTextColor?.value || "#ffffff";
+
+				// 保存透明度
+				const nameOpacityValue = DOM.modalDialogueNameOpacity?.value;
+				style.nameOpacity =
+					nameOpacityValue !== null && nameOpacityValue !== undefined && nameOpacityValue !== ""
+						? parseInt(nameOpacityValue)
+						: 100;
+				const textOpacityValue = DOM.modalDialogueTextOpacity?.value;
+				style.textOpacity =
+					textOpacityValue !== null && textOpacityValue !== undefined && textOpacityValue !== ""
+						? parseInt(textOpacityValue)
+						: 100;
+
+				// 保存字间距
+				style.nameLetterSpacing = parseFloat(DOM.modalDialogueNameLetterSpacing?.value) || 0;
+				style.textLetterSpacing = parseFloat(DOM.modalDialogueTextLetterSpacing?.value) || 0;
+
+				// 保存布局
+				if (layoutEditorState.tempLayout) {
+					if (!style.layout) {
+						style.layout = {};
+					}
+					style.layout.name = { ...layoutEditorState.tempLayout.name };
+					style.layout.text = { ...layoutEditorState.tempLayout.text };
+				}
+
+				state.meta.lastModified = Date.now();
+
+				// 同步到侧边栏的输入框
+				syncDialogueSettingsToSidebar();
+
+				// 更新画布上的对话框
+				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
+				if (canvasInner) {
+					applyCanvasDialogueStyles(canvasInner);
+				}
+
+				closeDialogueLayoutModal();
+			}
+
+			/**
+			 * Sync dialogue settings to sidebar inputs
+			 */
+			function syncDialogueSettingsToSidebar() {
+				const style = state.portraitConfig.dialogueStyle || {};
+
+				if (DOM.dialogueFontSize) DOM.dialogueFontSize.value = style.fontSize ?? 24;
+				if (DOM.dialogueNameSize) DOM.dialogueNameSize.value = style.nameSize ?? 20;
+				if (DOM.dialogueBgOpacity) {
+					DOM.dialogueBgOpacity.value = style.bgOpacity ?? 70;
+					if (DOM.dialogueBgOpacityValue) DOM.dialogueBgOpacityValue.textContent = `${style.bgOpacity ?? 70}%`;
+				}
+				if (DOM.dialogueBgImage) DOM.dialogueBgImage.value = style.bgImage || "";
+				if (DOM.dialogueHeight) DOM.dialogueHeight.value = style.height ?? 150;
+				if (DOM.dialoguePaddingX) DOM.dialoguePaddingX.value = style.paddingX ?? 20;
+				if (DOM.dialoguePaddingY) DOM.dialoguePaddingY.value = style.paddingY ?? 16;
+				if (DOM.dialogueNameColor) DOM.dialogueNameColor.value = style.nameColor || "#ffffff";
+				if (DOM.dialogueNameColorText) DOM.dialogueNameColorText.value = style.nameColor || "#ffffff";
+				if (DOM.dialogueTextColor) DOM.dialogueTextColor.value = style.textColor || "#ffffff";
+				if (DOM.dialogueTextColorText) DOM.dialogueTextColorText.value = style.textColor || "#ffffff";
+				if (DOM.dialogueFontFamily) DOM.dialogueFontFamily.value = style.fontFamily || "";
+			}
+
+			/**
+			 * Reset dialogue layout to last saved positions
+			 */
+			function resetDialogueLayout() {
+				const style = state.portraitConfig.dialogueStyle || {};
+				const savedLayout = style.layout || {};
+
+				// 如果有保存的布局，重置到保存的位置
+				if (savedLayout.name || savedLayout.text) {
+					layoutEditorState.tempLayout = {
+						name: { ...{ x: null, y: null, width: 90 }, ...(savedLayout.name || {}) },
+						text: { ...{ x: null, y: null, width: 90, height: 70 }, ...(savedLayout.text || {}) },
+					};
+				} else {
+					// 如果没有保存的布局，重置到代码默认位置
+					const paddingX = 20;
+					const paddingY = 16;
+					const nameSize = parseInt(DOM.modalDialogueNameSize?.value) || 20;
+					const height = style.height ?? 150;
+					const width = style.width ?? 80;
+					const canvasWidth = state.portraitConfig.canvasWidth || 1920;
+
+					const dialogueWidth = (width / 100) * canvasWidth;
+					const dialogueHeight = height;
+
+					// 计算默认位置（基于padding）
+					const defaultNameX = (paddingX / dialogueWidth) * 100;
+					const defaultNameY = (paddingY / dialogueHeight) * 100;
+					const nameHeight = nameSize * 1.5;
+					const defaultTextX = (paddingX / dialogueWidth) * 100;
+					const defaultTextY = ((paddingY + nameHeight) / dialogueHeight) * 100;
+
+					layoutEditorState.tempLayout = {
+						name: { x: defaultNameX, y: defaultNameY, width: 90 },
+						text: { x: defaultTextX, y: defaultTextY, width: 90, height: 70 },
+					};
+				}
+
+				updateLayoutPreview();
+			}
+
+			/**
+			 * Clear dialogue layout (revert to padding-based layout)
+			 */
+			function clearDialogueLayout() {
+				// 清除布局数据
+				if (state.portraitConfig.dialogueStyle.layout) {
+					delete state.portraitConfig.dialogueStyle.layout;
+				}
+
+				// 重置临时布局
+				layoutEditorState.tempLayout = {
+					name: { x: null, y: null, width: 90 },
+					text: { x: null, y: null, width: 90, height: 70 },
+				};
+
+				state.meta.lastModified = Date.now();
+
+				// 同步到侧边栏
+				syncDialogueSettingsToSidebar();
+
+				// 更新画布上的对话框
+				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
+				if (canvasInner) {
+					applyCanvasDialogueStyles(canvasInner);
+				}
+
+				closeDialogueLayoutModal();
+			}
+
+			/**
+			 * Reset name style to last saved or default
+			 */
+			function resetNameStyle() {
+				const style = state.portraitConfig.dialogueStyle || {};
+
+				// 如果有保存的设置，重置到保存的值
+				if (style.nameSize !== undefined || style.nameColor !== undefined) {
+					if (DOM.modalDialogueNameSize) DOM.modalDialogueNameSize.value = style.nameSize ?? 20;
+					if (DOM.modalDialogueNameColor) DOM.modalDialogueNameColor.value = style.nameColor || "#5e81ac";
+					if (DOM.modalDialogueNameColorText) DOM.modalDialogueNameColorText.value = style.nameColor || "#5e81ac";
+					if (DOM.modalDialogueNameOpacity) DOM.modalDialogueNameOpacity.value = style.nameOpacity ?? 100;
+					if (DOM.modalDialogueNameOpacityValue)
+						DOM.modalDialogueNameOpacityValue.textContent = `${style.nameOpacity ?? 100}%`;
+					if (DOM.modalDialogueNameLetterSpacing)
+						DOM.modalDialogueNameLetterSpacing.value = style.nameLetterSpacing ?? 0;
+				} else {
+					// 没有保存过，重置到默认值
+					if (DOM.modalDialogueNameSize) DOM.modalDialogueNameSize.value = 20;
+					if (DOM.modalDialogueNameColor) DOM.modalDialogueNameColor.value = "#5e81ac";
+					if (DOM.modalDialogueNameColorText) DOM.modalDialogueNameColorText.value = "#5e81ac";
+					if (DOM.modalDialogueNameOpacity) DOM.modalDialogueNameOpacity.value = 100;
+					if (DOM.modalDialogueNameOpacityValue) DOM.modalDialogueNameOpacityValue.textContent = "100%";
+					if (DOM.modalDialogueNameLetterSpacing) DOM.modalDialogueNameLetterSpacing.value = 0;
+				}
+
+				updateLayoutPreview();
+			}
+
+			/**
+			 * Reset text style to last saved or default
+			 */
+			function resetTextStyle() {
+				const style = state.portraitConfig.dialogueStyle || {};
+
+				// 如果有保存的设置，重置到保存的值
+				if (style.fontSize !== undefined || style.textColor !== undefined) {
+					if (DOM.modalDialogueFontSize) DOM.modalDialogueFontSize.value = style.fontSize ?? 24;
+					if (DOM.modalDialogueTextColor) DOM.modalDialogueTextColor.value = style.textColor || "#ffffff";
+					if (DOM.modalDialogueTextColorText) DOM.modalDialogueTextColorText.value = style.textColor || "#ffffff";
+					if (DOM.modalDialogueTextOpacity) DOM.modalDialogueTextOpacity.value = style.textOpacity ?? 100;
+					if (DOM.modalDialogueTextOpacityValue)
+						DOM.modalDialogueTextOpacityValue.textContent = `${style.textOpacity ?? 100}%`;
+					if (DOM.modalDialogueTextLetterSpacing)
+						DOM.modalDialogueTextLetterSpacing.value = style.textLetterSpacing ?? 0;
+					if (DOM.modalDialogueFontFamily) DOM.modalDialogueFontFamily.value = style.fontFamily || "";
+				} else {
+					// 没有保存过，重置到默认值
+					if (DOM.modalDialogueFontSize) DOM.modalDialogueFontSize.value = 24;
+					if (DOM.modalDialogueTextColor) DOM.modalDialogueTextColor.value = "#ffffff";
+					if (DOM.modalDialogueTextColorText) DOM.modalDialogueTextColorText.value = "#ffffff";
+					if (DOM.modalDialogueTextOpacity) DOM.modalDialogueTextOpacity.value = 100;
+					if (DOM.modalDialogueTextOpacityValue) DOM.modalDialogueTextOpacityValue.textContent = "100%";
+					if (DOM.modalDialogueTextLetterSpacing) DOM.modalDialogueTextLetterSpacing.value = 0;
+					if (DOM.modalDialogueFontFamily) DOM.modalDialogueFontFamily.value = "";
+				}
+
+				updateLayoutPreview();
+			}
+
+			// Dialogue settings modal event listeners
+			DOM.modalDialogueLayoutClose?.addEventListener("click", closeDialogueLayoutModal);
+			DOM.modalDialogueLayoutCancel?.addEventListener("click", closeDialogueLayoutModal);
+			DOM.modalDialogueLayoutSave?.addEventListener("click", saveDialogueLayout);
+			DOM.btnLayoutReset?.addEventListener("click", resetDialogueLayout);
+			DOM.btnResetNameStyle?.addEventListener("click", resetNameStyle);
+			DOM.btnResetTextStyle?.addEventListener("click", resetTextStyle);
+
+			// 背景图片文件选择
+			DOM.btnDialogueBgFile?.addEventListener("click", () => {
+				DOM.dialogueBgFileInput?.click();
+			});
+
+			DOM.dialogueBgFileInput?.addEventListener("change", (e) => {
+				const file = e.target.files?.[0];
+				if (file && file.type.startsWith("image/")) {
+					const reader = new FileReader();
+					reader.onload = (event) => {
+						const dataUrl = event.target.result;
+						if (DOM.modalDialogueBgImage) {
+							DOM.modalDialogueBgImage.value = dataUrl;
+							updateLayoutPreview();
+						}
+					};
+					reader.readAsDataURL(file);
+				}
+			});
+
+			// Modal input change listeners for live preview
+			DOM.modalDialogueBgImage?.addEventListener("input", updateLayoutPreview);
+			DOM.modalDialogueBgOpacity?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueBgOpacityValue) {
+					DOM.modalDialogueBgOpacityValue.textContent = `${e.target.value}%`;
+				}
+				updateLayoutPreview();
+			});
+			DOM.modalDialogueNameSize?.addEventListener("input", updateLayoutPreview);
+			DOM.modalDialogueNameOpacity?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueNameOpacityValue) {
+					DOM.modalDialogueNameOpacityValue.textContent = `${e.target.value}%`;
+				}
+				updateLayoutPreview();
+			});
+			DOM.modalDialogueNameLetterSpacing?.addEventListener("input", updateLayoutPreview);
+			DOM.modalDialogueFontSize?.addEventListener("input", updateLayoutPreview);
+			DOM.modalDialogueTextOpacity?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueTextOpacityValue) {
+					DOM.modalDialogueTextOpacityValue.textContent = `${e.target.value}%`;
+				}
+				updateLayoutPreview();
+			});
+			DOM.modalDialogueTextLetterSpacing?.addEventListener("input", updateLayoutPreview);
+			DOM.modalDialogueFontFamily?.addEventListener("change", updateLayoutPreview);
+			DOM.modalDialogueNameColor?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueNameColorText) DOM.modalDialogueNameColorText.value = e.target.value;
+				updateLayoutPreview();
+			});
+			DOM.modalDialogueNameColorText?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueNameColor && /^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+					DOM.modalDialogueNameColor.value = e.target.value;
+				}
+				updateLayoutPreview();
+			});
+			DOM.modalDialogueTextColor?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueTextColorText) DOM.modalDialogueTextColorText.value = e.target.value;
+				updateLayoutPreview();
+			});
+			DOM.modalDialogueTextColorText?.addEventListener("input", (e) => {
+				if (DOM.modalDialogueTextColor && /^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+					DOM.modalDialogueTextColor.value = e.target.value;
+				}
+				updateLayoutPreview();
+			});
+
+			// ==================== End Dialogue Settings Modal ====================
 
 			/**
 			 * Open edit modal for a message
@@ -14834,6 +16103,39 @@
 			}
 
 			/**
+			 * Toggle dialogue lock state
+			 */
+			function toggleDialogueLock() {
+				const style = state.portraitConfig.dialogueStyle;
+				if (!style) return;
+
+				style.locked = !style.locked;
+
+				// 更新对话框的锁定状态
+				const dialogueBox = DOM.portraitArea.querySelector(".canvas-dialogue-box");
+				if (dialogueBox) {
+					dialogueBox.classList.toggle("locked", style.locked);
+				}
+
+				// 更新右键菜单文本
+				updateDialogueLockMenuText();
+
+				// 保存状态
+				state.meta.lastModified = Date.now();
+			}
+
+			/**
+			 * Update dialogue lock menu text based on current state
+			 */
+			function updateDialogueLockMenuText() {
+				const lockToggle = document.getElementById("dialogue-lock-toggle");
+				if (!lockToggle) return;
+
+				const isLocked = state.portraitConfig.dialogueStyle?.locked || false;
+				lockToggle.textContent = isLocked ? "🔓 解锁位置和大小" : "🔒 锁定位置和大小";
+			}
+
+			/**
 			 * Apply dialogue styles to canvas dialogue elements
 			 * @param {HTMLElement} canvasInner - Canvas inner container
 			 */
@@ -14843,6 +16145,10 @@
 				const nameSize = style.nameSize ?? 20;
 				const bgOpacity = (style.bgOpacity ?? 70) / 100;
 				const bgImage = style.bgImage || "";
+				const nameOpacity = (style.nameOpacity ?? 100) / 100;
+				const textOpacity = (style.textOpacity ?? 100) / 100;
+				const nameLetterSpacing = style.nameLetterSpacing ?? 0;
+				const textLetterSpacing = style.textLetterSpacing ?? 0;
 				const height = style.height ?? 120;
 				// 兼容旧数据：如果有旧的 padding 字段，用它作为默认值
 				const oldPadding = style.padding ?? 20;
@@ -14851,6 +16157,11 @@
 				const canvasWidth = state.portraitConfig.canvasWidth || 1920;
 				const canvasHeight = state.portraitConfig.canvasHeight || 1080;
 
+				// 布局位置（百分比，相对于对话框内部）
+				const layout = style.layout || {};
+				const nameLayout = layout.name || { x: null, y: null };
+				const textLayout = layout.text || { x: null, y: null };
+
 				const dialogueBox = canvasInner.querySelector(".canvas-dialogue-box");
 				const nameEl = canvasInner.querySelector(".canvas-dialogue-name");
 				const textEl = canvasInner.querySelector(".canvas-dialogue-text");
@@ -14858,24 +16169,37 @@
 				if (dialogueBox) {
 					// Apply background - image or solid color
 					if (bgImage) {
-						// When background image is set, make dialogue transparent with no border
+						// 使用伪元素来实现背景图片透明度，不影响子元素
 						dialogueBox.style.background = "transparent";
-						dialogueBox.style.backgroundImage = `url(${bgImage})`;
-						dialogueBox.style.backgroundSize = "100% 100%";
-						dialogueBox.style.backgroundPosition = "center";
-						dialogueBox.style.backgroundRepeat = "no-repeat";
+						dialogueBox.style.backgroundImage = "none";
 						dialogueBox.style.border = "none";
 						dialogueBox.style.boxShadow = "none";
+						dialogueBox.style.opacity = 1;
+						// 通过 CSS 变量传递背景图和透明度
+						dialogueBox.style.setProperty("--bg-image", `url(${bgImage})`);
+						dialogueBox.style.setProperty("--bg-opacity", bgOpacity);
 						dialogueBox.classList.add("has-bg-image");
 					} else {
 						dialogueBox.style.background = `rgba(0, 0, 0, ${bgOpacity})`;
 						dialogueBox.style.backgroundImage = "none";
 						dialogueBox.style.border = "2px solid var(--border-color)";
 						dialogueBox.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.5)";
+						dialogueBox.style.opacity = 1;
 						dialogueBox.classList.remove("has-bg-image");
 					}
-					dialogueBox.style.padding = `${paddingY}px ${paddingX}px`;
+					// 当使用自定义布局时，不使用padding（位置由布局控制）
+					const hasCustomLayout =
+						(nameLayout.x !== null && nameLayout.x !== undefined) ||
+						(textLayout.x !== null && textLayout.x !== undefined);
+					if (hasCustomLayout) {
+						dialogueBox.style.padding = "0";
+					} else {
+						dialogueBox.style.padding = `${paddingY}px ${paddingX}px`;
+					}
 					dialogueBox.style.minHeight = `${height}px`;
+
+					// Apply locked state
+					dialogueBox.classList.toggle("locked", style.locked || false);
 
 					// Apply custom position if set
 					if (style.x !== null && style.x !== undefined && style.y !== null && style.y !== undefined) {
@@ -14892,12 +16216,63 @@
 						dialogueBox.style.transform = "translateX(-50%)";
 						dialogueBox.style.width = "80%";
 					}
-				}
-				if (nameEl) {
-					nameEl.style.fontSize = `${nameSize}px`;
-				}
-				if (textEl) {
-					textEl.style.fontSize = `${fontSize}px`;
+
+					// 获取对话框实际尺寸用于计算布局
+					const boxWidth = dialogueBox.offsetWidth || ((style.width || 80) / 100) * canvasWidth;
+					const boxHeight = dialogueBox.offsetHeight || height;
+
+					// 应用名称元素布局
+					if (nameEl) {
+						nameEl.style.fontSize = `${nameSize}px`;
+						nameEl.style.opacity = nameOpacity;
+						nameEl.style.letterSpacing = `${nameLetterSpacing}px`;
+						if (
+							nameLayout.x !== null &&
+							nameLayout.x !== undefined &&
+							nameLayout.y !== null &&
+							nameLayout.y !== undefined
+						) {
+							nameEl.style.left = `${nameLayout.x}%`;
+							nameEl.style.top = `${nameLayout.y}%`;
+							nameEl.style.maxWidth = `${nameLayout.width || 90}%`;
+						} else {
+							// 默认布局：左上角，使用padding转换为百分比
+							const dialogueWidth = ((style.width || 80) / 100) * canvasWidth;
+							const defaultNameX = (paddingX / dialogueWidth) * 100;
+							const defaultNameY = (paddingY / height) * 100;
+							nameEl.style.left = `${defaultNameX}%`;
+							nameEl.style.top = `${defaultNameY}%`;
+							nameEl.style.maxWidth = `${100 - defaultNameX * 2}%`;
+						}
+					}
+
+					// 应用内容元素布局
+					if (textEl) {
+						textEl.style.fontSize = `${fontSize}px`;
+						textEl.style.opacity = textOpacity;
+						textEl.style.letterSpacing = `${textLetterSpacing}px`;
+						if (
+							textLayout.x !== null &&
+							textLayout.x !== undefined &&
+							textLayout.y !== null &&
+							textLayout.y !== undefined
+						) {
+							textEl.style.left = `${textLayout.x}%`;
+							textEl.style.top = `${textLayout.y}%`;
+							textEl.style.width = `${textLayout.width || 90}%`;
+							textEl.style.maxHeight = `${textLayout.height || 70}%`;
+						} else {
+							// 默认布局：名称下方，使用padding转换为百分比
+							const dialogueWidth = ((style.width || 80) / 100) * canvasWidth;
+							const nameHeight = nameSize * 1.5; // 估算名称高度
+							const defaultTextX = (paddingX / dialogueWidth) * 100;
+							const defaultTextY = ((paddingY + nameHeight) / height) * 100;
+							textEl.style.left = `${defaultTextX}%`;
+							textEl.style.top = `${defaultTextY}%`;
+							textEl.style.width = `${100 - defaultTextX * 2}%`;
+							textEl.style.maxHeight = `${100 - defaultTextY - (paddingY / height) * 100}%`;
+						}
+					}
 				}
 			}
 
@@ -14935,6 +16310,11 @@
 			 * @param {MouseEvent|TouchEvent} e - Event
 			 */
 			function handleDialogueDragStart(e) {
+				// 检查是否锁定
+				if (state.portraitConfig.dialogueStyle?.locked) {
+					return;
+				}
+
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -15588,9 +16968,17 @@
 					// 更新发言者的立绘差分图片
 					if (isSpeaker && speakerIconUrl) {
 						const img = wrapper.querySelector(".portrait-image");
-						if (img) {
-							// 直接设置 src，浏览器会自动处理相同 URL 的情况
-							img.src = speakerIconUrl;
+						if (img && img.src !== speakerIconUrl) {
+							// 预加载图片，避免闪烁
+							const preloadImg = new Image();
+							preloadImg.onload = () => {
+								img.src = speakerIconUrl;
+							};
+							preloadImg.onerror = () => {
+								// 加载失败也设置，让浏览器显示默认错误图标
+								img.src = speakerIconUrl;
+							};
+							preloadImg.src = speakerIconUrl;
 						}
 					}
 				});
@@ -17182,6 +18570,11 @@
 				state.meta.lastModified = Date.now();
 			});
 
+			// Edit dialogue layout button
+			DOM.btnEditDialogueLayout?.addEventListener("click", () => {
+				openDialogueLayoutModal();
+			});
+
 			// Window resize handler with debounce
 			let resizeTimeout = null;
 			window.addEventListener("resize", () => {
@@ -17248,11 +18641,11 @@
 					// Right-click on dialogue box - show dialogue menu
 					handleDialogueContextMenu(e);
 				} else if (portraitWrapper) {
-					// Right-click on portrait - open quick portrait edit if it's current speaker
+					// Right-click on portrait - show portrait context menu
 					const characterName = portraitWrapper.dataset.name;
 					const currentMsg = state.editedMessages[currentMessageIndex];
 					if (currentMsg && currentMsg.name === characterName) {
-						openQuickPortraitEdit(currentMessageIndex, "replay");
+						showPortraitContextMenu(e, characterName);
 					}
 				} else if (canvasInner || e.target === DOM.portraitArea) {
 					// Right-click on canvas area or portrait area background - show canvas menu
@@ -17279,6 +18672,10 @@
 				if (state.editedMessages.length === 0 || currentMessageIndex < 0) return;
 
 				hideAllContextMenus();
+
+				// 更新锁定菜单文本
+				updateDialogueLockMenuText();
+
 				showContextMenu(DOM.dialogueContextMenu, e.clientX, e.clientY);
 			}
 
@@ -17333,7 +18730,7 @@
 			}
 
 			/**
-			 * Handle dialogue menu action (edit, dialogue-bg)
+			 * Handle dialogue menu action (edit, dialogue-settings)
 			 * @param {MouseEvent} e - Click event
 			 */
 			function handleDialogueMenuAction(e) {
@@ -17350,20 +18747,11 @@
 					case "edit":
 						openEditModal(msg, currentMessageIndex);
 						break;
-					case "dialogue-bg":
-						// Open dialogue background setting in drawer
-						// First expand the portrait section if collapsed, then scroll and focus
-						const portraitSection = document.getElementById("section-portrait");
-						if (portraitSection && !portraitSection.classList.contains("expanded")) {
-							toggleSection(portraitSection, true);
-						}
-						if (DOM.dialogueBgImage) {
-							// Small delay to allow section expansion animation
-							setTimeout(() => {
-								DOM.dialogueBgImage.scrollIntoView({ behavior: "smooth", block: "center" });
-								DOM.dialogueBgImage.focus();
-							}, 100);
-						}
+					case "dialogue-settings":
+						openDialogueLayoutModal();
+						break;
+					case "toggle-lock":
+						toggleDialogueLock();
 						break;
 				}
 			}
@@ -17396,7 +18784,69 @@
 			}
 
 			/**
-			 * Handle portrait menu action (edit-portrait, edit-tts)
+			 * Show portrait context menu (for portrait wrapper right-click)
+			 * @param {MouseEvent} e - Right click event
+			 * @param {string} characterName - Character name
+			 */
+			function showPortraitContextMenu(e, characterName) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				// Save current target character
+				portraitContextTarget = characterName;
+
+				// Update layer toggle text based on current behindDialogue setting
+				const charStyle = state.portraitConfig.dialogueStyle?.characterStyles?.[characterName] || {};
+				const behindDialogue = charStyle.behindDialogue || false;
+
+				const layerToggle = document.getElementById("portrait-layer-toggle");
+				if (layerToggle) {
+					// 如果当前在对话框前面，显示"移到对话框后面"；反之显示"移到对话框前面"
+					layerToggle.textContent = behindDialogue ? "📐 移到对话框前面" : "📐 移到对话框后面";
+				}
+
+				hideAllContextMenus();
+				showContextMenu(DOM.portraitContextMenu, e.clientX, e.clientY);
+			}
+
+			/**
+			 * Set portrait layer (above or below dialogue)
+			 * @param {string} characterName - Character name
+			 * @param {boolean} behindDialogue - true = below dialogue, false = above dialogue
+			 */
+			function setPortraitLayer(characterName, behindDialogue) {
+				// Ensure dialogueStyle and characterStyles exist
+				if (!state.portraitConfig.dialogueStyle) {
+					state.portraitConfig.dialogueStyle = {};
+				}
+				if (!state.portraitConfig.dialogueStyle.characterStyles) {
+					state.portraitConfig.dialogueStyle.characterStyles = {};
+				}
+
+				// Get or create character style
+				if (!state.portraitConfig.dialogueStyle.characterStyles[characterName]) {
+					state.portraitConfig.dialogueStyle.characterStyles[characterName] = {};
+				}
+
+				// Set behindDialogue
+				if (behindDialogue) {
+					state.portraitConfig.dialogueStyle.characterStyles[characterName].behindDialogue = true;
+				} else {
+					delete state.portraitConfig.dialogueStyle.characterStyles[characterName].behindDialogue;
+				}
+
+				// Clean up empty object
+				if (Object.keys(state.portraitConfig.dialogueStyle.characterStyles[characterName]).length === 0) {
+					delete state.portraitConfig.dialogueStyle.characterStyles[characterName];
+				}
+
+				// Update display
+				updateSpeakerPortraitZIndex();
+				state.meta.lastModified = Date.now();
+			}
+
+			/**
+			 * Handle portrait menu action (edit-portrait, edit-tts, toggle-layer)
 			 * @param {MouseEvent} e - Click event
 			 */
 			function handlePortraitMenuAction(e) {
@@ -17404,19 +18854,28 @@
 				if (!item) return;
 
 				const action = item.dataset.action;
-				const msg = state.editedMessages[currentMessageIndex];
-				if (!msg || !msg.name) return;
+				const characterName = portraitContextTarget;
 
-				hideAllContextMenus();
+				if (!characterName) return;
 
 				switch (action) {
 					case "edit-portrait":
-						if (msg.iconUrl) {
+						hideAllContextMenus();
+						const msg = state.editedMessages[currentMessageIndex];
+						if (msg && msg.name === characterName && msg.iconUrl) {
 							openQuickPortraitEdit(currentMessageIndex, "replay");
 						}
 						break;
+					case "toggle-layer":
+						// 切换层级：获取当前状态，然后取反
+						const charStyle = state.portraitConfig.dialogueStyle?.characterStyles?.[characterName] || {};
+						const currentBehindDialogue = charStyle.behindDialogue || false;
+						setPortraitLayer(characterName, !currentBehindDialogue);
+						hideAllContextMenus();
+						break;
 					case "edit-tts":
-						openQuickTtsModal(msg.name);
+						hideAllContextMenus();
+						openQuickTtsModal(characterName);
 						break;
 				}
 			}
