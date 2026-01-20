@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8" />
@@ -562,6 +562,40 @@
 				color: white;
 			}
 
+			/* Dialogue config item */
+			.dialogue-config-item {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				padding: 6px 0;
+				border-bottom: 1px solid var(--border-color);
+				cursor: pointer;
+				transition: background 0.2s;
+			}
+
+			.dialogue-config-item:last-child {
+				border-bottom: none;
+			}
+
+			.dialogue-config-item:hover {
+				background: var(--bg-secondary);
+			}
+
+			.dialogue-config-item .config-remove {
+				padding: 4px 8px;
+				border: none;
+				border-radius: var(--radius-sm);
+				background: transparent;
+				color: var(--text-secondary);
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			.dialogue-config-item .config-remove:hover {
+				background: var(--error-color);
+				color: white;
+			}
+
 			/* BGM switch list item */
 			.bgm-switch-item {
 				display: flex;
@@ -595,9 +629,33 @@
 				padding-left: 73.2px;
 				margin: 0;
 				max-height: 0;
-				overflow: hidden;
+				overflow-x: auto;
+				overflow-y: hidden;
 				opacity: 0;
-				transition: max-height 0.25s ease, opacity 0.25s ease, padding-top 0.25s ease, margin-top 0.25s ease;
+				transition:
+					max-height 0.25s ease,
+					opacity 0.25s ease,
+					padding-top 0.25s ease,
+					margin-top 0.25s ease;
+				scrollbar-width: thin;
+				scrollbar-color: var(--border-color) transparent;
+			}
+
+			.message-item-actions::-webkit-scrollbar {
+				height: 6px;
+			}
+
+			.message-item-actions::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			.message-item-actions::-webkit-scrollbar-thumb {
+				background: var(--border-color);
+				border-radius: 3px;
+			}
+
+			.message-item-actions::-webkit-scrollbar-thumb:hover {
+				background: var(--text-secondary);
 			}
 
 			/* 编辑模式：操作栏始终显示 */
@@ -674,26 +732,49 @@
 				display: none;
 				background: var(--bg-panel);
 				border-bottom: 1px solid var(--border-color);
-				padding: 12px 16px;
+				padding: 12px 0;
 				align-items: center;
 				justify-content: space-between;
 				gap: 12px;
+				overflow-x: auto;
+				overflow-y: hidden;
 			}
 
 			.message-batch-toolbar.visible {
 				display: flex;
 			}
 
+			.message-batch-toolbar::-webkit-scrollbar {
+				height: 6px;
+			}
+
+			.message-batch-toolbar::-webkit-scrollbar-track {
+				background: var(--bg-secondary);
+			}
+
+			.message-batch-toolbar::-webkit-scrollbar-thumb {
+				background: var(--border-color);
+				border-radius: 3px;
+			}
+
+			.message-batch-toolbar::-webkit-scrollbar-thumb:hover {
+				background: var(--text-secondary);
+			}
+
 			.message-batch-count {
 				font-size: 0.9rem;
 				color: var(--text-primary);
 				font-weight: 500;
+				white-space: nowrap;
+				padding-left: 16px;
 			}
 
 			.message-batch-actions {
 				display: flex;
 				gap: 8px;
 				align-items: center;
+				white-space: nowrap;
+				padding-right: 16px;
 			}
 
 			.message-batch-delete-btn {
@@ -1140,7 +1221,9 @@
 				outline: 2px dashed transparent;
 				z-index: 2;
 				outline-offset: -2px;
-				transition: outline-color 0.15s, background-color 0.15s;
+				transition:
+					outline-color 0.15s,
+					background-color 0.15s;
 				user-select: none;
 				box-sizing: border-box;
 				margin-top: -2px;
@@ -1274,7 +1357,10 @@
 				position: absolute;
 				cursor: move;
 				user-select: none;
-				transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+				transition:
+					opacity 0.3s ease,
+					transform 0.3s ease,
+					visibility 0.3s ease;
 				z-index: 1;
 			}
 
@@ -1440,7 +1526,9 @@
 				border-left: 1px solid var(--border-color);
 				display: flex;
 				flex-direction: column;
-				transition: transform var(--transition-speed) ease, width var(--transition-speed) ease;
+				transition:
+					transform var(--transition-speed) ease,
+					width var(--transition-speed) ease;
 				position: relative;
 				flex-shrink: 0;
 			}
@@ -1575,7 +1663,9 @@
 				font-size: 0.875rem;
 				font-weight: 500;
 				cursor: pointer;
-				transition: background-color 0.2s, box-shadow 0.2s;
+				transition:
+					background-color 0.2s,
+					box-shadow 0.2s;
 				display: inline-flex;
 				align-items: center;
 				gap: 6px;
@@ -1633,7 +1723,9 @@
 				border-radius: var(--radius-md);
 				color: var(--text-primary);
 				font-size: 0.875rem;
-				transition: border-color 0.2s, box-shadow 0.2s;
+				transition:
+					border-color 0.2s,
+					box-shadow 0.2s;
 			}
 
 			.form-input:hover {
@@ -1722,7 +1814,9 @@
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
-				transition: border-color 0.2s, box-shadow 0.2s;
+				transition:
+					border-color 0.2s,
+					box-shadow 0.2s;
 			}
 
 			.custom-select-trigger:hover {
@@ -1765,7 +1859,7 @@
 				border-radius: var(--radius-md);
 				max-height: 200px;
 				overflow-y: auto;
-				z-index: 1000;
+				z-index: 1001;
 				display: none;
 				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 			}
@@ -3884,7 +3978,9 @@
 				z-index: 1000;
 				opacity: 0;
 				visibility: hidden;
-				transition: opacity 0.2s, visibility 0.2s;
+				transition:
+					opacity 0.2s,
+					visibility 0.2s;
 			}
 
 			.modal-overlay.visible {
@@ -3945,6 +4041,8 @@
 				display: flex;
 				justify-content: flex-end;
 				gap: 8px;
+				overflow: visible;
+				position: relative;
 			}
 
 			.modal-footer .btn {
@@ -3963,13 +4061,301 @@
 				font-family: inherit;
 				resize: vertical;
 				min-height: 100px;
-				transition: border-color 0.2s, box-shadow 0.2s;
+				transition:
+					border-color 0.2s,
+					box-shadow 0.2s;
 			}
 
 			.form-textarea:focus {
 				outline: none;
 				border-color: var(--primary-color);
 				box-shadow: 0 0 0 3px rgba(94, 129, 172, 0.3);
+			}
+
+			/* === Preset Sidebar Styles === */
+			/* 模态框主体动画 */
+			.modal {
+				width: 100%;
+				/* 核心：添加宽度过渡动画 */
+				transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+
+			/* 当侧边栏展开时的状态类 */
+			.modal.sidebar-expanded {
+				max-width: 740px !important; /* 520px (右侧) + 220px (左侧) */
+			}
+
+			/* 侧边栏动画 */
+			.preset-sidebar {
+				width: 0; /* 默认隐藏 */
+				opacity: 0;
+				overflow: hidden; /* 防止内容溢出 */
+				background: var(--bg-dark);
+				border-right: 0px solid var(--border-color); /* 边框也隐藏 */
+				display: flex;
+				flex-direction: column;
+				flex-shrink: 0;
+
+				/* 过渡动画：宽度、透明度 */
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				white-space: nowrap; /* 防止文字在折叠过程中换行 */
+			}
+
+			/* 侧边栏展开状态 */
+			.modal.sidebar-expanded .preset-sidebar {
+				width: 220px;
+				opacity: 1;
+				border-right-width: 1px;
+			}
+
+			/* 按钮样式微调 */
+			.btn-text {
+				background: transparent;
+				border: 1px solid transparent;
+				color: var(--primary-color);
+				padding: 2px 8px;
+				font-size: 0.8rem;
+			}
+			.btn-text:hover {
+				background: rgba(94, 129, 172, 0.1);
+				border-radius: 4px;
+			}
+			.btn-text.active {
+				background: rgba(94, 129, 172, 0.2);
+				color: var(--text-primary);
+			}
+
+			/* 空状态提示 */
+			.empty-tip {
+				text-align: center;
+				color: var(--text-secondary);
+				font-size: 0.8rem;
+				padding: 20px;
+				margin-top: 20px;
+			}
+
+			.preset-header {
+				padding: 14px;
+				font-weight: 600;
+				font-size: 0.9rem;
+				border-bottom: 1px solid var(--border-color);
+				color: var(--text-primary);
+			}
+
+			.preset-list {
+				flex: 1;
+				overflow-y: auto;
+				padding: 10px;
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+
+			.preset-card {
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				padding: 8px;
+				background: var(--bg-panel);
+				border: 1px solid transparent;
+				border-radius: var(--radius-md);
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			.preset-card:hover {
+				background: var(--bg-hover);
+			}
+
+			.preset-card.active {
+				background: var(--bg-hover);
+				border-color: var(--primary-color);
+				box-shadow: 0 0 0 1px var(--primary-color) inset;
+			}
+
+			/* 小巧的删除按钮，悬浮显示 */
+			.btn-icon-delete {
+				position: absolute;
+				right: 4px;
+				top: 4px;
+				width: 18px;
+				height: 18px;
+				border: none;
+				background: rgba(0, 0, 0, 0.6);
+				color: #bf616a;
+				font-size: 14px;
+				line-height: 1;
+				cursor: pointer;
+				border-radius: 3px;
+				display: none; /* 默认隐藏 */
+				z-index: 10;
+			}
+
+			.btn-icon-delete:hover {
+				background: #bf616a;
+				color: white;
+			}
+
+			.preset-card:hover .btn-icon-delete {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			/* 编辑按钮 */
+			.btn-icon-edit {
+				position: absolute;
+				right: 24px;
+				top: 4px;
+				width: 18px;
+				height: 18px;
+				border: none;
+				background: rgba(0, 0, 0, 0.6);
+				color: var(--primary-color);
+				font-size: 12px;
+				line-height: 1;
+				cursor: pointer;
+				border-radius: 3px;
+				display: none; /* 默认隐藏 */
+				z-index: 10;
+			}
+
+			.btn-icon-edit:hover {
+				background: var(--primary-color);
+				color: white;
+			}
+
+			.preset-card:hover .btn-icon-edit {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			/* 缩小版对话框预览 */
+			.preset-preview-box {
+				position: relative;
+				width: 100%;
+				height: 60px;
+				border-radius: 4px;
+				border: 1px solid var(--border-light);
+				overflow: hidden;
+				background-size: 100% 100% !important;
+				background-position: center !important;
+				background-repeat: no-repeat !important;
+			}
+
+			/* 使用伪元素实现背景图片透明度 */
+			.preset-preview-box.has-bg-image {
+				background: transparent !important;
+			}
+
+			.preset-preview-box.has-bg-image::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-image: var(--bg-image);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				opacity: var(--bg-opacity, 0.7);
+				border-radius: 3px;
+				z-index: 0;
+			}
+
+			.preset-preview-name {
+				position: absolute;
+				font-size: 0.65rem;
+				font-weight: 600;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				z-index: 1;
+			}
+
+			.preset-preview-text {
+				position: absolute;
+				font-size: 0.6rem;
+				line-height: 1.3;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				line-clamp: 2;
+				-webkit-box-orient: vertical;
+				z-index: 1;
+			}
+
+			.preset-info {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.preset-name {
+				font-size: 0.75rem;
+				color: var(--text-primary);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-align: center;
+			}
+
+			.btn-block {
+				width: 100%;
+			}
+
+			.btn-danger {
+				background: #bf616a;
+				color: white;
+			}
+
+			.btn-danger:hover {
+				background: #d08770;
+			}
+
+			.setting-card {
+				background: var(--bg-secondary);
+				border-radius: 6px;
+				padding: 10px;
+				border: 1px solid var(--border-color);
+			}
+
+			.card-title {
+				font-size: 0.8rem;
+				font-weight: 500;
+				margin-bottom: 8px;
+				color: var(--text-secondary);
+			}
+
+			.control-row {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin-bottom: 6px;
+			}
+
+			.control-row label {
+				font-size: 0.75rem;
+				color: var(--text-secondary);
+				width: 32px;
+			}
+
+			.form-group-row {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin-bottom: 8px;
+			}
+
+			.color-picker-wrapper {
+				flex: 1;
+				display: flex;
+				gap: 6px;
+				align-items: center;
 			}
 
 			/* Insert position indicator */
@@ -4206,6 +4592,7 @@
 								<div class="message-batch-actions">
 									<button class="btn btn-secondary btn-sm" id="btn-message-select-all">全选</button>
 									<button class="btn btn-secondary btn-sm" id="btn-message-deselect-all">取消全选</button>
+									<button class="btn btn-secondary btn-sm" id="btn-message-batch-dialogue">💬 对话框设置</button>
 									<button class="btn btn-secondary btn-sm" id="btn-message-batch-copy">📋 复制</button>
 									<button class="btn btn-secondary btn-sm" id="btn-message-batch-cut">✂️ 剪切</button>
 									<button class="btn btn-secondary btn-sm message-batch-delete-btn" id="btn-message-batch-delete">
@@ -4601,6 +4988,121 @@
 							</div>
 						</section>
 
+						<!-- Dialogue Box Config Section -->
+						<section class="editor-section" id="section-dialogue-config" data-section-id="dialogue-config">
+							<div class="section-header">
+								<span class="section-arrow">▶</span>
+								<h3 class="section-title">对话框配置</h3>
+							</div>
+							<div class="section-body">
+								<div class="section-body-inner">
+									<!-- 全局对话框 -->
+									<div class="form-group">
+										<label
+											class="form-label"
+											style="display: flex; align-items: center; justify-content: space-between">
+											<span>🎨 全局样式</span>
+											<button
+												class="btn btn-secondary"
+												id="btn-global-dialogue-settings"
+												style="padding: 4px 8px; font-size: 0.75rem">
+												编辑
+											</button>
+										</label>
+										<div id="global-dialogue-preview" style="margin-top: 8px; cursor: pointer" title="点击编辑全局样式">
+											<!-- 全局样式预览将由JS渲染 -->
+										</div>
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
+											默认对话框样式，可在模态框中编辑并保存为预设
+										</div>
+									</div>
+
+									<!-- 角色专属 -->
+									<div class="form-group">
+										<label
+											class="form-label"
+											style="display: flex; align-items: center; justify-content: space-between">
+											<span>
+												👤 角色专属 (
+												<span id="char-dialogue-count">0</span>
+												)
+											</span>
+											<button
+												class="btn btn-secondary"
+												id="btn-add-char-dialogue"
+												style="padding: 4px 8px; font-size: 0.75rem">
+												+ 添加
+											</button>
+										</label>
+										<div
+											id="char-dialogue-list"
+											style="
+												max-height: 150px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">暂无角色专属配置</span>
+										</div>
+									</div>
+
+									<!-- 区间覆盖 -->
+									<div class="form-group">
+										<label class="form-label">
+											<span>
+												📍 区间覆盖 (
+												<span id="range-dialogue-count">0</span>
+												)
+											</span>
+										</label>
+										<div
+											id="range-dialogue-list"
+											style="
+												max-height: 150px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">暂无区间覆盖</span>
+										</div>
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
+											💡 右键预设卡片选择"应用为区间"
+										</div>
+									</div>
+
+									<!-- 单条覆盖 -->
+									<div class="form-group">
+										<label class="form-label">
+											<span>
+												📌 单条覆盖 (
+												<span id="single-dialogue-count">0</span>
+												)
+											</span>
+										</label>
+										<div
+											id="single-dialogue-list"
+											style="
+												max-height: 150px;
+												overflow-y: auto;
+												padding: 8px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+											<span style="color: var(--text-secondary); font-size: 0.8rem">暂无单条覆盖</span>
+										</div>
+										<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
+											💡 右键预设卡片选择"应用到当前消息"
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+
 						<!-- Background Config Section -->
 						<section class="editor-section" id="section-background" data-section-id="background">
 							<div class="section-header">
@@ -4647,7 +5149,7 @@
 							<div class="section-body">
 								<div class="section-body-inner">
 									<div class="form-group">
-										<label class="form-label">默认 BGM</label>
+										<label class="form-label">全局默认 BGM</label>
 										<div class="custom-select" id="default-bgm-select">
 											<button type="button" class="custom-select-trigger placeholder">无（不播放背景音乐）</button>
 											<div class="custom-select-dropdown"></div>
@@ -5278,7 +5780,22 @@
 					</div>
 					<div class="form-group">
 						<label class="form-label">URL</label>
-						<input type="text" class="form-input" id="bgm-custom-url" placeholder="输入音频 URL（mp3, ogg, wav）..." />
+						<div style="display: flex; gap: 8px; align-items: center">
+							<input
+								type="text"
+								class="form-input"
+								id="bgm-custom-url"
+								placeholder="输入音频 URL（mp3, ogg, wav）..."
+								style="flex: 1" />
+							<button
+								class="btn btn-secondary"
+								id="btn-bgm-custom-file"
+								title="选择本地音频文件"
+								style="padding: 4px 10px; font-size: 0.9rem; min-width: auto; height: 32px">
+								...
+							</button>
+							<input type="file" id="bgm-custom-file-input" accept="audio/*" style="display: none" />
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -5558,287 +6075,349 @@
 
 		<!-- Dialogue Settings Modal -->
 		<div class="modal-overlay" id="modal-dialogue-layout">
-			<div class="modal" style="max-width: 520px; max-height: 80vh; display: flex; flex-direction: column">
-				<div class="modal-header">
-					<span class="modal-title">对话框设置</span>
-					<button class="modal-close" id="modal-dialogue-layout-close">&times;</button>
+			<div
+				class="modal"
+				id="modal-dialogue-container"
+				style="max-width: 520px; height: 80vh; display: flex; flex-direction: row; overflow: visible">
+				<!-- 左侧：预设列表 -->
+				<div class="preset-sidebar" id="preset-sidebar">
+					<div class="preset-header">
+						<span>已保存预设</span>
+					</div>
+					<div class="preset-list" id="preset-list">
+						<div class="empty-tip">
+							暂无保存的预设
+							<br />
+							点击"存为预设"添加
+						</div>
+					</div>
 				</div>
-				<div
-					class="modal-body"
-					style="padding: 0; flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0">
-					<!-- 布局预览区域（固定，限制高度） -->
+
+				<!-- 右侧：编辑区域 -->
+				<div class="modal-main" style="flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: visible">
+					<div class="modal-header">
+						<div style="display: flex; align-items: center; gap: 10px">
+							<span class="modal-title">对话框设置</span>
+							<button class="btn btn-sm btn-text" id="btn-toggle-sidebar" title="打开预设列表">📂 预设库</button>
+						</div>
+						<button class="modal-close" id="modal-dialogue-layout-close">&times;</button>
+					</div>
 					<div
-						style="
-							padding: 12px;
-							padding-bottom: 6px;
-							background: var(--bg-secondary);
-							flex-shrink: 0;
-							max-height: 200px;
-							overflow: hidden;
-						">
-						<div class="dialogue-layout-editor" id="dialogue-layout-editor" style="padding: 0">
-							<div class="dialogue-layout-preview" id="dialogue-layout-preview">
-								<div class="layout-element layout-name" id="layout-name-element" data-element="name">
-									<span class="layout-element-label">角色名</span>
-									<span class="layout-element-content">角色名称</span>
-								</div>
-								<div class="layout-element layout-text" id="layout-text-element" data-element="text">
-									<span class="layout-element-label">消息内容</span>
-									<span class="layout-element-content">
-										这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。
-									</span>
-									<span class="layout-char-count"></span>
-									<div class="resize-handle resize-handle-nw" data-handle="nw"></div>
-									<div class="resize-handle resize-handle-ne" data-handle="ne"></div>
-									<div class="resize-handle resize-handle-sw" data-handle="sw"></div>
-									<div class="resize-handle resize-handle-se" data-handle="se"></div>
+						class="modal-body"
+						style="padding: 0; flex: 1; display: flex; flex-direction: column; overflow: auto; min-height: 0">
+						<!-- 布局预览区域（固定，限制高度） -->
+						<div
+							style="
+								padding: 12px;
+								padding-bottom: 6px;
+								background: var(--bg-secondary);
+								flex-shrink: 0;
+								max-height: 200px;
+								overflow: hidden;
+							">
+							<div class="dialogue-layout-editor" id="dialogue-layout-editor" style="padding: 0">
+								<div class="dialogue-layout-preview" id="dialogue-layout-preview">
+									<div class="layout-element layout-name" id="layout-name-element" data-element="name">
+										<span class="layout-element-label">角色名</span>
+										<span class="layout-element-content">角色名称</span>
+									</div>
+									<div class="layout-element layout-text" id="layout-text-element" data-element="text">
+										<span class="layout-element-label">消息内容</span>
+										<span class="layout-element-content">
+											这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。这是示例消息内容。
+										</span>
+										<span class="layout-char-count"></span>
+										<div class="resize-handle resize-handle-nw" data-handle="nw"></div>
+										<div class="resize-handle resize-handle-ne" data-handle="ne"></div>
+										<div class="resize-handle resize-handle-sw" data-handle="sw"></div>
+										<div class="resize-handle resize-handle-se" data-handle="se"></div>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px">
-							<span class="layout-size-info" id="layout-size-info" style="margin: 0; font-size: 0.7rem">
-								尺寸: -- × --
-							</span>
-							<span style="font-size: 0.65rem; color: var(--text-secondary)">拖拽调整位置和大小</span>
-							<button
-								class="btn btn-secondary"
-								id="btn-layout-reset"
-								style="
-									font-size: 0.7rem;
-									padding: 4px 10px;
-									border: 1px solid var(--primary-color);
-									color: var(--primary-color);
-								">
-								重置位置
-							</button>
-						</div>
-					</div>
-
-					<!-- 设置区域（可滚动） -->
-					<div style="padding: 12px; flex: 1; overflow-y: auto; min-height: 120px">
-						<!-- 背景设置 - 整行 -->
-						<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap">
-							<span style="font-size: 0.85rem; white-space: nowrap">🎨 背景</span>
-							<input
-								type="text"
-								class="form-input"
-								id="modal-dialogue-bg-image"
-								placeholder="背景图片 URL"
-								style="flex: 1; min-width: 150px; font-size: 0.8rem" />
-							<button
-								class="btn btn-secondary"
-								id="btn-dialogue-bg-file"
-								title="选择本地图片"
-								style="padding: 4px 10px; font-size: 0.9rem; min-width: auto; height: 32px">
-								...
-							</button>
-							<input type="file" id="dialogue-bg-file-input" accept="image/*" style="display: none" />
-							<span style="font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap">透明度</span>
-							<input type="range" id="modal-dialogue-bg-opacity" min="0" max="100" value="70" style="width: 100px" />
-							<span id="modal-dialogue-bg-opacity-value" style="font-size: 0.8rem; width: 32px">70%</span>
+							<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px">
+								<span class="layout-size-info" id="layout-size-info" style="margin: 0; font-size: 0.7rem">
+									尺寸: -- × --
+								</span>
+								<span style="font-size: 0.65rem; color: var(--text-secondary)">拖拽调整位置和大小</span>
+								<button
+									class="btn btn-secondary"
+									id="btn-layout-reset"
+									style="
+										font-size: 0.7rem;
+										padding: 4px 10px;
+										border: 1px solid var(--primary-color);
+										color: var(--primary-color);
+									">
+									重置位置
+								</button>
+							</div>
 						</div>
 
-						<!-- 名称和内容 - 左右两个卡片 -->
-						<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
-							<!-- 名称卡片 -->
+						<!-- 设置区域（可滚动） -->
+						<div style="padding: 12px; flex: 1; overflow-y: auto; min-height: 120px">
+							<!-- 背景设置 - 整行 -->
+							<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap">
+								<span style="font-size: 0.85rem; white-space: nowrap">🎨 背景</span>
+								<input
+									type="text"
+									class="form-input"
+									id="modal-dialogue-bg-image"
+									placeholder="背景图片 URL"
+									style="flex: 1; min-width: 150px; font-size: 0.8rem" />
+								<button
+									class="btn btn-secondary"
+									id="btn-dialogue-bg-file"
+									title="选择本地图片"
+									style="padding: 4px 10px; font-size: 0.9rem; min-width: auto; height: 32px">
+									...
+								</button>
+								<input type="file" id="dialogue-bg-file-input" accept="image/*" style="display: none" />
+								<span style="font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap">透明度</span>
+								<input type="range" id="modal-dialogue-bg-opacity" min="0" max="100" value="70" style="width: 100px" />
+								<span id="modal-dialogue-bg-opacity-value" style="font-size: 0.8rem; width: 32px">70%</span>
+							</div>
+
+							<!-- 名称和内容 - 左右两个卡片 -->
+							<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+								<!-- 名称卡片 -->
+								<div
+									style="
+										background: var(--bg-secondary);
+										border-radius: 6px;
+										padding: 10px;
+										border: 1px solid var(--border-color);
+									">
+									<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+										<span style="font-size: 0.8rem; font-weight: 500">📝 角色名称</span>
+										<button
+											class="btn btn-secondary"
+											id="btn-reset-name-style"
+											style="
+												font-size: 0.65rem;
+												padding: 2px 6px;
+												border: 1px solid var(--border-color);
+												color: var(--text-secondary);
+											">
+											重置
+										</button>
+									</div>
+									<div style="display: flex; flex-direction: column; gap: 6px">
+										<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
+											<div style="display: flex; align-items: center; gap: 4px">
+												<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">大小</label>
+												<input
+													type="number"
+													class="form-input"
+													id="modal-dialogue-name-size"
+													value="20"
+													min="12"
+													max="48"
+													style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+											</div>
+											<div style="display: flex; align-items: center; gap: 4px">
+												<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">字距</label>
+												<input
+													type="number"
+													class="form-input"
+													id="modal-dialogue-name-letter-spacing"
+													value="0"
+													min="-5"
+													max="20"
+													step="0.5"
+													style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+											</div>
+										</div>
+										<div style="display: flex; align-items: center; gap: 6px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">颜色</label>
+											<input
+												type="color"
+												id="modal-dialogue-name-color"
+												value="#5e81ac"
+												style="
+													width: 26px;
+													height: 24px;
+													padding: 0;
+													border: 1px solid var(--border-color);
+													border-radius: 4px;
+													cursor: pointer;
+													background: none;
+												" />
+											<input
+												type="text"
+												id="modal-dialogue-name-color-text"
+												value="#5e81ac"
+												class="form-input"
+												style="flex: 1; font-size: 0.75rem; padding: 4px 5px; font-family: monospace" />
+										</div>
+										<div style="display: flex; align-items: center; gap: 6px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">透明</label>
+											<input
+												type="range"
+												id="modal-dialogue-name-opacity"
+												min="0"
+												max="100"
+												value="100"
+												style="flex: 1" />
+											<span id="modal-dialogue-name-opacity-value" style="font-size: 0.75rem; width: 32px">100%</span>
+										</div>
+										<div style="display: flex; align-items: center; gap: 6px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">字体</label>
+											<select
+												class="form-input"
+												id="modal-dialogue-name-font-family"
+												style="flex: 1; font-size: 0.8rem; padding: 4px 6px">
+												<option value="">默认</option>
+												<option value="serif">衬线</option>
+												<option value="sans-serif">无衬线</option>
+												<option value="monospace">等宽</option>
+												<option value="cursive">手写</option>
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<!-- 内容卡片 -->
+								<div
+									style="
+										background: var(--bg-secondary);
+										border-radius: 6px;
+										padding: 10px;
+										border: 1px solid var(--border-color);
+									">
+									<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+										<span style="font-size: 0.8rem; font-weight: 500">📝 内容</span>
+										<button
+											class="btn btn-secondary"
+											id="btn-reset-text-style"
+											style="
+												font-size: 0.65rem;
+												padding: 2px 6px;
+												border: 1px solid var(--border-color);
+												color: var(--text-secondary);
+											">
+											重置
+										</button>
+									</div>
+									<div style="display: flex; flex-direction: column; gap: 6px">
+										<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
+											<div style="display: flex; align-items: center; gap: 4px">
+												<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">大小</label>
+												<input
+													type="number"
+													class="form-input"
+													id="modal-dialogue-font-size"
+													value="24"
+													min="12"
+													max="72"
+													style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+											</div>
+											<div style="display: flex; align-items: center; gap: 4px">
+												<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">字距</label>
+												<input
+													type="number"
+													class="form-input"
+													id="modal-dialogue-text-letter-spacing"
+													value="0"
+													min="-5"
+													max="20"
+													step="0.5"
+													style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
+											</div>
+										</div>
+										<div style="display: flex; align-items: center; gap: 6px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">颜色</label>
+											<input
+												type="color"
+												id="modal-dialogue-text-color"
+												value="#ffffff"
+												style="
+													width: 26px;
+													height: 24px;
+													padding: 0;
+													border: 1px solid var(--border-color);
+													border-radius: 4px;
+													cursor: pointer;
+													background: none;
+												" />
+											<input
+												type="text"
+												id="modal-dialogue-text-color-text"
+												value="#ffffff"
+												class="form-input"
+												style="flex: 1; font-size: 0.75rem; padding: 4px 5px; font-family: monospace" />
+										</div>
+										<div style="display: flex; align-items: center; gap: 6px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">透明</label>
+											<input
+												type="range"
+												id="modal-dialogue-text-opacity"
+												min="0"
+												max="100"
+												value="100"
+												style="flex: 1" />
+											<span id="modal-dialogue-text-opacity-value" style="font-size: 0.75rem; width: 32px">100%</span>
+										</div>
+										<div style="display: flex; align-items: center; gap: 6px">
+											<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">字体</label>
+											<select
+												class="form-input"
+												id="modal-dialogue-font-family"
+												style="flex: 1; font-size: 0.8rem; padding: 4px 6px">
+												<option value="">默认</option>
+												<option value="serif">衬线</option>
+												<option value="sans-serif">无衬线</option>
+												<option value="monospace">等宽</option>
+												<option value="cursive">手写</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- 预设操作按钮 -->
 							<div
 								style="
-									background: var(--bg-secondary);
-									border-radius: 6px;
-									padding: 10px;
-									border: 1px solid var(--border-color);
+									display: flex;
+									gap: 8px;
+									margin-top: 12px;
+									padding-top: 10px;
+									border-top: 1px solid var(--border-color);
 								">
-								<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-									<span style="font-size: 0.8rem; font-weight: 500">📝 角色名称</span>
-									<button
-										class="btn btn-secondary"
-										id="btn-reset-name-style"
-										style="
-											font-size: 0.65rem;
-											padding: 2px 6px;
-											border: 1px solid var(--border-color);
-											color: var(--text-secondary);
-										">
-										重置
-									</button>
-								</div>
-								<div style="display: flex; flex-direction: column; gap: 6px">
-									<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
-										<div style="display: flex; align-items: center; gap: 4px">
-											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">大小</label>
-											<input
-												type="number"
-												class="form-input"
-												id="modal-dialogue-name-size"
-												value="20"
-												min="12"
-												max="48"
-												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
-										</div>
-										<div style="display: flex; align-items: center; gap: 4px">
-											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">字距</label>
-											<input
-												type="number"
-												class="form-input"
-												id="modal-dialogue-name-letter-spacing"
-												value="0"
-												min="-5"
-												max="20"
-												step="0.5"
-												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
-										</div>
-									</div>
-									<div style="display: flex; align-items: center; gap: 6px">
-										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">颜色</label>
-										<input
-											type="color"
-											id="modal-dialogue-name-color"
-											value="#5e81ac"
-											style="
-												width: 26px;
-												height: 24px;
-												padding: 0;
-												border: 1px solid var(--border-color);
-												border-radius: 4px;
-												cursor: pointer;
-												background: none;
-											" />
-										<input
-											type="text"
-											id="modal-dialogue-name-color-text"
-											value="#5e81ac"
-											class="form-input"
-											style="flex: 1; font-size: 0.75rem; padding: 4px 5px; font-family: monospace" />
-									</div>
-									<div style="display: flex; align-items: center; gap: 6px">
-										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">透明</label>
-										<input
-											type="range"
-											id="modal-dialogue-name-opacity"
-											min="0"
-											max="100"
-											value="100"
-											style="flex: 1" />
-										<span id="modal-dialogue-name-opacity-value" style="font-size: 0.75rem; width: 32px">100%</span>
-									</div>
-									<div style="display: flex; align-items: center; gap: 6px">
-										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">字体</label>
-										<select
-											class="form-input"
-											id="modal-dialogue-name-font-family"
-											style="flex: 1; font-size: 0.8rem; padding: 4px 6px">
-											<option value="">默认</option>
-											<option value="serif">衬线</option>
-											<option value="sans-serif">无衬线</option>
-											<option value="monospace">等宽</option>
-											<option value="cursive">手写</option>
-										</select>
-									</div>
-								</div>
-							</div>
-
-							<!-- 内容卡片 -->
-							<div
-								style="
-									background: var(--bg-secondary);
-									border-radius: 6px;
-									padding: 10px;
-									border: 1px solid var(--border-color);
-								">
-								<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-									<span style="font-size: 0.8rem; font-weight: 500">📝 内容</span>
-									<button
-										class="btn btn-secondary"
-										id="btn-reset-text-style"
-										style="
-											font-size: 0.65rem;
-											padding: 2px 6px;
-											border: 1px solid var(--border-color);
-											color: var(--text-secondary);
-										">
-										重置
-									</button>
-								</div>
-								<div style="display: flex; flex-direction: column; gap: 6px">
-									<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
-										<div style="display: flex; align-items: center; gap: 4px">
-											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">大小</label>
-											<input
-												type="number"
-												class="form-input"
-												id="modal-dialogue-font-size"
-												value="24"
-												min="12"
-												max="72"
-												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
-										</div>
-										<div style="display: flex; align-items: center; gap: 4px">
-											<label style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap">字距</label>
-											<input
-												type="number"
-												class="form-input"
-												id="modal-dialogue-text-letter-spacing"
-												value="0"
-												min="-5"
-												max="20"
-												step="0.5"
-												style="flex: 1; font-size: 0.8rem; padding: 4px 6px" />
-										</div>
-									</div>
-									<div style="display: flex; align-items: center; gap: 6px">
-										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">颜色</label>
-										<input
-											type="color"
-											id="modal-dialogue-text-color"
-											value="#ffffff"
-											style="
-												width: 26px;
-												height: 24px;
-												padding: 0;
-												border: 1px solid var(--border-color);
-												border-radius: 4px;
-												cursor: pointer;
-												background: none;
-											" />
-										<input
-											type="text"
-											id="modal-dialogue-text-color-text"
-											value="#ffffff"
-											class="form-input"
-											style="flex: 1; font-size: 0.75rem; padding: 4px 5px; font-family: monospace" />
-									</div>
-									<div style="display: flex; align-items: center; gap: 6px">
-										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">透明</label>
-										<input
-											type="range"
-											id="modal-dialogue-text-opacity"
-											min="0"
-											max="100"
-											value="100"
-											style="flex: 1" />
-										<span id="modal-dialogue-text-opacity-value" style="font-size: 0.75rem; width: 32px">100%</span>
-									</div>
-									<div style="display: flex; align-items: center; gap: 6px">
-										<label style="font-size: 0.7rem; color: var(--text-secondary); width: 32px">字体</label>
-										<select
-											class="form-input"
-											id="modal-dialogue-font-family"
-											style="flex: 1; font-size: 0.8rem; padding: 4px 6px">
-											<option value="">默认</option>
-											<option value="serif">衬线</option>
-											<option value="sans-serif">无衬线</option>
-											<option value="monospace">等宽</option>
-											<option value="cursive">手写</option>
-										</select>
-									</div>
-								</div>
+								<button
+									class="btn btn-secondary"
+									id="btn-update-preset"
+									style="display: none; flex: 1; font-size: 0.8rem">
+									💾 更新当前预设
+								</button>
+								<button class="btn btn-secondary" id="btn-save-as-new" style="flex: 1; font-size: 0.8rem">
+									💾 存为新预设
+								</button>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-secondary" id="modal-dialogue-layout-cancel">取消</button>
-					<button class="btn btn-primary" id="modal-dialogue-layout-save">保存</button>
+					<div class="modal-footer" style="justify-content: flex-end; overflow: visible">
+						<div style="display: flex; gap: 8px; align-items: center">
+							<span style="font-size: 0.8rem; color: var(--text-secondary)">应用到:</span>
+							<div class="custom-select" id="save-target-select" style="min-width: 140px; width: auto">
+								<button
+									type="button"
+									class="custom-select-trigger"
+									style="font-size: 0.85rem; padding: 6px 28px 6px 10px; width: auto; min-width: 130px">
+									🌐 全局样式
+								</button>
+								<div
+									class="custom-select-dropdown"
+									style="min-width: 150px; bottom: 100%; top: auto; margin-bottom: 4px; margin-top: 0">
+									<div class="custom-select-option" data-value="global">🌐 全局样式</div>
+									<div class="custom-select-option" data-value="character">👤 当前角色</div>
+									<div class="custom-select-option" data-value="single">📌 当前消息</div>
+									<div class="custom-select-option" data-value="range-start">▶ 区间开始</div>
+									<div class="custom-select-option" data-value="range-end">◀ 区间结束</div>
+								</div>
+							</div>
+							<button class="btn btn-primary" id="modal-dialogue-layout-save">应用</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -6149,6 +6728,12 @@
 						fontFamily: "",
 						// 角色特定样式
 						characterStyles: {},
+					},
+					// 对话框预设配置（覆盖规则）
+					dialoguePresetConfig: {
+						characterPresets: {}, // 角色专属预设 { characterName: presetId }
+						rangePresets: [], // 区间覆盖 [{ startIndex, endIndex, presetId, characterName? }]
+						singlePresets: {}, // 单条覆盖 { messageIndex: presetId }
 					},
 				},
 				settings: {
@@ -6472,6 +7057,7 @@
 				messageBatchToolbar: document.getElementById("message-batch-toolbar"),
 				btnMessageSelectAll: document.getElementById("btn-message-select-all"),
 				btnMessageDeselectAll: document.getElementById("btn-message-deselect-all"),
+				btnMessageBatchDialogue: document.getElementById("btn-message-batch-dialogue"),
 				btnMessageBatchCopy: document.getElementById("btn-message-batch-copy"),
 				btnMessageBatchCut: document.getElementById("btn-message-batch-cut"),
 				btnMessageBatchDelete: document.getElementById("btn-message-batch-delete"),
@@ -6509,6 +7095,8 @@
 				modalBgmCustomSave: document.getElementById("modal-bgm-custom-save"),
 				bgmCustomName: document.getElementById("bgm-custom-name"),
 				bgmCustomUrl: document.getElementById("bgm-custom-url"),
+				btnBgmCustomFile: document.getElementById("btn-bgm-custom-file"),
+				bgmCustomFileInput: document.getElementById("bgm-custom-file-input"),
 
 				// Account BGM import modal
 				modalBgmAccount: document.getElementById("modal-bgm-account"),
@@ -6551,6 +7139,14 @@
 				btnLayoutReset: document.getElementById("btn-layout-reset"),
 				btnResetNameStyle: document.getElementById("btn-reset-name-style"),
 				btnResetTextStyle: document.getElementById("btn-reset-text-style"),
+				// Preset sidebar elements
+				presetSidebar: document.getElementById("preset-sidebar"),
+				btnToggleSidebar: document.getElementById("btn-toggle-sidebar"),
+				presetList: document.getElementById("preset-list"),
+				btnSaveAsNew: document.getElementById("btn-save-as-new"),
+				btnUpdatePreset: document.getElementById("btn-update-preset"),
+				modalDialogueContainer: document.getElementById("modal-dialogue-container"),
+				saveTargetSelect: document.getElementById("save-target-select"),
 				// Modal dialogue settings inputs
 				modalDialogueBgImage: document.getElementById("modal-dialogue-bg-image"),
 				btnDialogueBgFile: document.getElementById("btn-dialogue-bg-file"),
@@ -6561,6 +7157,7 @@
 				modalDialogueNameOpacity: document.getElementById("modal-dialogue-name-opacity"),
 				modalDialogueNameOpacityValue: document.getElementById("modal-dialogue-name-opacity-value"),
 				modalDialogueNameLetterSpacing: document.getElementById("modal-dialogue-name-letter-spacing"),
+				modalDialogueNameFontFamily: document.getElementById("modal-dialogue-name-font-family"),
 				modalDialogueFontSize: document.getElementById("modal-dialogue-font-size"),
 				modalDialogueTextOpacity: document.getElementById("modal-dialogue-text-opacity"),
 				modalDialogueTextOpacityValue: document.getElementById("modal-dialogue-text-opacity-value"),
@@ -6570,6 +7167,17 @@
 				modalDialogueNameColorText: document.getElementById("modal-dialogue-name-color-text"),
 				modalDialogueTextColor: document.getElementById("modal-dialogue-text-color"),
 				modalDialogueTextColorText: document.getElementById("modal-dialogue-text-color-text"),
+
+				// Dialogue config section elements
+				btnGlobalDialogueSettings: document.getElementById("btn-global-dialogue-settings"),
+				globalDialoguePreview: document.getElementById("global-dialogue-preview"),
+				charDialogueCount: document.getElementById("char-dialogue-count"),
+				btnAddCharDialogue: document.getElementById("btn-add-char-dialogue"),
+				charDialogueList: document.getElementById("char-dialogue-list"),
+				rangeDialogueCount: document.getElementById("range-dialogue-count"),
+				rangeDialogueList: document.getElementById("range-dialogue-list"),
+				singleDialogueCount: document.getElementById("single-dialogue-count"),
+				singleDialogueList: document.getElementById("single-dialogue-list"),
 
 				// Category filter elements
 				characterFilterTabs: document.getElementById("character-filter-tabs"),
@@ -7348,9 +7956,9 @@
 				const avatarHtml = hasAvatar
 					? `<img class="card-avatar" src="${char.defaultPortrait}" alt="${escapeHtml(
 							char.name
-					  )}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="card-avatar-fallback" style="display:none">${escapeHtml(
+						)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="card-avatar-fallback" style="display:none">${escapeHtml(
 							firstChar
-					  )}</div>`
+						)}</div>`
 					: `<div class="card-avatar-fallback">${escapeHtml(firstChar)}</div>`;
 
 				// Get custom category if any
@@ -7372,7 +7980,7 @@
 				const categoryBadge = customCategory
 					? `<span class="card-category" style="--cat-color: ${customCategory.color}">${escapeHtml(
 							customCategory.name
-					  )}</span>`
+						)}</span>`
 					: "";
 
 				// Batch selection checkbox
@@ -7589,8 +8197,8 @@
 					<div class="detail-header">
 						<div class="detail-avatar-container" onclick="openAvatarSelector('${safeName}')" title="点击选择头像">
 							<img class="detail-avatar" src="${char.defaultPortrait || "https://via.placeholder.com/80"}" alt="${escapeHtml(
-					char.name
-				)}" onerror="this.src='https://via.placeholder.com/80'">
+								char.name
+							)}" onerror="this.src='https://via.placeholder.com/80'">
 							<div class="detail-avatar-overlay">
 								<span>📷</span>
 							</div>
@@ -7690,8 +8298,8 @@
 								<button class="portrait-replace-btn" onclick="event.stopPropagation(); replacePortraitBatch('${safeName}', '${escapeAttr(
 									p.url
 								)}');">替换</button>
-								<button class="portrait-avatar-btn ${p.url === char.defaultPortrait ? "active" : ""}" 
-									onclick="event.stopPropagation(); setCharacterAvatar('${safeName}', '${escapeAttr(p.url)}');" 
+								<button class="portrait-avatar-btn ${p.url === char.defaultPortrait ? "active" : ""}"
+									onclick="event.stopPropagation(); setCharacterAvatar('${safeName}', '${escapeAttr(p.url)}');"
 									title="${p.url === char.defaultPortrait ? "当前头像" : "设为头像"}">
 									${p.url === char.defaultPortrait ? "👤" : "📷"}
 								</button>
@@ -8662,7 +9270,7 @@
 				const customCategoryHtml =
 					categories.length > 0
 						? `<div class="batch-category-divider">自定义类别</div>` +
-						  categories
+							categories
 								.map(
 									(cat) => `
 					<div class="batch-category-item" data-category-id="${cat.id}">
@@ -8934,9 +9542,9 @@
 				grid.innerHTML = char.portraits
 					.map(
 						(portrait) => `
-					<div class="avatar-option ${portrait.url === char.defaultPortrait ? "current" : ""}" 
+					<div class="avatar-option ${portrait.url === char.defaultPortrait ? "current" : ""}"
 						 onclick="selectAvatar('${escapeAttr(portrait.url)}')">
-						<img src="${portrait.url}" alt="${escapeHtml(portrait.name || "差分")}" 
+						<img src="${portrait.url}" alt="${escapeHtml(portrait.name || "差分")}"
 							 onerror="this.src='https://via.placeholder.com/120x160?text=Error'">
 						<div class="avatar-option-overlay">
 							${escapeHtml(portrait.name || "差分")}
@@ -9129,9 +9737,9 @@
 				grid.innerHTML = char.portraits
 					.map(
 						(portrait) => `
-					<div class="quick-portrait-option ${portrait.url === currentIconUrl ? "current" : ""}" 
+					<div class="quick-portrait-option ${portrait.url === currentIconUrl ? "current" : ""}"
 						 onclick="selectQuickPortrait('${escapeAttr(portrait.url)}')">
-						<img src="${portrait.url}" alt="${escapeHtml(portrait.name || "差分")}" 
+						<img src="${portrait.url}" alt="${escapeHtml(portrait.name || "差分")}"
 							 onerror="this.src='https://via.placeholder.com/120x160?text=Error'">
 						<div class="quick-portrait-option-overlay">
 							${escapeHtml(portrait.name || "差分")}
@@ -9665,8 +10273,8 @@
 								const bgmName = bgmItem
 									? bgmItem.name
 									: msg.bgmUrl.length > 30
-									? msg.bgmUrl.substring(0, 30) + "..."
-									: msg.bgmUrl;
+										? msg.bgmUrl.substring(0, 30) + "..."
+										: msg.bgmUrl;
 								stageMarkersHtml += `<span class="bgm-marker" data-type="bgm">🎵 ${escapeHtml(
 									bgmName
 								)} <span class="remove-marker" title="移除BGM">×</span></span>`;
@@ -9706,6 +10314,7 @@
 							<button class="message-action-btn stage-action-btn" data-action="stage" title="进退场设置" style="${
 								state.portraitConfig.displayMode === "perMessage" ? "display: none;" : ""
 							}">🎭 进退场</button>
+							<button class="message-action-btn" data-action="dialogue" title="对话框设置">💬 对话框</button>
 							<button class="message-action-btn" data-action="insert" title="在此后插入消息">➕ 插入消息</button>
 							<button class="message-action-btn" data-action="insert-dice" title="在此后插入骰点">🎲 插入骰点</button>
 							<button class="message-action-btn" data-action="edit" title="编辑">✏️ 编辑</button>
@@ -9870,6 +10479,12 @@
 					li.querySelector('[data-action="stage"]').addEventListener("click", (e) => {
 						e.stopPropagation();
 						openStageModal(msg, globalIndex);
+					});
+
+					// Dialogue button
+					li.querySelector('[data-action="dialogue"]').addEventListener("click", (e) => {
+						e.stopPropagation();
+						openDialogueModal(msg, globalIndex);
 					});
 
 					// Insert button
@@ -10506,6 +11121,38 @@
 
 			// ==================== Dialogue Layout Editor ====================
 
+			// ==================== Preset Manager ====================
+			const PresetManager = {
+				storageKey: "dialogue_presets_v1",
+				currentId: null,
+
+				// 获取所有预设
+				getAll() {
+					const stored = localStorage.getItem(this.storageKey);
+					return stored ? JSON.parse(stored) : {};
+				},
+
+				// 保存自定义预设
+				savePreset(preset) {
+					const stored = localStorage.getItem(this.storageKey);
+					const custom = stored ? JSON.parse(stored) : {};
+					custom[preset.id] = preset;
+					localStorage.setItem(this.storageKey, JSON.stringify(custom));
+				},
+
+				// 删除预设
+				deletePreset(id) {
+					const stored = localStorage.getItem(this.storageKey);
+					if (stored) {
+						const custom = JSON.parse(stored);
+						delete custom[id];
+						localStorage.setItem(this.storageKey, JSON.stringify(custom));
+						return true;
+					}
+					return false;
+				},
+			};
+
 			// Layout editor state
 			let layoutEditorState = {
 				dragging: null,
@@ -10534,6 +11181,46 @@
 					text: { ...{ x: null, y: null, width: 90, height: 70 }, ...(layout.text || {}) },
 				};
 
+				// 初始化预设系统
+				initDialoguePresets();
+
+				// 从localStorage读取侧边栏状态，先禁用过渡动画
+				isSidebarOpen = loadSidebarState();
+
+				// 临时禁用过渡动画
+				if (DOM.modalDialogueContainer) {
+					DOM.modalDialogueContainer.style.transition = "none";
+				}
+				if (DOM.presetSidebar) {
+					DOM.presetSidebar.style.transition = "none";
+				}
+
+				// 设置初始状态
+				toggleSidebarUI();
+
+				// 在下一帧重新启用过渡动画
+				requestAnimationFrame(() => {
+					if (DOM.modalDialogueContainer) {
+						DOM.modalDialogueContainer.style.transition = "";
+					}
+					if (DOM.presetSidebar) {
+						DOM.presetSidebar.style.transition = "";
+					}
+				});
+
+				// 隐藏更新按钮（默认没有选中预设）
+				if (DOM.btnUpdatePreset) {
+					DOM.btnUpdatePreset.style.display = "none";
+				}
+
+				// 初始化保存目标选择器
+				initSaveTargetSelect();
+				// 重置保存目标为全局
+				dialogueSaveTarget = "global";
+				dialogueRangeStartIndex = null;
+				const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+				if (trigger) trigger.textContent = "🌐 全局样式";
+
 				// 加载当前设置到模态框
 				loadDialogueSettingsToModal();
 
@@ -10547,6 +11234,313 @@
 				document.addEventListener("keydown", handleLayoutEsc);
 
 				DOM.modalDialogueLayout.classList.add("visible");
+			}
+
+			/**
+			 * Open batch dialogue settings modal
+			 */
+			function openBatchDialogueModal() {
+				// 打开对话框设置模态框
+				openDialogueLayoutModal();
+
+				// 修改保存目标为批量模式
+				dialogueSaveTarget = "batch";
+				const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+				if (trigger) trigger.textContent = `📦 批量设置 (${MessageBatchSelectionState.getSelectedCount()}条)`;
+			}
+
+			/**
+			 * Open dialogue modal for single message
+			 * @param {Object} msg - Message object
+			 * @param {number} index - Message index
+			 */
+			function openDialogueModal(msg, index) {
+				// 设置当前消息索引
+				currentMessageIndex = index;
+
+				// 打开对话框设置模态框
+				openDialogueLayoutModal();
+
+				// 修改保存目标为单条消息模式
+				dialogueSaveTarget = "single";
+				const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+				if (trigger) trigger.textContent = `💬 单条消息 (#${index + 1})`;
+			}
+
+			/**
+			 * Initialize dialogue presets system
+			 */
+			function initDialoguePresets() {
+				renderPresetList();
+				// 如果有当前选中的预设，加载它
+				if (PresetManager.currentId) {
+					loadPresetToEditor(PresetManager.currentId);
+				}
+			}
+
+			/**
+			 * Render preset list in sidebar
+			 */
+			function renderPresetList() {
+				const presets = PresetManager.getAll();
+				if (!DOM.presetList) return;
+
+				DOM.presetList.innerHTML = "";
+
+				const presetArray = Object.values(presets);
+
+				// 如果没有预设，显示提示
+				if (presetArray.length === 0) {
+					DOM.presetList.innerHTML = '<div class="empty-tip">暂无保存的预设<br/>点击"存为预设"添加</div>';
+					return;
+				}
+
+				// 按时间倒序排列
+				presetArray.reverse().forEach((preset) => {
+					const div = document.createElement("div");
+					div.className = `preset-card ${PresetManager.currentId === preset.id ? "active" : ""}`;
+					div.dataset.id = preset.id;
+
+					// 生成缩小版对话框预览
+					const s = preset.style;
+					const layout = s.layout || {};
+
+					// 背景样式
+					let bgClass = "";
+					let bgStyle = "";
+					let bgImageVar = "";
+					let bgOpacityVar = "";
+
+					if (s.bgImage) {
+						bgClass = "has-bg-image";
+						bgImageVar = `--bg-image: url(${s.bgImage});`;
+						bgOpacityVar = `--bg-opacity: ${(s.bgOpacity ?? 70) / 100};`;
+					} else {
+						bgStyle = `background-color: rgba(0, 0, 0, ${(s.bgOpacity ?? 70) / 100});`;
+					}
+
+					// 名称样式和位置
+					const nameColor = s.nameColor || "#5e81ac";
+					const nameOpacity = (s.nameOpacity ?? 100) / 100;
+					const nameFontFamily = s.nameFontFamily || "sans-serif";
+					const nameLetterSpacing = (s.nameLetterSpacing ?? 0) * 0.3; // 缩小字间距
+					const nameSize = (s.nameSize || 20) * 0.3; // 缩小字体
+
+					// 名称布局 - 直接使用百分比值
+					const nameLayout = layout.name || {};
+					const nameLeft = nameLayout.x != null ? `${nameLayout.x}%` : "3%";
+					const nameTop = nameLayout.y != null ? `${nameLayout.y}%` : "8%";
+					const nameWidth = nameLayout.width != null ? `${nameLayout.width}%` : "94%";
+
+					// 文本样式和位置
+					const textColor = s.textColor || "#ffffff";
+					const textOpacity = (s.textOpacity ?? 100) / 100;
+					const fontFamily = s.fontFamily || "sans-serif";
+					const textLetterSpacing = (s.textLetterSpacing ?? 0) * 0.3; // 缩小字间距
+					const fontSize = (s.fontSize || 24) * 0.3; // 缩小字体
+
+					// 文本布局 - 直接使用百分比值
+					const textLayout = layout.text || {};
+					const textLeft = textLayout.x != null ? `${textLayout.x}%` : "3%";
+					const textTop = textLayout.y != null ? `${textLayout.y}%` : "30%";
+					const textWidth = textLayout.width != null ? `${textLayout.width}%` : "94%";
+					const textHeight = textLayout.height != null ? `${textLayout.height}%` : "60%";
+
+					div.innerHTML = `
+						<div class="preset-preview-box ${bgClass}" style="${bgStyle} ${bgImageVar} ${bgOpacityVar}">
+							<div class="preset-preview-name" style="
+								left: ${nameLeft};
+								top: ${nameTop};
+								width: ${nameWidth};
+								color: ${nameColor};
+								opacity: ${nameOpacity};
+								font-family: ${nameFontFamily};
+								letter-spacing: ${nameLetterSpacing}px;
+								font-size: ${nameSize}px;
+							">
+								角色名称
+							</div>
+							<div class="preset-preview-text" style="
+								left: ${textLeft};
+								top: ${textTop};
+								width: ${textWidth};
+								height: ${textHeight};
+								color: ${textColor};
+								opacity: ${textOpacity};
+								font-family: ${fontFamily};
+								letter-spacing: ${textLetterSpacing}px;
+								font-size: ${fontSize}px;
+								line-height: 1.4;
+							">
+								这是示例消息内容文本
+							</div>
+						</div>
+						<div class="preset-info">
+							<span class="preset-name">${preset.name}</span>
+						</div>
+						<button class="btn-icon-edit" title="重命名">✏</button>
+						<button class="btn-icon-delete" title="删除">×</button>
+					`;
+
+					// 点击卡片：加载样式
+					div.addEventListener("click", (e) => {
+						// 如果点击的是删除按钮
+						if (e.target.classList.contains("btn-icon-delete")) {
+							e.stopPropagation();
+							if (confirm(`确定删除 "${preset.name}" 吗?`)) {
+								// 清理相关配置
+								const config = state.portraitConfig.dialoguePresetConfig;
+								Object.keys(config.characterPresets || {}).forEach((charName) => {
+									if (config.characterPresets[charName] === preset.id) {
+										delete config.characterPresets[charName];
+									}
+								});
+								if (config.rangePresets) {
+									config.rangePresets = config.rangePresets.filter((r) => r.presetId !== preset.id);
+								}
+								Object.keys(config.singlePresets || {}).forEach((idx) => {
+									if (config.singlePresets[idx] === preset.id) {
+										delete config.singlePresets[idx];
+									}
+								});
+
+								PresetManager.deletePreset(preset.id);
+								if (PresetManager.currentId === preset.id) {
+									PresetManager.currentId = null;
+								}
+								renderPresetList();
+								renderDialogueConfigSection();
+								refreshCurrentDialogueStyle();
+								state.meta.lastModified = Date.now();
+							}
+							return;
+						}
+						// 如果点击的是编辑按钮
+						if (e.target.classList.contains("btn-icon-edit")) {
+							e.stopPropagation();
+							const newName = prompt("重命名预设:", preset.name);
+							if (newName && newName !== preset.name) {
+								preset.name = newName;
+								PresetManager.savePreset(preset);
+								renderPresetList();
+								renderDialogueConfigSection();
+							}
+							return;
+						}
+						// 否则加载样式
+						switchPreset(preset.id);
+					});
+
+					DOM.presetList.appendChild(div);
+				});
+			}
+
+			/**
+			 * Switch to a different preset
+			 */
+			function switchPreset(id) {
+				const presets = PresetManager.getAll();
+				const preset = presets[id];
+				if (!preset) return;
+
+				PresetManager.currentId = id;
+
+				// 更新 UI 选中状态
+				document.querySelectorAll(".preset-card").forEach((el) => {
+					el.classList.toggle("active", el.dataset.id === id);
+				});
+
+				// 填充表单数据
+				fillFormWithStyle(preset.style);
+
+				// 触发实时预览
+				updateLayoutPreview();
+
+				// 显示更新按钮
+				if (DOM.btnUpdatePreset) {
+					DOM.btnUpdatePreset.style.display = "block";
+				}
+			}
+
+			/**
+			 * Load preset to editor
+			 */
+			function loadPresetToEditor(id) {
+				switchPreset(id);
+			}
+
+			/**
+			 * Fill form with style data
+			 */
+			function fillFormWithStyle(style) {
+				if (!style) return;
+
+				if (DOM.modalDialogueBgImage) DOM.modalDialogueBgImage.value = style.bgImage || "";
+				if (DOM.modalDialogueBgOpacity) DOM.modalDialogueBgOpacity.value = style.bgOpacity ?? 70;
+				if (DOM.modalDialogueBgOpacityValue)
+					DOM.modalDialogueBgOpacityValue.textContent = (style.bgOpacity ?? 70) + "%";
+
+				if (DOM.modalDialogueNameSize) DOM.modalDialogueNameSize.value = style.nameSize || 20;
+				if (DOM.modalDialogueNameColor) DOM.modalDialogueNameColor.value = style.nameColor || "#5e81ac";
+				if (DOM.modalDialogueNameColorText) DOM.modalDialogueNameColorText.value = style.nameColor || "#5e81ac";
+				if (DOM.modalDialogueNameFontFamily) DOM.modalDialogueNameFontFamily.value = style.nameFontFamily || "";
+				if (DOM.modalDialogueNameOpacity) DOM.modalDialogueNameOpacity.value = style.nameOpacity ?? 100;
+				if (DOM.modalDialogueNameOpacityValue)
+					DOM.modalDialogueNameOpacityValue.textContent = (style.nameOpacity ?? 100) + "%";
+				if (DOM.modalDialogueNameLetterSpacing) DOM.modalDialogueNameLetterSpacing.value = style.nameLetterSpacing ?? 0;
+
+				if (DOM.modalDialogueFontSize) DOM.modalDialogueFontSize.value = style.fontSize || 24;
+				if (DOM.modalDialogueTextColor) DOM.modalDialogueTextColor.value = style.textColor || "#ffffff";
+				if (DOM.modalDialogueTextColorText) DOM.modalDialogueTextColorText.value = style.textColor || "#ffffff";
+				if (DOM.modalDialogueFontFamily) DOM.modalDialogueFontFamily.value = style.fontFamily || "";
+				if (DOM.modalDialogueTextOpacity) DOM.modalDialogueTextOpacity.value = style.textOpacity ?? 100;
+				if (DOM.modalDialogueTextOpacityValue)
+					DOM.modalDialogueTextOpacityValue.textContent = (style.textOpacity ?? 100) + "%";
+				if (DOM.modalDialogueTextLetterSpacing) DOM.modalDialogueTextLetterSpacing.value = style.textLetterSpacing ?? 0;
+
+				// 加载布局信息
+				if (style.layout) {
+					layoutEditorState.tempLayout = {
+						name: { ...{ x: null, y: null, width: 90 }, ...(style.layout.name || {}) },
+						text: { ...{ x: null, y: null, width: 90, height: 70 }, ...(style.layout.text || {}) },
+					};
+				} else {
+					// 如果没有布局信息，使用默认值
+					layoutEditorState.tempLayout = {
+						name: { x: null, y: null, width: 90 },
+						text: { x: null, y: null, width: 90, height: 70 },
+					};
+				}
+			}
+
+			/**
+			 * Get style from form inputs
+			 */
+			function getStyleFromForm() {
+				const style = {
+					bgImage: DOM.modalDialogueBgImage?.value || "",
+					bgOpacity: parseInt(DOM.modalDialogueBgOpacity?.value) || 70,
+					nameSize: parseInt(DOM.modalDialogueNameSize?.value) || 20,
+					nameColor: DOM.modalDialogueNameColor?.value || "#5e81ac",
+					nameFontFamily: DOM.modalDialogueNameFontFamily?.value || "",
+					nameOpacity: parseInt(DOM.modalDialogueNameOpacity?.value) || 100,
+					nameLetterSpacing: parseFloat(DOM.modalDialogueNameLetterSpacing?.value) || 0,
+					fontSize: parseInt(DOM.modalDialogueFontSize?.value) || 24,
+					textColor: DOM.modalDialogueTextColor?.value || "#ffffff",
+					fontFamily: DOM.modalDialogueFontFamily?.value || "",
+					textOpacity: parseInt(DOM.modalDialogueTextOpacity?.value) || 100,
+					textLetterSpacing: parseFloat(DOM.modalDialogueTextLetterSpacing?.value) || 0,
+				};
+
+				// 添加布局信息
+				if (layoutEditorState.tempLayout) {
+					style.layout = {
+						name: { ...layoutEditorState.tempLayout.name },
+						text: { ...layoutEditorState.tempLayout.text },
+					};
+				}
+
+				return style;
 			}
 
 			/**
@@ -11017,44 +12011,238 @@
 				layoutEditorState.resizing = null;
 			}
 
+			/** @type {string} Current save target for dialogue style */
+			let dialogueSaveTarget = "global";
+
+			/** @type {number|null} Range start index for dialogue style */
+			let dialogueRangeStartIndex = null;
+
+			/** @type {Object|null} Range style for dialogue style */
+			let dialogueRangeStyle = null;
+
+			/** @type {string|null} Range preset ID for dialogue style */
+			let dialogueRangePresetId = null;
+
+			/** @type {boolean} Whether save target select is initialized */
+			let saveTargetSelectInitialized = false;
+
+			/**
+			 * Initialize save target select
+			 */
+			function initSaveTargetSelect() {
+				if (saveTargetSelectInitialized) return;
+
+				const container = DOM.saveTargetSelect;
+				if (!container) return;
+
+				const trigger = container.querySelector(".custom-select-trigger");
+				const dropdown = container.querySelector(".custom-select-dropdown");
+				const options = container.querySelectorAll(".custom-select-option");
+
+				trigger?.addEventListener("click", (e) => {
+					e.stopPropagation();
+					// Close other open selects
+					document.querySelectorAll(".custom-select.open").forEach((el) => {
+						if (el !== container) el.classList.remove("open");
+					});
+					container.classList.toggle("open");
+				});
+
+				options.forEach((opt) => {
+					opt.addEventListener("click", (e) => {
+						e.stopPropagation();
+						const value = opt.dataset.value;
+						dialogueSaveTarget = value;
+						if (trigger) trigger.textContent = opt.textContent;
+						container.classList.remove("open");
+					});
+				});
+
+				// Prevent dropdown clicks from closing
+				dropdown?.addEventListener("click", (e) => {
+					e.stopPropagation();
+				});
+
+				saveTargetSelectInitialized = true;
+			}
+
 			/**
 			 * Save all dialogue settings
 			 */
 			function saveDialogueLayout() {
+				const currentStyle = getStyleFromForm();
+
+				// 如果当前选中了预设，更新预设数据
+				const presets = PresetManager.getAll();
+				const currentPresetId = PresetManager.currentId;
+				if (presets[currentPresetId]) {
+					presets[currentPresetId].style = currentStyle;
+					PresetManager.savePreset(presets[currentPresetId]);
+					renderPresetList();
+				}
+
+				// 根据保存目标应用样式
+				switch (dialogueSaveTarget) {
+					case "global":
+						// 应用到全局 state
+						applyStyleToGlobal(currentStyle);
+						break;
+
+					case "batch":
+						// 批量应用到选中的消息
+						const selectedMessages = MessageBatchSelectionState.selectedMessages;
+						if (selectedMessages.size === 0) {
+							alert("没有选中的消息");
+							return;
+						}
+						// 如果有选中预设，使用预设ID；否则创建新预设
+						let batchPresetId = currentPresetId;
+						if (!presets[batchPresetId]) {
+							batchPresetId = createAutoPreset(currentStyle, `批量设置 (${selectedMessages.size}条)`);
+						}
+						if (batchPresetId) {
+							selectedMessages.forEach((index) => {
+								state.portraitConfig.dialoguePresetConfig.singlePresets[index] = batchPresetId;
+							});
+							renderDialogueConfigSection();
+							MessageBatchSelectionState.exitBatchMode();
+							alert(`已为 ${selectedMessages.size} 条消息应用对话框样式`);
+						}
+						break;
+
+					case "character":
+						// 应用到当前角色
+						if (currentMessageIndex >= 0) {
+							const currentMsg = state.editedMessages[currentMessageIndex];
+							if (currentMsg?.name) {
+								// 如果有选中预设，使用预设ID；否则创建新预设
+								let presetId = currentPresetId;
+								if (!presets[presetId]) {
+									presetId = createAutoPreset(currentStyle, `${currentMsg.name}的样式`);
+								}
+								if (presetId) {
+									state.portraitConfig.dialoguePresetConfig.characterPresets[currentMsg.name] = presetId;
+									renderDialogueConfigSection();
+								}
+							} else {
+								alert("当前消息没有角色名");
+								return;
+							}
+						} else {
+							alert("请先选择一条消息");
+							return;
+						}
+						break;
+
+					case "single":
+						// 应用到当前消息
+						if (currentMessageIndex >= 0) {
+							// 如果有选中预设，使用预设ID；否则创建新预设
+							let presetId = currentPresetId;
+							if (!presets[presetId]) {
+								presetId = createAutoPreset(currentStyle, `消息#${currentMessageIndex + 1}的样式`);
+							}
+							if (presetId) {
+								state.portraitConfig.dialoguePresetConfig.singlePresets[currentMessageIndex] = presetId;
+								renderDialogueConfigSection();
+							}
+						} else {
+							alert("请先选择一条消息");
+							return;
+						}
+						break;
+
+					case "range-start":
+						// 设置区间开始
+						if (currentMessageIndex >= 0) {
+							dialogueRangeStartIndex = currentMessageIndex;
+							// 保存当前样式供区间结束时使用
+							dialogueRangeStyle = currentStyle;
+							dialogueRangePresetId = currentPresetId;
+							alert(`已设置区间开始点: #${currentMessageIndex + 1}\n请选择另一条消息，然后选择"区间结束"来完成设置`);
+							// 更新下拉框显示
+							const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+							if (trigger) trigger.textContent = "◀ 区间结束";
+							dialogueSaveTarget = "range-end";
+							return; // 不关闭模态框
+						} else {
+							alert("请先选择一条消息作为区间开始点");
+							return;
+						}
+
+					case "range-end":
+						// 设置区间结束
+						if (dialogueRangeStartIndex !== null && currentMessageIndex >= 0) {
+							const startIdx = Math.min(dialogueRangeStartIndex, currentMessageIndex);
+							const endIdx = Math.max(dialogueRangeStartIndex, currentMessageIndex);
+							// 如果有选中预设，使用预设ID；否则创建新预设
+							let presetId = dialogueRangePresetId;
+							if (!presets[presetId]) {
+								presetId = createAutoPreset(
+									dialogueRangeStyle || currentStyle,
+									`区间#${startIdx + 1}-#${endIdx + 1}的样式`
+								);
+							}
+							if (presetId) {
+								state.portraitConfig.dialoguePresetConfig.rangePresets.push({
+									startIndex: startIdx,
+									endIndex: endIdx,
+									presetId: presetId,
+								});
+								renderDialogueConfigSection();
+							}
+							dialogueRangeStartIndex = null;
+							dialogueRangeStyle = null;
+							dialogueRangePresetId = null;
+							// 重置下拉框
+							const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+							if (trigger) trigger.textContent = "🌐 全局样式";
+							dialogueSaveTarget = "global";
+						} else {
+							alert("请先设置区间开始点");
+							return;
+						}
+						break;
+				}
+
+				state.meta.lastModified = Date.now();
+
+				// 同步到侧边栏的输入框
+				syncDialogueSettingsToSidebar();
+
+				// 更新画布上的对话框
+				refreshCurrentDialogueStyle();
+
+				closeDialogueLayoutModal();
+			}
+
+			/**
+			 * Apply style to global state
+			 * @param {Object} currentStyle - Style object
+			 */
+			function applyStyleToGlobal(currentStyle) {
 				const style = state.portraitConfig.dialogueStyle;
 
 				// 保存背景
-				style.bgImage = DOM.modalDialogueBgImage?.value || "";
-				const bgOpacityValue = DOM.modalDialogueBgOpacity?.value;
-				style.bgOpacity =
-					bgOpacityValue !== null && bgOpacityValue !== undefined && bgOpacityValue !== ""
-						? parseInt(bgOpacityValue)
-						: 70;
+				style.bgImage = currentStyle.bgImage;
+				style.bgOpacity = currentStyle.bgOpacity;
 
 				// 保存字体
-				style.nameSize = parseInt(DOM.modalDialogueNameSize?.value) || 20;
-				style.fontSize = parseInt(DOM.modalDialogueFontSize?.value) || 24;
-				style.fontFamily = DOM.modalDialogueFontFamily?.value || "";
+				style.nameSize = currentStyle.nameSize;
+				style.fontSize = currentStyle.fontSize;
+				style.fontFamily = currentStyle.fontFamily;
 
 				// 保存颜色
-				style.nameColor = DOM.modalDialogueNameColor?.value || "#5e81ac";
-				style.textColor = DOM.modalDialogueTextColor?.value || "#ffffff";
+				style.nameColor = currentStyle.nameColor;
+				style.textColor = currentStyle.textColor;
 
 				// 保存透明度
-				const nameOpacityValue = DOM.modalDialogueNameOpacity?.value;
-				style.nameOpacity =
-					nameOpacityValue !== null && nameOpacityValue !== undefined && nameOpacityValue !== ""
-						? parseInt(nameOpacityValue)
-						: 100;
-				const textOpacityValue = DOM.modalDialogueTextOpacity?.value;
-				style.textOpacity =
-					textOpacityValue !== null && textOpacityValue !== undefined && textOpacityValue !== ""
-						? parseInt(textOpacityValue)
-						: 100;
+				style.nameOpacity = currentStyle.nameOpacity;
+				style.textOpacity = currentStyle.textOpacity;
 
 				// 保存字间距
-				style.nameLetterSpacing = parseFloat(DOM.modalDialogueNameLetterSpacing?.value) || 0;
-				style.textLetterSpacing = parseFloat(DOM.modalDialogueTextLetterSpacing?.value) || 0;
+				style.nameLetterSpacing = currentStyle.nameLetterSpacing;
+				style.textLetterSpacing = currentStyle.textLetterSpacing;
 
 				// 保存布局
 				if (layoutEditorState.tempLayout) {
@@ -11065,18 +12253,28 @@
 					style.layout.text = { ...layoutEditorState.tempLayout.text };
 				}
 
-				state.meta.lastModified = Date.now();
-
-				// 同步到侧边栏的输入框
-				syncDialogueSettingsToSidebar();
-
-				// 更新画布上的对话框
-				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
-				if (canvasInner) {
-					applyCanvasDialogueStyles(canvasInner);
+				// 更新侧边栏全局样式预览
+				if (DOM.globalDialoguePreview) {
+					DOM.globalDialoguePreview.innerHTML = generateGlobalStylePreview();
 				}
+			}
 
-				closeDialogueLayoutModal();
+			/**
+			 * Create an auto-named preset and return its ID
+			 * @param {Object} style - Style object
+			 * @param {string} name - Preset name
+			 * @returns {string} Preset ID
+			 */
+			function createAutoPreset(style, name) {
+				const presetId = "auto_" + Date.now();
+				const preset = {
+					id: presetId,
+					name: name,
+					style: { ...style },
+				};
+				PresetManager.savePreset(preset);
+				renderPresetList();
+				return presetId;
 			}
 
 			/**
@@ -11166,7 +12364,8 @@
 				// 更新画布上的对话框
 				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
 				if (canvasInner) {
-					applyCanvasDialogueStyles(canvasInner);
+					const currentMsg = state.editedMessages[currentMessageIndex];
+					applyCanvasDialogueStyles(canvasInner, currentMessageIndex, currentMsg?.name);
 				}
 
 				closeDialogueLayoutModal();
@@ -11240,6 +12439,92 @@
 			DOM.btnResetNameStyle?.addEventListener("click", resetNameStyle);
 			DOM.btnResetTextStyle?.addEventListener("click", resetTextStyle);
 
+			// Preset management event listeners
+			let isSidebarOpen = false;
+
+			// 从localStorage读取侧边栏状态
+			function loadSidebarState() {
+				const saved = localStorage.getItem("dialogue_preset_sidebar_open");
+				return saved === "true";
+			}
+
+			// 保存侧边栏状态到localStorage
+			function saveSidebarState(isOpen) {
+				localStorage.setItem("dialogue_preset_sidebar_open", isOpen.toString());
+			}
+
+			// 切换侧边栏
+			DOM.btnToggleSidebar?.addEventListener("click", () => {
+				isSidebarOpen = !isSidebarOpen;
+				saveSidebarState(isSidebarOpen);
+				toggleSidebarUI();
+			});
+
+			function toggleSidebarUI() {
+				if (isSidebarOpen) {
+					// 展开
+					DOM.modalDialogueContainer?.classList.add("sidebar-expanded");
+					if (DOM.btnToggleSidebar) {
+						DOM.btnToggleSidebar.classList.add("active");
+						DOM.btnToggleSidebar.textContent = "📂 收起预设";
+					}
+					renderPresetList(); // 展开时才渲染，节省性能
+				} else {
+					// 收起
+					DOM.modalDialogueContainer?.classList.remove("sidebar-expanded");
+					if (DOM.btnToggleSidebar) {
+						DOM.btnToggleSidebar.classList.remove("active");
+						DOM.btnToggleSidebar.textContent = "📂 预设库";
+					}
+				}
+			}
+
+			DOM.btnSaveAsNew?.addEventListener("click", () => {
+				const name = prompt("为当前样式起个名字:", "我的自定义样式");
+				if (!name) return;
+
+				const newId = "user_" + Date.now();
+				const newPreset = {
+					id: newId,
+					name: name,
+					style: getStyleFromForm(),
+				};
+
+				PresetManager.savePreset(newPreset);
+				PresetManager.currentId = newId;
+
+				// 如果侧边栏没打开，自动打开让用户看到保存结果
+				if (!isSidebarOpen) {
+					isSidebarOpen = true;
+					toggleSidebarUI();
+				} else {
+					renderPresetList();
+				}
+
+				// 显示更新按钮
+				if (DOM.btnUpdatePreset) {
+					DOM.btnUpdatePreset.style.display = "block";
+				}
+			});
+
+			// 更新当前预设
+			DOM.btnUpdatePreset?.addEventListener("click", () => {
+				if (!PresetManager.currentId) return;
+
+				const presets = PresetManager.getAll();
+				const currentPreset = presets[PresetManager.currentId];
+				if (!currentPreset) return;
+
+				// 更新预设样式
+				currentPreset.style = getStyleFromForm();
+				PresetManager.savePreset(currentPreset);
+
+				// 重新渲染列表
+				renderPresetList();
+
+				alert(`预设 "${currentPreset.name}" 已更新`);
+			});
+
 			// 背景图片文件选择
 			DOM.btnDialogueBgFile?.addEventListener("click", () => {
 				DOM.dialogueBgFileInput?.click();
@@ -11307,6 +12592,275 @@
 			});
 
 			// ==================== End Dialogue Settings Modal ====================
+
+			// ==================== Dialogue Config Section ====================
+
+			/**
+			 * Refresh current dialogue style (apply preset changes immediately)
+			 */
+			function refreshCurrentDialogueStyle() {
+				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
+				if (canvasInner && currentMessageIndex >= 0) {
+					const currentMsg = state.editedMessages[currentMessageIndex];
+					applyCanvasDialogueStyles(canvasInner, currentMessageIndex, currentMsg?.name);
+				}
+			}
+
+			/**
+			 * Generate preset preview HTML (mini dialogue box)
+			 * @param {Object} preset - Preset object
+			 * @returns {string} HTML string
+			 */
+			function generatePresetPreviewMini(preset) {
+				if (!preset || !preset.style) {
+					return '<div class="preset-preview-mini" style="background: rgba(0,0,0,0.5); width: 60px; height: 30px; border-radius: 4px;"></div>';
+				}
+				const s = preset.style;
+				const bgOpacity = (s.bgOpacity ?? 70) / 100;
+				let bgStyle = "";
+				if (s.bgImage) {
+					bgStyle = `background-image: url(${s.bgImage}); background-size: cover; background-position: center;`;
+				} else {
+					bgStyle = `background-color: rgba(0, 0, 0, ${bgOpacity});`;
+				}
+				const nameColor = s.nameColor || "#5e81ac";
+				const textColor = s.textColor || "#ffffff";
+				return `
+					<div class="preset-preview-mini" style="${bgStyle} width: 60px; height: 30px; border-radius: 4px; position: relative; overflow: hidden; flex-shrink: 0;">
+						<div style="position: absolute; top: 2px; left: 3px; font-size: 5px; color: ${nameColor}; white-space: nowrap;">名称</div>
+						<div style="position: absolute; top: 10px; left: 3px; right: 3px; font-size: 4px; color: ${textColor}; line-height: 1.2; overflow: hidden;">示例文本内容</div>
+					</div>
+				`;
+			}
+
+			/**
+			 * Generate global style preview HTML (larger version)
+			 * @returns {string} HTML string
+			 */
+			function generateGlobalStylePreview() {
+				const s = state.portraitConfig.dialogueStyle || {};
+				const bgOpacity = (s.bgOpacity ?? 70) / 100;
+				let bgStyle = "";
+				if (s.bgImage) {
+					bgStyle = `background-image: url(${s.bgImage}); background-size: 100% 100%; background-position: center; background-repeat: no-repeat;`;
+				} else {
+					bgStyle = `background-color: rgba(0, 0, 0, ${bgOpacity});`;
+				}
+				const nameColor = s.nameColor || "#5e81ac";
+				const textColor = s.textColor || "#ffffff";
+
+				// 使用布局数据计算位置（如果有）
+				const layout = s.layout || {};
+				const nameLayout = layout.name || {};
+				const textLayout = layout.text || {};
+
+				// 预览框尺寸比例（相对于1920x1080画布）
+				const scale = 0.12;
+
+				// 名称位置
+				let nameTop = "8%";
+				let nameLeft = "3%";
+				if (nameLayout.x !== null && nameLayout.x !== undefined) {
+					nameLeft = `${nameLayout.x * scale}%`;
+				}
+				if (nameLayout.y !== null && nameLayout.y !== undefined) {
+					nameTop = `${nameLayout.y * scale}%`;
+				}
+
+				// 文本位置
+				let textTop = "40%";
+				let textLeft = "3%";
+				if (textLayout.x !== null && textLayout.x !== undefined) {
+					textLeft = `${textLayout.x * scale}%`;
+				}
+				if (textLayout.y !== null && textLayout.y !== undefined) {
+					textTop = `${textLayout.y * scale}%`;
+				}
+
+				return `
+					<div style="${bgStyle} width: 100%; height: 50px; border-radius: 4px; position: relative; overflow: hidden;">
+						<div style="position: absolute; top: ${nameTop}; left: ${nameLeft}; font-size: 9px; color: ${nameColor}; white-space: nowrap; font-weight: 500;">角色名称</div>
+						<div style="position: absolute; top: ${textTop}; left: ${textLeft}; right: 3%; font-size: 10px; color: ${textColor}; line-height: 1.3; overflow: hidden;">这是示例消息内容文本...</div>
+					</div>
+				`;
+			}
+
+			/**
+			 * Render dialogue config section in sidebar
+			 */
+			function renderDialogueConfigSection() {
+				const config = state.portraitConfig.dialoguePresetConfig || {};
+				const presets = PresetManager.getAll();
+
+				// 渲染全局样式预览
+				if (DOM.globalDialoguePreview) {
+					DOM.globalDialoguePreview.innerHTML = generateGlobalStylePreview();
+					// 点击预览打开编辑模态框
+					DOM.globalDialoguePreview.onclick = () => openDialogueLayoutModal();
+				}
+
+				// 角色专属列表
+				const charPresetEntries = Object.entries(config.characterPresets || {});
+				if (DOM.charDialogueCount) {
+					DOM.charDialogueCount.textContent = charPresetEntries.length;
+				}
+				if (DOM.charDialogueList) {
+					if (charPresetEntries.length === 0) {
+						DOM.charDialogueList.innerHTML =
+							'<span style="color: var(--text-secondary); font-size: 0.8rem">暂无角色专属配置</span>';
+					} else {
+						DOM.charDialogueList.innerHTML = charPresetEntries
+							.map(([charName, presetId]) => {
+								const preset = presets[presetId];
+								const presetName = preset ? preset.name : "未知预设";
+								const previewHtml = generatePresetPreviewMini(preset);
+								return `
+									<div class="dialogue-config-item">
+										${previewHtml}
+										<div style="flex: 1; min-width: 0; overflow: hidden;">
+											<div style="font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">👤 ${escapeHtml(
+												charName
+											)}</div>
+											<div style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(
+												presetName
+											)}</div>
+										</div>
+										<button class="config-remove" data-type="character" data-key="${escapeAttr(charName)}" title="移除">🗑️</button>
+									</div>
+								`;
+							})
+							.join("");
+					}
+				}
+
+				// 区间覆盖列表
+				const rangePresets = config.rangePresets || [];
+				if (DOM.rangeDialogueCount) {
+					DOM.rangeDialogueCount.textContent = rangePresets.length;
+				}
+				if (DOM.rangeDialogueList) {
+					if (rangePresets.length === 0) {
+						DOM.rangeDialogueList.innerHTML =
+							'<span style="color: var(--text-secondary); font-size: 0.8rem">暂无区间覆盖</span>';
+					} else {
+						DOM.rangeDialogueList.innerHTML = rangePresets
+							.map((range, idx) => {
+								const preset = presets[range.presetId];
+								const presetName = preset ? preset.name : "未知预设";
+								const charLimit = range.characterName ? ` (${range.characterName})` : "";
+								const previewHtml = generatePresetPreviewMini(preset);
+								return `
+									<div class="dialogue-config-item">
+										${previewHtml}
+										<div style="flex: 1; min-width: 0; overflow: hidden;">
+											<div style="font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">📍 #${
+												range.startIndex + 1
+											} - #${range.endIndex + 1}${charLimit}</div>
+											<div style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(
+												presetName
+											)}</div>
+										</div>
+										<button class="config-remove" data-type="range" data-key="${idx}" title="移除">🗑️</button>
+									</div>
+								`;
+							})
+							.join("");
+					}
+				}
+
+				// 单条覆盖列表
+				const singlePresetEntries = Object.entries(config.singlePresets || {});
+				if (DOM.singleDialogueCount) {
+					DOM.singleDialogueCount.textContent = singlePresetEntries.length;
+				}
+				if (DOM.singleDialogueList) {
+					if (singlePresetEntries.length === 0) {
+						DOM.singleDialogueList.innerHTML =
+							'<span style="color: var(--text-secondary); font-size: 0.8rem">暂无单条覆盖</span>';
+					} else {
+						DOM.singleDialogueList.innerHTML = singlePresetEntries
+							.map(([msgIdx, presetId]) => {
+								const preset = presets[presetId];
+								const presetName = preset ? preset.name : "未知预设";
+								const msg = state.editedMessages[parseInt(msgIdx)];
+								const displayName = msg ? msg.name || "旁白" : "未知";
+								const truncatedText =
+									msg?.text && msg.text.length > 20 ? msg.text.substring(0, 20) + "..." : msg?.text || "";
+								const previewHtml = generatePresetPreviewMini(preset);
+								return `
+									<div class="dialogue-config-item" data-msg-index="${msgIdx}">
+										${previewHtml}
+										<div style="flex: 1; min-width: 0; overflow: hidden;">
+											<div style="font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(
+												displayName
+											)}: ${escapeHtml(truncatedText)}</div>
+											<div style="font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">#${
+												parseInt(msgIdx) + 1
+											} → ${escapeHtml(presetName)}</div>
+										</div>
+										<button class="config-remove" data-type="single" data-key="${msgIdx}" title="移除">🗑️</button>
+									</div>
+								`;
+							})
+							.join("");
+					}
+				}
+			}
+
+			// Event listeners for dialogue config section
+			DOM.btnGlobalDialogueSettings?.addEventListener("click", () => {
+				openDialogueLayoutModal();
+			});
+
+			DOM.btnAddCharDialogue?.addEventListener("click", () => {
+				// 打开预设侧边栏让用户选择
+				if (!isSidebarOpen) {
+					isSidebarOpen = true;
+					toggleSidebarUI();
+				}
+				openDialogueLayoutModal();
+				alert('请右键点击预设卡片，选择"应用到角色..."');
+			});
+
+			// Click handlers for dialogue config items (jump to message)
+			document.addEventListener("click", (e) => {
+				const configItem = e.target.closest(".dialogue-config-item[data-msg-index]");
+				if (configItem && !e.target.closest(".config-remove")) {
+					const msgIndex = parseInt(configItem.dataset.msgIndex, 10);
+					if (!isNaN(msgIndex) && msgIndex >= 0 && msgIndex < state.editedMessages.length) {
+						jumpToMessage(msgIndex);
+						switchView("replay");
+					}
+				}
+			});
+
+			// Delete handlers for dialogue config items
+			document.addEventListener("click", (e) => {
+				const deleteBtn = e.target.closest(".dialogue-config-item .config-remove");
+				if (!deleteBtn) return;
+
+				const type = deleteBtn.dataset.type;
+				const key = deleteBtn.dataset.key;
+				const config = state.portraitConfig.dialoguePresetConfig;
+
+				switch (type) {
+					case "character":
+						delete config.characterPresets[key];
+						break;
+					case "range":
+						config.rangePresets.splice(parseInt(key), 1);
+						break;
+					case "single":
+						delete config.singlePresets[key];
+						break;
+				}
+
+				renderDialogueConfigSection();
+				refreshCurrentDialogueStyle();
+				state.meta.lastModified = Date.now();
+			});
+
+			// ==================== End Dialogue Config Section ====================
 
 			/**
 			 * Open edit modal for a message
@@ -12314,8 +13868,8 @@
 										item.source === "ccfolia"
 											? "var(--primary-color)"
 											: item.source === "account"
-											? "#9b59b6"
-											: "var(--success-color)"
+												? "#9b59b6"
+												: "var(--success-color)"
 									};
 									color: #fff;
 									font-size: 0.65rem;
@@ -13138,6 +14692,25 @@
 			setupModalOverlayClose(DOM.modalBgmCustom, closeBgmCustomModal);
 			DOM.modalBgmCustomSave.addEventListener("click", saveBgmCustom);
 
+			// BGM 自定义文件选择
+			DOM.btnBgmCustomFile?.addEventListener("click", () => {
+				DOM.bgmCustomFileInput?.click();
+			});
+
+			DOM.bgmCustomFileInput?.addEventListener("change", (e) => {
+				const file = e.target.files?.[0];
+				if (file && file.type.startsWith("audio/")) {
+					const reader = new FileReader();
+					reader.onload = (event) => {
+						const dataUrl = event.target.result;
+						DOM.bgmCustomUrl.value = dataUrl;
+					};
+					reader.readAsDataURL(file);
+				}
+				// 重置 file input 以便可以再次选择同一文件
+				e.target.value = "";
+			});
+
 			// BGM Library buttons
 			DOM.btnBgmImport.addEventListener("click", openBgmImportModal);
 			DOM.btnBgmAccount.addEventListener("click", openBgmAccountModal);
@@ -13217,8 +14790,8 @@
 							const matchStatus = config.isDefault
 								? '<span style="color: var(--primary-color);">默认配置</span>'
 								: isMatched
-								? '<span style="color: var(--success-color);">✓ 已匹配</span>'
-								: '<span style="color: var(--text-secondary);">未匹配角色</span>';
+									? '<span style="color: var(--success-color);">✓ 已匹配</span>'
+									: '<span style="color: var(--text-secondary);">未匹配角色</span>';
 
 							return `
 							<div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid var(--border-color);">
@@ -15832,8 +17405,9 @@
 
 				const finalScale = baseScale * canvasZoom;
 
-				// Apply dialogue styles and position
-				applyCanvasDialogueStyles(canvasInner);
+				// Apply dialogue styles and position (use current message context if available)
+				const currentMsg = state.editedMessages[currentMessageIndex];
+				applyCanvasDialogueStyles(canvasInner, currentMessageIndex, currentMsg?.name);
 
 				// Calculate center position
 				const scaledWidth = canvasWidth * finalScale;
@@ -16136,11 +17710,67 @@
 			}
 
 			/**
+			 * Get effective dialogue style for a message
+			 * Priority: single override > range override > character preset > global style (from modal)
+			 * @param {number} messageIndex - Message index
+			 * @param {string} characterName - Character name
+			 * @returns {Object} Effective dialogue style
+			 */
+			function getEffectiveDialogueStyle(messageIndex, characterName) {
+				const config = state.portraitConfig.dialoguePresetConfig || {};
+				const presets = PresetManager.getAll();
+				const defaultStyle = state.portraitConfig.dialogueStyle || {};
+
+				// 1. Check single override (highest priority)
+				if (config.singlePresets && config.singlePresets[messageIndex]) {
+					const presetId = config.singlePresets[messageIndex];
+					const preset = presets[presetId];
+					if (preset && preset.style) {
+						return { ...defaultStyle, ...preset.style };
+					}
+				}
+
+				// 2. Check range override
+				if (config.rangePresets && config.rangePresets.length > 0) {
+					for (const range of config.rangePresets) {
+						if (messageIndex >= range.startIndex && messageIndex <= range.endIndex) {
+							// If range has character limit, check it
+							if (range.characterName && range.characterName !== characterName) {
+								continue;
+							}
+							const preset = presets[range.presetId];
+							if (preset && preset.style) {
+								return { ...defaultStyle, ...preset.style };
+							}
+						}
+					}
+				}
+
+				// 3. Check character preset
+				if (characterName && config.characterPresets && config.characterPresets[characterName]) {
+					const presetId = config.characterPresets[characterName];
+					const preset = presets[presetId];
+					if (preset && preset.style) {
+						return { ...defaultStyle, ...preset.style };
+					}
+				}
+
+				// 4. Return default/global style (edited via modal)
+				return defaultStyle;
+			}
+
+			/**
 			 * Apply dialogue styles to canvas dialogue elements
 			 * @param {HTMLElement} canvasInner - Canvas inner container
+			 * @param {number} [messageIndex] - Optional message index for preset lookup
+			 * @param {string} [characterName] - Optional character name for preset lookup
 			 */
-			function applyCanvasDialogueStyles(canvasInner) {
-				const style = state.portraitConfig.dialogueStyle || {};
+			function applyCanvasDialogueStyles(canvasInner, messageIndex, characterName) {
+				// Get effective style based on presets
+				const style =
+					messageIndex !== undefined && messageIndex >= 0
+						? getEffectiveDialogueStyle(messageIndex, characterName || "")
+						: state.portraitConfig.dialogueStyle || {};
 				const fontSize = style.fontSize ?? 24;
 				const nameSize = style.nameSize ?? 20;
 				const bgOpacity = (style.bgOpacity ?? 70) / 100;
@@ -16226,6 +17856,10 @@
 						nameEl.style.fontSize = `${nameSize}px`;
 						nameEl.style.opacity = nameOpacity;
 						nameEl.style.letterSpacing = `${nameLetterSpacing}px`;
+						nameEl.style.color = style.nameColor || "#5e81ac";
+						if (style.nameFontFamily) {
+							nameEl.style.fontFamily = style.nameFontFamily;
+						}
 						if (
 							nameLayout.x !== null &&
 							nameLayout.x !== undefined &&
@@ -16251,6 +17885,10 @@
 						textEl.style.fontSize = `${fontSize}px`;
 						textEl.style.opacity = textOpacity;
 						textEl.style.letterSpacing = `${textLetterSpacing}px`;
+						textEl.style.color = style.textColor || "#ffffff";
+						if (style.fontFamily) {
+							textEl.style.fontFamily = style.fontFamily;
+						}
 						if (
 							textLayout.x !== null &&
 							textLayout.x !== undefined &&
@@ -17061,6 +18699,12 @@
 				applyStageSnapshot(index);
 				updateMultiModePortraits(msg);
 
+				// Apply dialogue styles based on presets
+				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
+				if (canvasInner) {
+					applyCanvasDialogueStyles(canvasInner, index, msg.name);
+				}
+
 				// Apply special styles based on message type to canvas dialogue
 				const canvasBox = DOM.portraitArea.querySelector(".canvas-dialogue-box");
 				if (canvasBox) {
@@ -17514,6 +19158,14 @@
 					...state.portraitConfig,
 					...(data.portraitConfig || {}),
 				};
+				// Ensure dialoguePresetConfig exists with proper defaults
+				if (!state.portraitConfig.dialoguePresetConfig) {
+					state.portraitConfig.dialoguePresetConfig = {
+						characterPresets: {},
+						rangePresets: [],
+						singlePresets: {},
+					};
+				}
 				state.settings = {
 					...state.settings,
 					...(data.settings || {}),
@@ -17673,6 +19325,9 @@
 
 				// Sync dialogue style UI with state
 				syncDialogueStyleUI();
+
+				// Render dialogue config section
+				renderDialogueConfigSection();
 
 				// Always reinitialize character data from messages
 				if (state.editedMessages.length > 0) {
@@ -18477,7 +20132,8 @@
 			function updateDialogueStyle() {
 				const canvasInner = DOM.portraitArea.querySelector(".portrait-canvas-inner");
 				if (canvasInner) {
-					applyCanvasDialogueStyles(canvasInner);
+					const currentMsg = state.editedMessages[currentMessageIndex];
+					applyCanvasDialogueStyles(canvasInner, currentMessageIndex, currentMsg?.name);
 				}
 				state.meta.lastModified = Date.now();
 			}
@@ -18727,6 +20383,10 @@
 				DOM.canvasContextMenu.classList.remove("visible");
 				DOM.portraitContextMenu.classList.remove("visible");
 				DOM.messageContextMenu.classList.remove("visible");
+				// Also close custom select dropdowns
+				document.querySelectorAll(".custom-select.open").forEach((el) => {
+					el.classList.remove("open");
+				});
 			}
 
 			/**
@@ -19555,6 +21215,14 @@
 				alert(`已剪切 ${count} 条消息，右键点击目标位置选择"粘贴到此处"`);
 			});
 
+			DOM.btnMessageBatchDialogue.addEventListener("click", () => {
+				if (MessageBatchSelectionState.getSelectedCount() === 0) {
+					alert("请先选择要设置对话框的消息");
+					return;
+				}
+				openBatchDialogueModal();
+			});
+
 			DOM.btnMessageBatchDelete.addEventListener("click", () => {
 				if (MessageBatchSelectionState.getSelectedCount() === 0) {
 					alert("请先选择要删除的消息");
@@ -19602,6 +21270,9 @@
 
 			// Render BGM library list
 			renderBgmLibraryList();
+
+			// Render dialogue config section
+			renderDialogueConfigSection();
 
 			// Initialize portrait display mode dropdown
 			if (DOM.portraitDisplayMode) {
