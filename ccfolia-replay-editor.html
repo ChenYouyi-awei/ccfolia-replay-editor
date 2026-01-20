@@ -472,6 +472,12 @@
 				color: #fff;
 			}
 
+			/* Dialogue badge in message list */
+			.message-item-badge.dialogue {
+				background: #e67e22;
+				color: #fff;
+			}
+
 			.bgm-marker {
 				font-size: 0.7rem;
 				padding: 2px 6px;
@@ -498,6 +504,30 @@
 				background: rgba(231, 76, 60, 0.2);
 				color: var(--error-color);
 				border-color: var(--error-color);
+			}
+
+			/* Dialogue style markers */
+			.dialogue-marker {
+				font-size: 0.7rem;
+				padding: 2px 6px;
+				border-radius: var(--radius-sm);
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				cursor: pointer;
+				background: rgba(230, 126, 34, 0.3);
+				color: #e67e22;
+				border: 1px solid #e67e22;
+			}
+
+			.dialogue-marker .remove-marker {
+				cursor: pointer;
+				opacity: 0.7;
+				font-size: 0.8rem;
+			}
+
+			.dialogue-marker .remove-marker:hover {
+				opacity: 1;
 			}
 
 			/* Background switch list item */
@@ -1334,10 +1364,16 @@
 				opacity: 0;
 				transition: opacity 0.15s;
 				pointer-events: none;
+				display: none; /* 完全隐藏标签 */
 			}
 
 			.dialogue-layout-preview .layout-element:hover .layout-element-label {
-				opacity: 1;
+				opacity: 0; /* 不显示 */
+			}
+
+			.dialogue-layout-preview .layout-element.dragging .layout-element-label,
+			.dialogue-layout-preview .layout-element.resizing .layout-element-label {
+				opacity: 0;
 			}
 
 			.layout-size-info {
@@ -10234,6 +10270,25 @@
 							: '<span class="message-item-badge bgm" style="background: var(--error-color)">静音</span>';
 					}
 
+					// Dialogue badge (for single message or range styles)
+					let dialogueBadge = "";
+					const dialogueConfig = state.portraitConfig.dialoguePresetConfig;
+					if (dialogueConfig) {
+						// Check for single message style
+						if (dialogueConfig.singlePresets?.[globalIndex]) {
+							dialogueBadge = '<span class="message-item-badge dialogue">对话框</span>';
+						}
+						// Check for range start or end
+						else {
+							const isInRange = dialogueConfig.rangePresets?.some(
+								(r) => r.startIndex === globalIndex || r.endIndex === globalIndex
+							);
+							if (isInRange) {
+								dialogueBadge = '<span class="message-item-badge dialogue">对话框</span>';
+							}
+						}
+					}
+
 					// Channel badge
 					const channelBadge = msg.channelName ? `<span class="message-item-channel">${msg.channelName}</span>` : "";
 
@@ -10285,6 +10340,34 @@
 						stageMarkersHtml += "</div>";
 					}
 
+					// Dialogue style markers (reuse dialogueConfig from above)
+					if (dialogueConfig) {
+						// Check for single message style
+						if (dialogueConfig.singlePresets?.[globalIndex]) {
+							const preset = dialogueConfig.singlePresets[globalIndex];
+							const presetName = preset.name || "未命名";
+							if (!stageMarkersHtml) stageMarkersHtml = '<div class="stage-markers">';
+							else stageMarkersHtml = stageMarkersHtml.replace("</div>", "");
+							stageMarkersHtml += `<span class="dialogue-marker single" data-type="dialogue-single">💬 单条样式 - ${escapeHtml(presetName)} <span class="remove-marker" title="移除样式">×</span></span></div>`;
+						}
+						// Check for range start
+						const rangeStart = dialogueConfig.rangePresets?.find((r) => r.startIndex === globalIndex);
+						if (rangeStart) {
+							const presetName = rangeStart.name || "未命名";
+							if (!stageMarkersHtml) stageMarkersHtml = '<div class="stage-markers">';
+							else stageMarkersHtml = stageMarkersHtml.replace("</div>", "");
+							stageMarkersHtml += `<span class="dialogue-marker range-start" data-type="dialogue-range-start">📍 区间样式开始 - ${escapeHtml(presetName)} <span class="remove-marker" title="移除区间">×</span></span></div>`;
+						}
+						// Check for range end
+						const rangeEnd = dialogueConfig.rangePresets?.find((r) => r.endIndex === globalIndex);
+						if (rangeEnd) {
+							const presetName = rangeEnd.name || "未命名";
+							if (!stageMarkersHtml) stageMarkersHtml = '<div class="stage-markers">';
+							else stageMarkersHtml = stageMarkersHtml.replace("</div>", "");
+							stageMarkersHtml += `<span class="dialogue-marker range-end" data-type="dialogue-range-end">📍 区间样式结束 - ${escapeHtml(presetName)} <span class="remove-marker" title="移除区间">×</span></span></div>`;
+						}
+					}
+
 					li.innerHTML = `
 						<span class="drag-handle" draggable="true" title="拖拽排序">⋮⋮</span>
 						${
@@ -10303,6 +10386,7 @@
 								${stageBadges}
 								${backgroundBadge}
 								${bgmBadge}
+								${dialogueBadge}
 							</div>
 							<div class="message-item-text">${getMessageDisplayText(msg)}</div>
 							${stageMarkersHtml}
@@ -10556,6 +10640,32 @@
 									if (currentMessageIndex === globalIndex) {
 										BGMManager.updateBGM(globalIndex);
 									}
+									return;
+								}
+								// Check if it's a dialogue marker
+								const dialogueMarker = e.target.closest(".dialogue-marker");
+								if (dialogueMarker) {
+									const dialogueType = dialogueMarker.dataset.type;
+									const config = state.portraitConfig.dialoguePresetConfig;
+
+									if (dialogueType === "dialogue-single" && config?.singlePresets) {
+										delete config.singlePresets[globalIndex];
+									} else if (dialogueType === "dialogue-range-start" || dialogueType === "dialogue-range-end") {
+										if (config?.rangePresets) {
+											// Find and remove the range that includes this index
+											const rangeIndex = config.rangePresets.findIndex(
+												(r) =>
+													(dialogueType === "dialogue-range-start" && r.startIndex === globalIndex) ||
+													(dialogueType === "dialogue-range-end" && r.endIndex === globalIndex)
+											);
+											if (rangeIndex !== -1) {
+												config.rangePresets.splice(rangeIndex, 1);
+											}
+										}
+									}
+
+									state.meta.lastModified = Date.now();
+									renderMessageListFull();
 									return;
 								}
 								return;
@@ -11170,8 +11280,9 @@
 
 			/**
 			 * Open dialogue settings modal
+			 * @param {boolean} lockTarget - Whether to lock the save target (disable dropdown)
 			 */
-			function openDialogueLayoutModal() {
+			function openDialogueLayoutModal(lockTarget = false) {
 				const style = state.portraitConfig.dialogueStyle || {};
 				const layout = style.layout || {};
 
@@ -11215,11 +11326,83 @@
 
 				// 初始化保存目标选择器
 				initSaveTargetSelect();
-				// 重置保存目标为全局
-				dialogueSaveTarget = "global";
-				dialogueRangeStartIndex = null;
+
+				// 如果锁定目标，禁用下拉选择器
 				const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
-				if (trigger) trigger.textContent = "🌐 全局样式";
+				if (lockTarget) {
+					if (trigger) {
+						trigger.style.pointerEvents = "none";
+						trigger.style.opacity = "0.6";
+						trigger.style.cursor = "not-allowed";
+					}
+				} else {
+					// 不锁定时，自动检测当前消息应用的样式
+					if (currentMessageIndex >= 0 && state.editedMessages[currentMessageIndex]) {
+						const msg = state.editedMessages[currentMessageIndex];
+						const config = state.portraitConfig.dialoguePresetConfig;
+						let styleDetected = false;
+
+						// 优先级1: 检查是否有单条消息样式
+						if (config?.singlePresets?.[currentMessageIndex]) {
+							dialogueSaveTarget = "single";
+							dialogueTargetCharacterName = msg.name || "角色名称";
+							dialogueTargetMessageText = msg.text || "消息内容";
+							dialogueTargetMessageIndex = currentMessageIndex;
+							if (trigger) trigger.textContent = `📌 当前消息 (#${currentMessageIndex + 1})`;
+							styleDetected = true;
+						}
+
+						// 优先级2: 检查是否在区间内
+						if (!styleDetected && config?.rangePresets) {
+							const inRange = config.rangePresets.find(
+								(r) => currentMessageIndex >= r.startIndex && currentMessageIndex <= r.endIndex
+							);
+							if (inRange) {
+								dialogueSaveTarget = "global"; // 区间样式显示为全局
+								dialogueTargetCharacterName = msg.name || "角色名称";
+								dialogueTargetMessageText = msg.text || "消息内容";
+								if (trigger)
+									trigger.textContent = `🌐 全局样式 (区间 #${inRange.startIndex + 1}-#${inRange.endIndex + 1})`;
+								styleDetected = true;
+							}
+						}
+
+						// 优先级3: 检查是否有角色专属样式
+						if (!styleDetected && msg.name && config?.characterPresets?.[msg.name]) {
+							dialogueSaveTarget = "character";
+							dialogueTargetCharacterName = msg.name;
+							dialogueTargetMessageText = null;
+							dialogueTargetMessageIndex = null;
+							if (trigger) trigger.textContent = `👤 当前角色 (${msg.name})`;
+							styleDetected = true;
+						}
+
+						// 优先级4: 使用全局样式
+						if (!styleDetected) {
+							dialogueSaveTarget = "global";
+							dialogueRangeStartIndex = null;
+							dialogueTargetCharacterName = null;
+							dialogueTargetMessageText = null;
+							dialogueTargetMessageIndex = null;
+							if (trigger) trigger.textContent = "🌐 全局样式";
+						}
+					} else {
+						// 没有当前消息，重置为全局
+						dialogueSaveTarget = "global";
+						dialogueRangeStartIndex = null;
+						dialogueTargetCharacterName = null;
+						dialogueTargetMessageText = null;
+						dialogueTargetMessageIndex = null;
+						if (trigger) trigger.textContent = "🌐 全局样式";
+					}
+
+					// 启用下拉选择器
+					if (trigger) {
+						trigger.style.pointerEvents = "";
+						trigger.style.opacity = "";
+						trigger.style.cursor = "";
+					}
+				}
 
 				// 加载当前设置到模态框
 				loadDialogueSettingsToModal();
@@ -11272,10 +11455,7 @@
 			 */
 			function initDialoguePresets() {
 				renderPresetList();
-				// 如果有当前选中的预设，加载它
-				if (PresetManager.currentId) {
-					loadPresetToEditor(PresetManager.currentId);
-				}
+				// 不自动加载预设，让 loadDialogueSettingsToModal 处理
 			}
 
 			/**
@@ -11545,9 +11725,29 @@
 
 			/**
 			 * Load current dialogue settings to modal inputs
+			 * Loads the style that is currently being used by the target (character/message/global)
 			 */
 			function loadDialogueSettingsToModal() {
-				const style = state.portraitConfig.dialogueStyle || {};
+				let style = state.portraitConfig.dialogueStyle || {};
+
+				// 根据保存目标加载对应的样式
+				const allPresets = PresetManager.getAll();
+
+				if (dialogueSaveTarget === "character" && dialogueTargetCharacterName) {
+					// 加载角色专属样式
+					const charPresetId =
+						state.portraitConfig.dialoguePresetConfig?.characterPresets?.[dialogueTargetCharacterName];
+					if (charPresetId && allPresets[charPresetId]) {
+						style = allPresets[charPresetId].style;
+					}
+				} else if (dialogueSaveTarget === "single" && dialogueTargetMessageIndex !== null) {
+					// 加载单条消息样式
+					const msgPresetId = state.portraitConfig.dialoguePresetConfig?.singlePresets?.[dialogueTargetMessageIndex];
+					if (msgPresetId && allPresets[msgPresetId]) {
+						style = allPresets[msgPresetId].style;
+					}
+				}
+				// 否则使用全局样式（默认）
 
 				// 背景
 				if (DOM.modalDialogueBgImage) DOM.modalDialogueBgImage.value = style.bgImage || "";
@@ -11582,6 +11782,13 @@
 				// 边距
 				if (DOM.modalDialoguePaddingX) DOM.modalDialoguePaddingX.value = style.paddingX ?? 20;
 				if (DOM.modalDialoguePaddingY) DOM.modalDialoguePaddingY.value = style.paddingY ?? 16;
+
+				// 更新布局数据
+				const layout = style.layout || {};
+				layoutEditorState.tempLayout = {
+					name: { ...{ x: null, y: null, width: 90 }, ...(layout.name || {}) },
+					text: { ...{ x: null, y: null, width: 90, height: 70 }, ...(layout.text || {}) },
+				};
 			}
 
 			/**
@@ -11695,6 +11902,16 @@
 
 				// 应用名称元素样式
 				const nameContent = nameEl.querySelector(".layout-element-content");
+
+				// 根据保存目标设置预览名称
+				let previewName = "角色名称";
+				if (dialogueSaveTarget === "character" && dialogueTargetCharacterName) {
+					previewName = dialogueTargetCharacterName;
+				} else if (dialogueSaveTarget === "single" && dialogueTargetCharacterName) {
+					previewName = dialogueTargetCharacterName;
+				}
+				nameContent.textContent = previewName;
+
 				nameContent.style.fontSize = `${scaledNameSize}px`;
 				nameContent.style.color = nameColor;
 				nameContent.style.opacity = nameOpacity;
@@ -11702,6 +11919,12 @@
 
 				// 应用内容元素样式
 				const textContent = textEl.querySelector(".layout-element-content");
+
+				// 根据保存目标设置预览文本
+				if (dialogueSaveTarget === "single" && dialogueTargetMessageText) {
+					textContent.textContent = dialogueTargetMessageText;
+				}
+
 				textContent.style.fontSize = `${scaledFontSize}px`;
 				textContent.style.color = textColor;
 				textContent.style.opacity = textOpacity;
@@ -12020,8 +12243,14 @@
 			/** @type {Object|null} Range style for dialogue style */
 			let dialogueRangeStyle = null;
 
-			/** @type {string|null} Range preset ID for dialogue style */
-			let dialogueRangePresetId = null;
+			/** @type {string|null} Target character name for dialogue style (used in preview) */
+			let dialogueTargetCharacterName = null;
+
+			/** @type {string|null} Target message text for dialogue style (used in preview) */
+			let dialogueTargetMessageText = null;
+
+			/** @type {number|null} Target message index for dialogue style (used in preview) */
+			let dialogueTargetMessageIndex = null;
 
 			/** @type {boolean} Whether save target select is initialized */
 			let saveTargetSelectInitialized = false;
@@ -12055,6 +12284,32 @@
 						dialogueSaveTarget = value;
 						if (trigger) trigger.textContent = opt.textContent;
 						container.classList.remove("open");
+
+						// 根据选择的目标更新预览变量
+						if (value === "character") {
+							// 如果选择角色，从当前消息获取角色名
+							if (currentMessageIndex >= 0 && state.editedMessages[currentMessageIndex]) {
+								dialogueTargetCharacterName = state.editedMessages[currentMessageIndex].name || "角色名称";
+								dialogueTargetMessageText = null; // 清除消息文本
+								dialogueTargetMessageIndex = null;
+							}
+						} else if (value === "single") {
+							// 如果选择单条消息，从当前消息获取角色名和消息内容
+							if (currentMessageIndex >= 0 && state.editedMessages[currentMessageIndex]) {
+								const msg = state.editedMessages[currentMessageIndex];
+								dialogueTargetCharacterName = msg.name || "角色名称";
+								dialogueTargetMessageText = msg.text || "消息内容";
+								dialogueTargetMessageIndex = currentMessageIndex;
+							}
+						} else {
+							// 其他情况清除预览变量
+							dialogueTargetCharacterName = null;
+							dialogueTargetMessageText = null;
+							dialogueTargetMessageIndex = null;
+						}
+
+						// 更新预览
+						updateLayoutPreview();
 					});
 				});
 
@@ -12072,14 +12327,7 @@
 			function saveDialogueLayout() {
 				const currentStyle = getStyleFromForm();
 
-				// 如果当前选中了预设，更新预设数据
-				const presets = PresetManager.getAll();
-				const currentPresetId = PresetManager.currentId;
-				if (presets[currentPresetId]) {
-					presets[currentPresetId].style = currentStyle;
-					PresetManager.savePreset(presets[currentPresetId]);
-					renderPresetList();
-				}
+				// 注意：不再自动更新预设，预设只在用户点击"保存为新预设"或"更新预设"时才会保存
 
 				// 根据保存目标应用样式
 				switch (dialogueSaveTarget) {
@@ -12095,11 +12343,8 @@
 							alert("没有选中的消息");
 							return;
 						}
-						// 如果有选中预设，使用预设ID；否则创建新预设
-						let batchPresetId = currentPresetId;
-						if (!presets[batchPresetId]) {
-							batchPresetId = createAutoPreset(currentStyle, `批量设置 (${selectedMessages.size}条)`);
-						}
+						// 创建新预设用于批量设置
+						const batchPresetId = createAutoPreset(currentStyle, `批量设置 (${selectedMessages.size}条)`);
 						if (batchPresetId) {
 							selectedMessages.forEach((index) => {
 								state.portraitConfig.dialoguePresetConfig.singlePresets[index] = batchPresetId;
@@ -12111,43 +12356,31 @@
 						break;
 
 					case "character":
-						// 应用到当前角色
-						if (currentMessageIndex >= 0) {
-							const currentMsg = state.editedMessages[currentMessageIndex];
-							if (currentMsg?.name) {
-								// 如果有选中预设，使用预设ID；否则创建新预设
-								let presetId = currentPresetId;
-								if (!presets[presetId]) {
-									presetId = createAutoPreset(currentStyle, `${currentMsg.name}的样式`);
-								}
-								if (presetId) {
-									state.portraitConfig.dialoguePresetConfig.characterPresets[currentMsg.name] = presetId;
-									renderDialogueConfigSection();
-								}
-							} else {
-								alert("当前消息没有角色名");
-								return;
+						// 应用到角色
+						if (dialogueTargetCharacterName) {
+							// 创建新预设用于角色专属
+							const charPresetId = createAutoPreset(currentStyle, `${dialogueTargetCharacterName}的样式`);
+							if (charPresetId) {
+								state.portraitConfig.dialoguePresetConfig.characterPresets[dialogueTargetCharacterName] = charPresetId;
+								renderDialogueConfigSection();
 							}
 						} else {
-							alert("请先选择一条消息");
+							alert("未指定角色名");
 							return;
 						}
 						break;
 
 					case "single":
 						// 应用到当前消息
-						if (currentMessageIndex >= 0) {
-							// 如果有选中预设，使用预设ID；否则创建新预设
-							let presetId = currentPresetId;
-							if (!presets[presetId]) {
-								presetId = createAutoPreset(currentStyle, `消息#${currentMessageIndex + 1}的样式`);
-							}
-							if (presetId) {
-								state.portraitConfig.dialoguePresetConfig.singlePresets[currentMessageIndex] = presetId;
+						if (dialogueTargetMessageIndex !== null) {
+							// 创建新预设用于单条消息
+							const msgPresetId = createAutoPreset(currentStyle, `消息#${dialogueTargetMessageIndex + 1}的样式`);
+							if (msgPresetId) {
+								state.portraitConfig.dialoguePresetConfig.singlePresets[dialogueTargetMessageIndex] = msgPresetId;
 								renderDialogueConfigSection();
 							}
 						} else {
-							alert("请先选择一条消息");
+							alert("未指定消息索引");
 							return;
 						}
 						break;
@@ -12158,7 +12391,6 @@
 							dialogueRangeStartIndex = currentMessageIndex;
 							// 保存当前样式供区间结束时使用
 							dialogueRangeStyle = currentStyle;
-							dialogueRangePresetId = currentPresetId;
 							alert(`已设置区间开始点: #${currentMessageIndex + 1}\n请选择另一条消息，然后选择"区间结束"来完成设置`);
 							// 更新下拉框显示
 							const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
@@ -12175,25 +12407,21 @@
 						if (dialogueRangeStartIndex !== null && currentMessageIndex >= 0) {
 							const startIdx = Math.min(dialogueRangeStartIndex, currentMessageIndex);
 							const endIdx = Math.max(dialogueRangeStartIndex, currentMessageIndex);
-							// 如果有选中预设，使用预设ID；否则创建新预设
-							let presetId = dialogueRangePresetId;
-							if (!presets[presetId]) {
-								presetId = createAutoPreset(
-									dialogueRangeStyle || currentStyle,
-									`区间#${startIdx + 1}-#${endIdx + 1}的样式`
-								);
-							}
-							if (presetId) {
+							// 创建新预设用于区间
+							const rangePresetId = createAutoPreset(
+								dialogueRangeStyle || currentStyle,
+								`区间#${startIdx + 1}-#${endIdx + 1}的样式`
+							);
+							if (rangePresetId) {
 								state.portraitConfig.dialoguePresetConfig.rangePresets.push({
 									startIndex: startIdx,
 									endIndex: endIdx,
-									presetId: presetId,
+									presetId: rangePresetId,
 								});
 								renderDialogueConfigSection();
 							}
 							dialogueRangeStartIndex = null;
 							dialogueRangeStyle = null;
-							dialogueRangePresetId = null;
 							// 重置下拉框
 							const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
 							if (trigger) trigger.textContent = "🌐 全局样式";
@@ -12647,40 +12875,30 @@
 					bgStyle = `background-color: rgba(0, 0, 0, ${bgOpacity});`;
 				}
 				const nameColor = s.nameColor || "#5e81ac";
+				const nameOpacity = (s.nameOpacity ?? 100) / 100;
 				const textColor = s.textColor || "#ffffff";
+				const textOpacity = (s.textOpacity ?? 100) / 100;
 
 				// 使用布局数据计算位置（如果有）
 				const layout = s.layout || {};
 				const nameLayout = layout.name || {};
 				const textLayout = layout.text || {};
 
-				// 预览框尺寸比例（相对于1920x1080画布）
-				const scale = 0.12;
+				// 名称位置 - 直接使用百分比值
+				const nameLeft = nameLayout.x != null ? `${nameLayout.x}%` : "3%";
+				const nameTop = nameLayout.y != null ? `${nameLayout.y}%` : "8%";
+				const nameWidth = nameLayout.width != null ? `${nameLayout.width}%` : "94%";
 
-				// 名称位置
-				let nameTop = "8%";
-				let nameLeft = "3%";
-				if (nameLayout.x !== null && nameLayout.x !== undefined) {
-					nameLeft = `${nameLayout.x * scale}%`;
-				}
-				if (nameLayout.y !== null && nameLayout.y !== undefined) {
-					nameTop = `${nameLayout.y * scale}%`;
-				}
-
-				// 文本位置
-				let textTop = "40%";
-				let textLeft = "3%";
-				if (textLayout.x !== null && textLayout.x !== undefined) {
-					textLeft = `${textLayout.x * scale}%`;
-				}
-				if (textLayout.y !== null && textLayout.y !== undefined) {
-					textTop = `${textLayout.y * scale}%`;
-				}
+				// 文本位置 - 直接使用百分比值
+				const textLeft = textLayout.x != null ? `${textLayout.x}%` : "3%";
+				const textTop = textLayout.y != null ? `${textLayout.y}%` : "30%";
+				const textWidth = textLayout.width != null ? `${textLayout.width}%` : "94%";
+				const textHeight = textLayout.height != null ? `${textLayout.height}%` : "60%";
 
 				return `
-					<div style="${bgStyle} width: 100%; height: 50px; border-radius: 4px; position: relative; overflow: hidden;">
-						<div style="position: absolute; top: ${nameTop}; left: ${nameLeft}; font-size: 9px; color: ${nameColor}; white-space: nowrap; font-weight: 500;">角色名称</div>
-						<div style="position: absolute; top: ${textTop}; left: ${textLeft}; right: 3%; font-size: 10px; color: ${textColor}; line-height: 1.3; overflow: hidden;">这是示例消息内容文本...</div>
+					<div style="${bgStyle} width: 100%; height: 60px; border-radius: 4px; position: relative; overflow: hidden;">
+						<div style="position: absolute; top: ${nameTop}; left: ${nameLeft}; width: ${nameWidth}; font-size: 9px; color: ${nameColor}; opacity: ${nameOpacity}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;">角色名称</div>
+						<div style="position: absolute; top: ${textTop}; left: ${textLeft}; width: ${textWidth}; height: ${textHeight}; font-size: 10px; color: ${textColor}; opacity: ${textOpacity}; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">这是示例消息内容文本...</div>
 					</div>
 				`;
 			}
@@ -12715,7 +12933,7 @@
 								const presetName = preset ? preset.name : "未知预设";
 								const previewHtml = generatePresetPreviewMini(preset);
 								return `
-									<div class="dialogue-config-item">
+									<div class="dialogue-config-item" data-char-name="${escapeAttr(charName)}" data-preset-id="${escapeAttr(presetId)}" style="cursor: pointer;">
 										${previewHtml}
 										<div style="flex: 1; min-width: 0; overflow: hidden;">
 											<div style="font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">👤 ${escapeHtml(
@@ -12822,15 +13040,77 @@
 				alert('请右键点击预设卡片，选择"应用到角色..."');
 			});
 
-			// Click handlers for dialogue config items (jump to message)
+			// Click handlers for dialogue config items
 			document.addEventListener("click", (e) => {
-				const configItem = e.target.closest(".dialogue-config-item[data-msg-index]");
-				if (configItem && !e.target.closest(".config-remove")) {
-					const msgIndex = parseInt(configItem.dataset.msgIndex, 10);
+				// 处理单条消息配置项点击（跳转到消息并打开编辑模态框）
+				const msgConfigItem = e.target.closest(".dialogue-config-item[data-msg-index]");
+				if (msgConfigItem && !e.target.closest(".config-remove")) {
+					const msgIndex = parseInt(msgConfigItem.dataset.msgIndex, 10);
 					if (!isNaN(msgIndex) && msgIndex >= 0 && msgIndex < state.editedMessages.length) {
+						const msg = state.editedMessages[msgIndex];
+
+						console.log("Opening modal for message:", msgIndex, msg);
+
+						// 跳转到消息
 						jumpToMessage(msgIndex);
 						switchView("replay");
+
+						// 设置保存目标为单条消息，并保存消息信息供预览使用
+						dialogueSaveTarget = "single";
+						dialogueTargetCharacterName = msg.name || "角色名称";
+						dialogueTargetMessageText = msg.text || "消息内容";
+						dialogueTargetMessageIndex = msgIndex;
+
+						// 打开模态框，锁定保存目标
+						setTimeout(() => {
+							console.log("Opening dialogue modal...");
+							openDialogueLayoutModal(true);
+
+							// 设置显示文本
+							const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+							if (trigger) {
+								trigger.textContent = `📌 当前消息 (#${msgIndex + 1})`;
+								trigger.style.pointerEvents = "none";
+								trigger.style.opacity = "0.6";
+								trigger.style.cursor = "not-allowed";
+							}
+
+							// 强制更新预览以显示实际内容
+							setTimeout(() => {
+								updateLayoutPreview();
+							}, 50);
+						}, 100);
 					}
+					return;
+				}
+
+				// 处理角色专属配置项点击（打开编辑模态框）
+				const charConfigItem = e.target.closest(".dialogue-config-item[data-char-name]");
+				if (charConfigItem && !e.target.closest(".config-remove")) {
+					const charName = charConfigItem.dataset.charName;
+
+					console.log("Opening modal for character:", charName);
+
+					// 先设置保存目标为角色专属，并保存角色名称
+					dialogueSaveTarget = "character";
+					dialogueTargetCharacterName = charName; // 保存角色名称供预览使用
+
+					// 打开模态框，锁定保存目标
+					openDialogueLayoutModal(true);
+
+					// 设置显示文本（在打开模态框后）
+					const trigger = DOM.saveTargetSelect?.querySelector(".custom-select-trigger");
+					if (trigger) {
+						trigger.textContent = `👤 角色专属 (${charName})`;
+						trigger.style.pointerEvents = "none";
+						trigger.style.opacity = "0.6";
+						trigger.style.cursor = "not-allowed";
+					}
+
+					// 强制更新预览以显示角色名称
+					setTimeout(() => {
+						updateLayoutPreview();
+					}, 50);
 				}
 			});
 
