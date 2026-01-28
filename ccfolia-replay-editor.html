@@ -7293,11 +7293,57 @@
 			}
 
 			/**
-			 * Generate a unique ID
+			 * Generate a unique message ID
+			 * Format: {timestamp36}_{random4}
+			 * Example: lz5k2m8_a3x9
 			 * @returns {string}
 			 */
 			function generateId() {
-				return Date.now().toString(36) + Math.random().toString(36).substring(2);
+				const timestamp = Date.now().toString(36);
+				const random = Math.random().toString(36).slice(2, 6);
+				return `${timestamp}_${random}`;
+			}
+
+			/**
+			 * 
+			function ensureMessageIds(messages) {
+				const existingIds = new Set();
+
+				messages.forEach((msg) => {
+					// If message has no ID or ID is duplicate, generate new one
+					if (!msg.id || existingIds.has(msg.id)) {
+						msg.id = generateId();
+					}
+					existingIds.add(msg.id);
+				});
+			}
+
+			/**
+			 * Generate audio filename for TTS
+			 * Format: {characterName}_{textPrefix}_{messageId}.mp3
+			 * @param {string} characterName - Character name
+			 * @param {string} text - Message text
+			 * @param {string} messageId - Message ID
+			 * @returns {string} Safe filename
+			 */
+			function generateAudioFileName(characterName, text, messageId) {
+				// Characters not allowed in filenames: < > : " / \ | ? * and newlines
+				const illegalChars = /[<>:"/\\|?*\n\r]/g;
+
+				// Clean character name
+				const cleanName = (characterName || "unknown").replace(illegalChars, "_").trim().slice(0, 20); // Limit name length
+
+				// Clean and truncate text (max 10 chars)
+				const cleanText = (text || "").replace(illegalChars, "").replace(/\s+/g, " ").trim().slice(0, 10);
+
+				// Build filename
+				const parts = [cleanName];
+				if (cleanText) {
+					parts.push(cleanText);
+				}
+				parts.push(messageId);
+
+				return parts.join("_") + ".mp3";
 			}
 
 			/**
@@ -16591,6 +16637,465 @@
 				},
 			};
 
+			// ============================================================
+			// TTS Provider Registry - 可扩展的 TTS 渠道注册表
+			// ============================================================
+
+			/**
+			 * TTS Provider 适配器基类
+			 * 所有 TTS 渠道适配器都应继承此类
+			 */
+			class TTSProviderAdapter {
+				/**
+				 * @param {Object} config - 渠道配置
+				 */
+				constructor(config) {
+					this.config = config;
+				}
+
+				/**
+				 * 合成语音并返回音频 Blob
+				 * @param {string} text - 待合成文本
+				 * @param {Object} voiceConfig - 音色配置
+				 * @returns {Promise<Blob>} 音频数据
+				 */
+				async synthesize(text, voiceConfig) {
+					throw new Error("synthesize() must be implemented by subclass");
+				}
+
+				/**
+				 * 获取可用音色列表
+				 * @returns {Promise<Array<{name: string, displayName: string, language: string}>>}
+				 */
+				async getVoices() {
+					throw new Error("getVoices() must be implemented by subclass");
+				}
+
+				/**
+				 * 测试 API 连接
+				 * @returns {Promise<boolean>}
+				 */
+				async testConnection() {
+					throw new Error("testConnection() must be implemented by subclass");
+				}
+			}
+
+			/**
+			 * TTS 渠道注册表 - 支持动态注册新渠道
+			 */
+			const TTSProviderRegistry = {
+				/** @type {Map<string, Object>} 已注册的渠道 */
+				providers: new Map(),
+
+				/**
+				 * 注册新的 TTS 渠道
+				 * @param {string} id - 渠道标识符 (如 'azure', 'aliyun')
+				 * @param {Object} providerDef - 渠道定义
+				 */
+				register(id, providerDef) {
+					this.providers.set(id, {
+						id,
+						name: providerDef.name,
+						AdapterClass: providerDef.Adapter,
+						configFields: providerDef.configFields || [],
+						isPaid: providerDef.isPaid ?? true,
+						defaultConfig: providerDef.defaultConfig || {},
+					});
+					console.log(`TTS Provider registered: ${id}`);
+				},
+
+				/**
+				 * 获取所有已注册的渠道
+				 * @returns {Array<Object>}
+				 */
+				getAll() {
+					return Array.from(this.providers.values());
+				},
+
+				/**
+				 * 获取所有付费渠道
+				 * @returns {Array<Object>}
+				 */
+				getPaidProviders() {
+					return this.getAll().filter((p) => p.isPaid);
+				},
+
+				/**
+				 * 获取所有免费渠道
+				 * @returns {Array<Object>}
+				 */
+				getFreeProviders() {
+					return this.getAll().filter((p) => !p.isPaid);
+				},
+
+				/**
+				 * 获取指定渠道
+				 * @param {string} id - 渠道 ID
+				 * @returns {Object|null}
+				 */
+				get(id) {
+					return this.providers.get(id) || null;
+				},
+
+				/**
+				 * 创建适配器实例
+				 * @param {string} providerId - 渠道 ID
+				 * @param {Object} config - 渠道配置
+				 * @returns {TTSProviderAdapter}
+				 */
+				createAdapter(providerId, config) {
+					const provider = this.providers.get(providerId);
+					if (!provider) {
+						throw new Error(`Unknown TTS provider: ${providerId}`);
+					}
+					return new provider.AdapterClass(config);
+				},
+
+				/**
+				 * 检查渠道是否已注册
+				 * @param {string} id - 渠道 ID
+				 * @returns {boolean}
+				 */
+				has(id) {
+					return this.providers.has(id);
+				},
+			};
+
+			/**
+			 * 免费 TTS 适配器 - 封装现有 Web Speech API / Edge TTS
+			 */
+			class FreeTTSAdapter extends TTSProviderAdapter {
+				constructor(config) {
+					super(config);
+				}
+
+				async synthesize(text, voiceConfig) {
+					// 免费渠道使用现有的 TTSManager 逻辑，不返回 Blob
+					// 而是直接播放
+					return null;
+				}
+
+				async getVoices() {
+					// 返回 Web Speech API 的语音列表
+					return TTSManager.voices.map((v) => ({
+						name: v.name,
+						displayName: v.name,
+						language: v.lang,
+					}));
+				}
+
+				async testConnection() {
+					return "speechSynthesis" in window;
+				}
+			}
+
+			/**
+			 * Azure TTS 适配器
+			 */
+			class AzureTTSAdapter extends TTSProviderAdapter {
+				constructor(config) {
+					super(config);
+					this.apiKey = config.apiKey || "";
+					this.region = config.region || "eastasia";
+					this.endpoint = `https://${this.region}.tts.speech.microsoft.com/cognitiveservices/v1`;
+					this.voicesEndpoint = `https://${this.region}.tts.speech.microsoft.com/cognitiveservices/voices/list`;
+				}
+
+				/**
+				 * 构建 SSML
+				 * @param {string} text - 文本
+				 * @param {Object} voiceConfig - 音色配置
+				 * @returns {string}
+				 */
+				buildSSML(text, voiceConfig) {
+					const escapedText = this.escapeXml(text);
+					const rate = voiceConfig.rate || 1;
+					const pitch = voiceConfig.pitch || 1;
+					const volume = voiceConfig.volume || 1;
+
+					// 将 0.5-2 的 rate 转换为百分比 (-50% 到 +100%)
+					const ratePercent = Math.round((rate - 1) * 100);
+					const rateStr = ratePercent >= 0 ? `+${ratePercent}%` : `${ratePercent}%`;
+
+					// 将 0.5-2 的 pitch 转换为百分比
+					const pitchPercent = Math.round((pitch - 1) * 50);
+					const pitchStr = pitchPercent >= 0 ? `+${pitchPercent}%` : `${pitchPercent}%`;
+
+					return `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'>
+						<voice name='${voiceConfig.voice || "zh-CN-XiaoxiaoNeural"}'>
+							<prosody rate='${rateStr}' pitch='${pitchStr}' volume='${Math.round(volume * 100)}'>
+								${escapedText}
+							</prosody>
+						</voice>
+					</speak>`;
+				}
+
+				/**
+				 * 转义 XML 特殊字符
+				 * @param {string} text
+				 * @returns {string}
+				 */
+				escapeXml(text) {
+					return text
+						.replace(/&/g, "&amp;")
+						.replace(/</g, "&lt;")
+						.replace(/>/g, "&gt;")
+						.replace(/"/g, "&quot;")
+						.replace(/'/g, "&apos;");
+				}
+
+				async synthesize(text, voiceConfig) {
+					if (!this.apiKey) {
+						throw new Error("Azure API Key not configured");
+					}
+
+					const ssml = this.buildSSML(text, voiceConfig);
+
+					const response = await fetch(this.endpoint, {
+						method: "POST",
+						headers: {
+							"Ocp-Apim-Subscription-Key": this.apiKey,
+							"Content-Type": "application/ssml+xml",
+							"X-Microsoft-OutputFormat": "audio-24khz-96kbitrate-mono-mp3",
+							"User-Agent": "CCFOLIAReplayEditor",
+						},
+						body: ssml,
+					});
+
+					if (!response.ok) {
+						const errorText = await response.text().catch(() => "");
+						throw new Error(`Azure TTS error: ${response.status} ${errorText}`);
+					}
+
+					return await response.blob();
+				}
+
+				async getVoices() {
+					if (!this.apiKey) {
+						return [];
+					}
+
+					try {
+						const response = await fetch(this.voicesEndpoint, {
+							headers: {
+								"Ocp-Apim-Subscription-Key": this.apiKey,
+							},
+						});
+
+						if (!response.ok) {
+							console.error("Failed to fetch Azure voices:", response.status);
+							return [];
+						}
+
+						const voices = await response.json();
+						// 只返回中文、日语、英语的神经网络语音
+						return voices
+							.filter(
+								(v) =>
+									v.VoiceType === "Neural" &&
+									(v.Locale.startsWith("zh-") || v.Locale.startsWith("ja-") || v.Locale.startsWith("en-"))
+							)
+							.map((v) => ({
+								name: v.ShortName,
+								displayName: v.LocalName || v.DisplayName,
+								language: v.Locale,
+								gender: v.Gender,
+							}));
+					} catch (e) {
+						console.error("Error fetching Azure voices:", e);
+						return [];
+					}
+				}
+
+				async testConnection() {
+					if (!this.apiKey) {
+						return false;
+					}
+
+					try {
+						const response = await fetch(this.voicesEndpoint, {
+							headers: {
+								"Ocp-Apim-Subscription-Key": this.apiKey,
+							},
+						});
+						return response.ok;
+					} catch (e) {
+						return false;
+					}
+				}
+			}
+
+			/**
+			 * 阿里云 TTS 适配器
+			 */
+			class AliyunTTSAdapter extends TTSProviderAdapter {
+				constructor(config) {
+					super(config);
+					this.appKey = config.appKey || "";
+					this.token = config.token || "";
+					this.endpoint = "https://nls-gateway-cn-shanghai.aliyuncs.com/stream/v1/tts";
+				}
+
+				/**
+				 * 将 0.5-2 的语速转换为阿里云的 -500~500
+				 * @param {number} rate
+				 * @returns {number}
+				 */
+				rateToAliyunScale(rate) {
+					return Math.round((rate - 1) * 500);
+				}
+
+				/**
+				 * 将 0.5-2 的音调转换为阿里云的 -500~500
+				 * @param {number} pitch
+				 * @returns {number}
+				 */
+				pitchToAliyunScale(pitch) {
+					return Math.round((pitch - 1) * 500);
+				}
+
+				async synthesize(text, voiceConfig) {
+					if (!this.appKey || !this.token) {
+						throw new Error("Aliyun AppKey or Token not configured");
+					}
+
+					const params = new URLSearchParams({
+						appkey: this.appKey,
+						token: this.token,
+						text: text,
+						format: "mp3",
+						sample_rate: "16000",
+						voice: voiceConfig.voice || "xiaoyun",
+						volume: Math.round((voiceConfig.volume || 1) * 100),
+						speech_rate: this.rateToAliyunScale(voiceConfig.rate || 1),
+						pitch_rate: this.pitchToAliyunScale(voiceConfig.pitch || 1),
+					});
+
+					const response = await fetch(`${this.endpoint}?${params}`, {
+						method: "GET",
+					});
+
+					// 阿里云成功时 Content-Type 为 audio/mpeg，失败时为 application/json
+					const contentType = response.headers.get("Content-Type");
+					if (contentType && contentType.includes("application/json")) {
+						const error = await response.json();
+						throw new Error(`Aliyun TTS error: ${error.message || error.status}`);
+					}
+
+					if (!response.ok) {
+						throw new Error(`Aliyun TTS error: ${response.status}`);
+					}
+
+					return await response.blob();
+				}
+
+				async getVoices() {
+					// 阿里云没有动态获取音色列表的 API，返回预定义列表
+					return [
+						{ name: "xiaoyun", displayName: "小云（标准女声）", language: "zh-CN", gender: "Female" },
+						{ name: "xiaogang", displayName: "小刚（标准男声）", language: "zh-CN", gender: "Male" },
+						{ name: "ruoxi", displayName: "若兮（温柔女声）", language: "zh-CN", gender: "Female" },
+						{ name: "siqi", displayName: "思琪（温柔女声）", language: "zh-CN", gender: "Female" },
+						{ name: "sijia", displayName: "思佳（标准女声）", language: "zh-CN", gender: "Female" },
+						{ name: "sicheng", displayName: "思诚（标准男声）", language: "zh-CN", gender: "Male" },
+						{ name: "aiqi", displayName: "艾琪（温柔女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aijia", displayName: "艾佳（标准女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aicheng", displayName: "艾诚（标准男声）", language: "zh-CN", gender: "Male" },
+						{ name: "aida", displayName: "艾达（标准男声）", language: "zh-CN", gender: "Male" },
+						{ name: "ninger", displayName: "宁儿（标准女声）", language: "zh-CN", gender: "Female" },
+						{ name: "ruilin", displayName: "瑞琳（标准女声）", language: "zh-CN", gender: "Female" },
+						{ name: "siyue", displayName: "思悦（温柔女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aiya", displayName: "艾雅（严厉女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aixia", displayName: "艾夏（亲和女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aimei", displayName: "艾美（甜美女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aiyu", displayName: "艾雨（自然女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aiyue", displayName: "艾悦（温柔女声）", language: "zh-CN", gender: "Female" },
+						{ name: "aijing", displayName: "艾婧（严厉女声）", language: "zh-CN", gender: "Female" },
+						{ name: "xiaomei", displayName: "小美（甜美女声）", language: "zh-CN", gender: "Female" },
+						{ name: "yina", displayName: "伊娜（浙普女声）", language: "zh-CN", gender: "Female" },
+						{ name: "sijing", displayName: "思婧（严厉女声）", language: "zh-CN", gender: "Female" },
+						// 日语
+						{ name: "tomoka", displayName: "Tomoka（日语女声）", language: "ja-JP", gender: "Female" },
+						{ name: "tomoya", displayName: "Tomoya（日语男声）", language: "ja-JP", gender: "Male" },
+						// 英语
+						{ name: "wendy", displayName: "Wendy（英语女声）", language: "en-US", gender: "Female" },
+						{ name: "william", displayName: "William（英语男声）", language: "en-US", gender: "Male" },
+					];
+				}
+
+				async testConnection() {
+					if (!this.appKey || !this.token) {
+						return false;
+					}
+
+					try {
+						// 尝试合成一个简短的测试文本
+						const blob = await this.synthesize("测试", {
+							voice: "xiaoyun",
+							rate: 1,
+							pitch: 1,
+							volume: 1,
+						});
+						return blob && blob.size > 0;
+					} catch (e) {
+						console.error("Aliyun connection test failed:", e);
+						return false;
+					}
+				}
+			}
+
+			// 注册内置渠道
+			TTSProviderRegistry.register("free", {
+				name: "免费 (浏览器)",
+				Adapter: FreeTTSAdapter,
+				isPaid: false,
+				configFields: [],
+			});
+
+			TTSProviderRegistry.register("azure", {
+				name: "Azure TTS",
+				Adapter: AzureTTSAdapter,
+				isPaid: true,
+				configFields: [
+					{ key: "apiKey", label: "API Key", type: "password", required: true },
+					{
+						key: "region",
+						label: "Region",
+						type: "select",
+						required: true,
+						options: [
+							{ value: "eastasia", label: "东亚 (eastasia)" },
+							{ value: "southeastasia", label: "东南亚 (southeastasia)" },
+							{ value: "japaneast", label: "日本东部 (japaneast)" },
+							{ value: "japanwest", label: "日本西部 (japanwest)" },
+							{ value: "koreacentral", label: "韩国中部 (koreacentral)" },
+							{ value: "westus", label: "美西 (westus)" },
+							{ value: "westus2", label: "美西2 (westus2)" },
+							{ value: "eastus", label: "美东 (eastus)" },
+							{ value: "westeurope", label: "西欧 (westeurope)" },
+						],
+					},
+				],
+				defaultConfig: {
+					apiKey: "",
+					region: "eastasia",
+				},
+			});
+
+			TTSProviderRegistry.register("aliyun", {
+				name: "阿里云 TTS",
+				Adapter: AliyunTTSAdapter,
+				isPaid: true,
+				configFields: [
+					{ key: "appKey", label: "AppKey", type: "text", required: true },
+					{ key: "token", label: "Token", type: "password", required: true },
+				],
+				defaultConfig: {
+					appKey: "",
+					token: "",
+				},
+			});
+
 			/**
 			 * TTS Manager - TTS 语音管理模块
 			 */
@@ -19337,6 +19842,9 @@
 					showLoading("正在解析数据...");
 					const messages = parseLogs(rawLogs);
 
+					// Ensure all messages have unique IDs
+					ensureMessageIds(messages);
+
 					// Update state
 					state.originalMessages = messages;
 					state.editedMessages = [...messages];
@@ -19429,6 +19937,11 @@
 				// Restore state
 				state.originalMessages = data.originalMessages || [];
 				state.editedMessages = data.editedMessages || [];
+
+				// Ensure all messages have unique IDs (for backward compatibility)
+				ensureMessageIds(state.originalMessages);
+				ensureMessageIds(state.editedMessages);
+
 				state.deletedIds = new Set(data.deletedIds || []);
 				state.filterRules = {
 					...state.filterRules,
@@ -21096,7 +21609,7 @@
 
 				copy(msg, index) {
 					const copied = JSON.parse(JSON.stringify(msg));
-					copied.id = crypto.randomUUID();
+					copied.id = generateId();
 					this.messages = [copied];
 					this.isCut = false;
 					this.sourceIds = [];
@@ -21117,7 +21630,7 @@
 						.filter((m) => selectedIds.has(m.id))
 						.map((m) => {
 							const copied = JSON.parse(JSON.stringify(m));
-							copied.id = crypto.randomUUID();
+							copied.id = generateId();
 							return copied;
 						});
 					this.isCut = false;
@@ -21160,7 +21673,7 @@
 					// 为复制的消息生成新ID
 					const toInsert = this.messages.map((m) => {
 						const newMsg = JSON.parse(JSON.stringify(m));
-						newMsg.id = crypto.randomUUID();
+						newMsg.id = generateId();
 						return newMsg;
 					});
 
