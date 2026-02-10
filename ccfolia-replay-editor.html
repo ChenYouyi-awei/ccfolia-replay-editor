@@ -5735,7 +5735,7 @@
 										<span>启用付费 TTS 功能</span>
 									</label>
 									<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
-										启用后可使用 Azure TTS 或阿里云 TTS 合成高质量语音
+										启用后可使用 Azure TTS、阿里云 TTS、讯飞 TTS 或 ResponsiveVoice 合成高质量语音
 									</div>
 								</div>
 
@@ -5794,7 +5794,9 @@
 											<option value="japanwest">日本西部 (japanwest)</option>
 											<option value="koreacentral">韩国中部 (koreacentral)</option>
 											<option value="westus">美西 (westus)</option>
+											<option value="westus2">美西2 (westus2)</option>
 											<option value="eastus">美东 (eastus)</option>
+											<option value="westeurope">西欧 (westeurope)</option>
 										</select>
 										<button class="btn btn-secondary" id="btn-test-azure"
 											style="width: 100%; font-size: 0.75rem">
@@ -5820,6 +5822,97 @@
 										<input type="password" class="form-input" id="aliyun-token" placeholder="Token"
 											style="margin-bottom: 6px; font-size: 0.85rem" />
 										<button class="btn btn-secondary" id="btn-test-aliyun"
+											style="width: 100%; font-size: 0.75rem">
+											测试连接
+										</button>
+									</div>
+
+									<!-- ResponsiveVoice TTS -->
+									<div class="tts-api-group" style="
+												margin-top: 12px;
+												padding: 10px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+										<div
+											style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+											<span style="font-weight: 500; font-size: 0.85rem">ResponsiveVoice</span>
+											<span id="responsivevoice-status"
+												style="font-size: 0.75rem; color: var(--text-secondary)">未配置</span>
+										</div>
+										<input type="password" class="form-input" id="responsivevoice-apikey"
+											placeholder="API Key" style="margin-bottom: 6px; font-size: 0.85rem" />
+										<div
+											style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 6px">
+											在 <a href="https://responsivevoice.org/" target="_blank"
+												style="color: var(--primary-color)">responsivevoice.org</a> 获取 API
+											Key（实时播放，不保存音频文件）
+										</div>
+										<button class="btn btn-secondary" id="btn-test-responsivevoice"
+											style="width: 100%; font-size: 0.75rem">
+											测试连接
+										</button>
+									</div>
+
+									<!-- 讯飞 TTS -->
+									<div class="tts-api-group" style="
+												margin-top: 12px;
+												padding: 10px;
+												background: var(--bg-input);
+												border-radius: var(--radius-md);
+												border: 1px solid var(--border-color);
+											">
+										<div
+											style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+											<span style="font-weight: 500; font-size: 0.85rem">讯飞 TTS</span>
+											<span id="xunfei-status"
+												style="font-size: 0.75rem; color: var(--text-secondary)">未配置</span>
+										</div>
+										<input type="text" class="form-input" id="xunfei-appid" placeholder="APPID"
+											style="margin-bottom: 6px; font-size: 0.85rem" />
+										<input type="password" class="form-input" id="xunfei-apikey"
+											placeholder="APIKey" style="margin-bottom: 6px; font-size: 0.85rem" />
+										<input type="password" class="form-input" id="xunfei-apisecret"
+											placeholder="APISecret" style="margin-bottom: 6px; font-size: 0.85rem" />
+										<div
+											style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 6px">
+											在 <a href="https://www.xfyun.cn/" target="_blank"
+												style="color: var(--primary-color)">讯飞开放平台</a> 注册获取凭证
+										</div>
+										<button class="btn btn-secondary" id="btn-test-xunfei"
+											style="width: 100%; font-size: 0.75rem">
+											测试连接
+										</button>
+									</div>
+								</div>
+
+								<!-- 腾讯云配置 -->
+								<div class="card" style="margin-bottom: 12px; border: 1px solid var(--border-color)">
+									<div class="card-header" style="font-weight: 600; font-size: 0.9rem">
+										腾讯云 TTS 配置
+										<span id="tencent-status"
+											style="margin-left: 8px; font-size: 0.75rem; color: var(--text-secondary)">
+											未配置
+										</span>
+									</div>
+									<div class="card-body" style="padding: 12px">
+										<div
+											style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px">
+											需 AppID, SecretId 和 SecretKey。免费 800 万字符/月。
+										</div>
+										<input type="text" class="form-input" id="tencent-appid" placeholder="AppID"
+											style="margin-bottom: 6px; font-size: 0.85rem" />
+										<input type="password" class="form-input" id="tencent-secretid"
+											placeholder="SecretId" style="margin-bottom: 6px; font-size: 0.85rem" />
+										<input type="password" class="form-input" id="tencent-secretkey"
+											placeholder="SecretKey" style="margin-bottom: 6px; font-size: 0.85rem" />
+										<div
+											style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 6px">
+											在 <a href="https://console.cloud.tencent.com/cam/capi" target="_blank"
+												style="color: var(--primary-color)">腾讯云控制台</a> 获取凭证
+										</div>
+										<button class="btn btn-secondary" id="btn-test-tencent"
 											style="width: 100%; font-size: 0.75rem">
 											测试连接
 										</button>
@@ -7050,7 +7143,15 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label class="form-label">选择语音</label>
+					<label class="form-label">TTS 渠道</label>
+					<select id="quick-tts-provider" class="form-input" style="margin-bottom: 8px"></select>
+				</div>
+				<div class="form-group">
+					<label class="form-label">音色分类</label>
+					<select id="quick-tts-category" class="form-input"></select>
+				</div>
+				<div class="form-group">
+					<label class="form-label">选择音色</label>
 					<select id="quick-tts-voice" class="form-input"></select>
 				</div>
 				<div class="form-group">
@@ -7400,6 +7501,8 @@
 			modalQuickTtsCancel: document.getElementById("modal-quick-tts-cancel"),
 			modalQuickTtsSave: document.getElementById("modal-quick-tts-save"),
 			quickTtsTitle: document.getElementById("quick-tts-title"),
+			quickTtsProvider: document.getElementById("quick-tts-provider"),
+			quickTtsCategory: document.getElementById("quick-tts-category"),
 			quickTtsVoice: document.getElementById("quick-tts-voice"),
 			quickTtsRate: document.getElementById("quick-tts-rate"),
 			quickTtsRateValue: document.getElementById("quick-tts-rate-value"),
@@ -7604,6 +7707,19 @@
 			aliyunToken: document.getElementById("aliyun-token"),
 			aliyunStatus: document.getElementById("aliyun-status"),
 			btnTestAliyun: document.getElementById("btn-test-aliyun"),
+			responsivevoiceApikey: document.getElementById("responsivevoice-apikey"),
+			responsivevoiceStatus: document.getElementById("responsivevoice-status"),
+			btnTestResponsivevoice: document.getElementById("btn-test-responsivevoice"),
+			xunfeiAppid: document.getElementById("xunfei-appid"),
+			xunfeiApikey: document.getElementById("xunfei-apikey"),
+			xunfeiApisecret: document.getElementById("xunfei-apisecret"),
+			xunfeiStatus: document.getElementById("xunfei-status"),
+			btnTestXunfei: document.getElementById("btn-test-xunfei"),
+			tencentAppid: document.getElementById("tencent-appid"),
+			tencentSecretid: document.getElementById("tencent-secretid"),
+			tencentSecretkey: document.getElementById("tencent-secretkey"),
+			tencentStatus: document.getElementById("tencent-status"),
+			btnTestTencent: document.getElementById("btn-test-tencent"),
 			ttsCharCount: document.getElementById("tts-char-count"),
 			ttsConfiguredChars: document.getElementById("tts-configured-chars"),
 			btnBatchSynthesize: document.getElementById("btn-batch-synthesize"),
@@ -9652,7 +9768,11 @@
 							<div class="setting-item">
                                 <!-- Paid Voice Selector -->
 								<div id="paid-voice-group" style="display: ${currentProvider !== "free" ? "block" : "none"}">
-									<label class="form-label">音色选择 <span>(付费)</span></label>
+									<label class="form-label">音色分类 <span>(付费)</span></label>
+									<select id="paid-voice-category" class="form-input" style="margin-bottom: 8px">
+										<option value="">加载中...</option>
+									</select>
+									<label class="form-label">选择音色</label>
 									<select id="paid-voice-select" class="form-input">
 										<option value="">加载中...</option>
 									</select>
@@ -9721,39 +9841,116 @@
 			const paidVoiceGroup = document.getElementById("paid-voice-group");
 			const freeVoiceGroup = document.getElementById("free-voice-group");
 			const paidVoiceSelect = document.getElementById("paid-voice-select");
+			const paidVoiceCategory = document.getElementById("paid-voice-category");
+
+			// 分类排序顺序
+			const categoryOrder = ["超自然大模型", "大模型音色", "精品音色", "中文", "日语", "英语", "其他"];
+
+			/**
+			 * 将音色列表按 category 分组，并填充分类+音色双下拉框
+			 * @param {Array} voices - 音色列表
+			 * @param {string} selectedVoice - 当前已选中的音色 name
+			 */
+			function populateCategoryAndVoice(voices, selectedVoice) {
+				if (!paidVoiceCategory || !paidVoiceSelect) return;
+
+				if (voices.length === 0) {
+					paidVoiceCategory.innerHTML = '<option value="">请先配置 API</option>';
+					paidVoiceSelect.innerHTML = '<option value="">请先配置 API</option>';
+					return;
+				}
+
+				// 按 category 分组
+				const groupMap = {};
+				voices.forEach(v => {
+					let cat = v.category;
+					if (!cat && v.language) {
+						if (v.language.startsWith("zh")) cat = "中文";
+						else if (v.language.startsWith("ja")) cat = "日语";
+						else if (v.language.startsWith("en")) cat = "英语";
+					}
+					cat = cat || "其他";
+
+					if (!groupMap[cat]) groupMap[cat] = [];
+					groupMap[cat].push(v);
+				});
+
+				// 如果只有一个分类（如非腾讯的 provider），隐藏分类选择
+				const catKeys = Object.keys(groupMap);
+				const hasMultipleCategories = catKeys.length > 1;
+				paidVoiceCategory.closest('.form-group')?.querySelector('.form-label')?.closest('div');
+				paidVoiceCategory.style.display = hasMultipleCategories ? '' : 'none';
+				// 也隐藏分类 label
+				const catLabel = paidVoiceCategory.previousElementSibling;
+				if (catLabel && catLabel.tagName === 'LABEL') {
+					catLabel.style.display = hasMultipleCategories ? '' : 'none';
+				}
+
+				// 排序分类
+				const sortedCats = catKeys.sort((a, b) => {
+					const iA = categoryOrder.indexOf(a), iB = categoryOrder.indexOf(b);
+					if (iA !== -1 && iB !== -1) return iA - iB;
+					if (iA !== -1) return -1;
+					if (iB !== -1) return 1;
+					return a.localeCompare(b);
+				});
+
+				// 找到已选音色所在分类
+				let activeCat = sortedCats[0];
+				if (selectedVoice) {
+					for (const cat of sortedCats) {
+						if (groupMap[cat].some(v => v.name === selectedVoice)) {
+							activeCat = cat;
+							break;
+						}
+					}
+				}
+
+				// 填充分类下拉框
+				paidVoiceCategory.innerHTML = sortedCats.map(cat => {
+					const sel = cat === activeCat ? 'selected' : '';
+					return `<option value="${cat}" ${sel}>${cat}（${groupMap[cat].length}）</option>`;
+				}).join('');
+
+				// 根据分类填充音色下拉框
+				function fillVoices(cat) {
+					const catVoices = groupMap[cat] || [];
+					paidVoiceSelect.innerHTML = catVoices.map(v => {
+						const sel = v.name === selectedVoice ? 'selected' : '';
+						return `<option value="${v.name}" ${sel}>${v.displayName || v.name}</option>`;
+					}).join('');
+				}
+
+				fillVoices(activeCat);
+
+				// 分类切换联动
+				paidVoiceCategory.onchange = () => {
+					fillVoices(paidVoiceCategory.value);
+					// 切换分类后更新当前选中
+					currentPaidVoice = paidVoiceSelect.value;
+				};
+			}
 
 			if (providerSelect) {
 				providerSelect.addEventListener("change", async (e) => {
 					currentProvider = e.target.value;
 
 					if (currentProvider === "free") {
-						// 显示免费语音选择，隐藏付费
 						if (paidVoiceGroup) paidVoiceGroup.style.display = "none";
 						if (freeVoiceGroup) freeVoiceGroup.style.display = "block";
 					} else {
-						// 显示付费音色选择，隐藏免费
 						if (paidVoiceGroup) paidVoiceGroup.style.display = "block";
 						if (freeVoiceGroup) freeVoiceGroup.style.display = "none";
 
-						// 加载音色列表
-						if (paidVoiceSelect) {
-							paidVoiceSelect.innerHTML = '<option value="">加载中...</option>';
-							try {
-								const voices = await loadVoicesForProvider(currentProvider);
-								if (voices.length === 0) {
-									paidVoiceSelect.innerHTML = '<option value="">请先配置 API</option>';
-								} else {
-									paidVoiceSelect.innerHTML = voices
-										.map((v) => {
-											const selected = v.name === currentPaidVoice ? "selected" : "";
-											return `<option value="${v.name}" ${selected}>${v.displayName || v.name}</option>`;
-										})
-										.join("");
-								}
-							} catch (e) {
-								console.error("Failed to load voices:", e);
-								paidVoiceSelect.innerHTML = '<option value="">加载失败</option>';
-							}
+						if (paidVoiceCategory) paidVoiceCategory.innerHTML = '<option value="">加载中...</option>';
+						if (paidVoiceSelect) paidVoiceSelect.innerHTML = '<option value="">加载中...</option>';
+						try {
+							const voices = await loadVoicesForProvider(currentProvider);
+							populateCategoryAndVoice(voices, currentPaidVoice);
+						} catch (e) {
+							console.error("Failed to load voices:", e);
+							if (paidVoiceCategory) paidVoiceCategory.innerHTML = '<option value="">加载失败</option>';
+							if (paidVoiceSelect) paidVoiceSelect.innerHTML = '<option value="">加载失败</option>';
 						}
 					}
 				});
@@ -9761,16 +9958,7 @@
 				// 初始加载付费音色（如果当前是付费渠道）
 				if (currentProvider !== "free" && paidVoiceSelect) {
 					loadVoicesForProvider(currentProvider).then((voices) => {
-						if (voices.length === 0) {
-							paidVoiceSelect.innerHTML = '<option value="">请先配置 API</option>';
-						} else {
-							paidVoiceSelect.innerHTML = voices
-								.map((v) => {
-									const selected = v.name === currentPaidVoice ? "selected" : "";
-									return `<option value="${v.name}" ${selected}>${v.displayName || v.name}</option>`;
-								})
-								.join("");
-						}
+						populateCategoryAndVoice(voices, currentPaidVoice);
 					});
 				}
 			}
@@ -18276,12 +18464,54 @@
 								v.VoiceType === "Neural" &&
 								(v.Locale.startsWith("zh-") || v.Locale.startsWith("ja-") || v.Locale.startsWith("en-"))
 						)
-						.map((v) => ({
-							name: v.ShortName,
-							displayName: v.LocalName || v.DisplayName,
-							language: v.Locale,
-							gender: v.Gender,
-						}));
+						.map((v) => {
+							let displayName = v.LocalName || v.DisplayName;
+							let category = null;
+
+							const AZURE_NAME_MAP = {
+								"Xiaoxiao": "晓晓", "Yunxiao": "云希", "Yunyi": "云野",
+								"Xiaochen": "晓辰", "Xiaoshuang": "晓双", "Xiaohan": "晓涵",
+								"Xiaomeng": "晓梦", "Xiaomo": "晓墨", "Xiaoqiu": "晓秋",
+								"Xiaorou": "晓柔", "Xiaorui": "晓睿", "Xiaoxuan": "晓萱",
+								"Xiaoyan": "晓颜", "Xiaozhen": "晓甄", "Yunjian": "云健",
+								"Yunyang": "云扬", "Yunze": "云泽", "Yunfeng": "云枫",
+								"Yune": "云皓", "Xiaoyou": "晓悠", "Yunfan": "云帆",
+								"Xiaoyu": "晓雨", "Yunxia": "云夏", "Yunxi": "云希", "Yunye": "云野", "Yunhao": "云皓"
+							};
+
+							// Map for HD voices (e.g., "Xiaoxiao Dragon HD Flash Latest" -> "晓晓 (HD)")
+							if (displayName.includes("Dragon HD")) {
+								// Match "Name" + optional numbers + " Dragon HD"
+								// e.g. "Xiaoxiao Dragon HD..." or "Xiaoxiao2 Dragon HD..."
+								const match = displayName.match(/^([A-Za-z]+)(\d*)\s+Dragon HD/);
+								if (match) {
+									const nameBase = match[1]; // Xiaoxiao
+									const variantNum = match[2]; // 2 (if any)
+									const cnName = AZURE_NAME_MAP[nameBase] || nameBase;
+									displayName = `${cnName}${variantNum} (HD)`;
+								}
+								// category = "高清 (HD)";
+							} else if (displayName.includes("Multilingual")) {
+								// Map for Multilingual voices (e.g., "Yunfan Multilingual" -> "云帆 多语言")
+								const match = displayName.match(/^([A-Za-z]+)(\d*)\s+Multilingual/);
+								if (match) {
+									const nameBase = match[1];
+									const variantNum = match[2];
+									const cnName = AZURE_NAME_MAP[nameBase] || nameBase;
+									displayName = `${cnName}${variantNum} 多语言`;
+								} else {
+									displayName = displayName.replace("Multilingual", "多语言");
+								}
+							}
+
+							return {
+								name: v.ShortName,
+								displayName: displayName,
+								language: v.Locale,
+								gender: v.Gender,
+								category: category
+							};
+						});
 				} catch (e) {
 					console.error("Error fetching Azure voices:", e);
 					return [];
@@ -18428,6 +18658,632 @@
 			}
 		}
 
+		/**
+		 * ResponsiveVoice TTS 适配器
+		 * ResponsiveVoice 使用浏览器端 SDK 实时合成语音，不返回音频文件
+		 */
+		class ResponsiveVoiceTTSAdapter extends TTSProviderAdapter {
+			constructor(config) {
+				super(config);
+				this.apiKey = config.apiKey || "";
+				this._sdkLoaded = false;
+				this._sdkLoading = false;
+			}
+
+			/**
+			 * 动态加载 ResponsiveVoice SDK
+			 * @returns {Promise<void>}
+			 */
+			async loadSDK() {
+				if (window.responsiveVoice) {
+					this._sdkLoaded = true;
+					return;
+				}
+
+				if (this._sdkLoading) {
+					// 等待已有的加载完成
+					await new Promise((resolve) => {
+						const check = setInterval(() => {
+							if (window.responsiveVoice) {
+								clearInterval(check);
+								this._sdkLoaded = true;
+								resolve();
+							}
+						}, 100);
+					});
+					return;
+				}
+
+				this._sdkLoading = true;
+
+				return new Promise((resolve, reject) => {
+					// 移除已有的 SDK 脚本（可能 key 已更改）
+					const existing = document.querySelector('script[src*="responsivevoice.js"]');
+					if (existing) existing.remove();
+
+					const script = document.createElement("script");
+					script.src = `https://code.responsivevoice.org/responsivevoice.js?key=${encodeURIComponent(this.apiKey)}`;
+					script.onload = () => {
+						this._sdkLoaded = true;
+						this._sdkLoading = false;
+						console.log("ResponsiveVoice SDK loaded");
+						resolve();
+					};
+					script.onerror = () => {
+						this._sdkLoading = false;
+						reject(new Error("Failed to load ResponsiveVoice SDK"));
+					};
+					document.head.appendChild(script);
+				});
+			}
+
+			async synthesize(text, voiceConfig) {
+				if (!this.apiKey) {
+					throw new Error("ResponsiveVoice API Key not configured");
+				}
+
+				await this.loadSDK();
+
+				// ResponsiveVoice 实时播放，不返回 Blob
+				return new Promise((resolve, reject) => {
+					const knownVoices = [
+						"Chinese Female", "Chinese Male",
+						"Chinese (Hong Kong) Female", "Chinese (Hong Kong) Male",
+						"Chinese Taiwan Female", "Chinese Taiwan Male",
+						"Japanese Female", "Japanese Male",
+						"Korean Female", "Korean Male",
+						"UK English Female", "UK English Male",
+						"US English Female", "US English Male",
+					];
+					const rawVoice = voiceConfig.voice || "Chinese Female";
+					const voice = knownVoices.includes(rawVoice) ? rawVoice : "Chinese Female";
+					const params = {
+						pitch: voiceConfig.pitch || 1,
+						rate: voiceConfig.rate || 1,
+						volume: voiceConfig.volume || 1,
+						onend: () => resolve(null),
+						onerror: (e) => reject(new Error(`ResponsiveVoice error: ${e}`)),
+					};
+
+					try {
+						responsiveVoice.speak(text, voice, params);
+					} catch (e) {
+						reject(e);
+					}
+				});
+			}
+
+			async getVoices() {
+				// 返回预定义的中文、日语、英语语音
+				return [
+					{ name: "Chinese Female", displayName: "中文女声", language: "zh-CN", gender: "Female" },
+					{ name: "Chinese Male", displayName: "中文男声", language: "zh-CN", gender: "Male" },
+					{ name: "Chinese (Hong Kong) Female", displayName: "粤语女声", language: "zh-HK", gender: "Female" },
+					{ name: "Chinese (Hong Kong) Male", displayName: "粤语男声", language: "zh-HK", gender: "Male" },
+					{ name: "Chinese Taiwan Female", displayName: "台湾女声", language: "zh-TW", gender: "Female" },
+					{ name: "Chinese Taiwan Male", displayName: "台湾男声", language: "zh-TW", gender: "Male" },
+					{ name: "Japanese Female", displayName: "日语女声", language: "ja-JP", gender: "Female" },
+					{ name: "Japanese Male", displayName: "日语男声", language: "ja-JP", gender: "Male" },
+					{ name: "Korean Female", displayName: "韩语女声", language: "ko-KR", gender: "Female" },
+					{ name: "Korean Male", displayName: "韩语男声", language: "ko-KR", gender: "Male" },
+					{ name: "UK English Female", displayName: "英式英语女声", language: "en-GB", gender: "Female" },
+					{ name: "UK English Male", displayName: "英式英语男声", language: "en-GB", gender: "Male" },
+					{ name: "US English Female", displayName: "美式英语女声", language: "en-US", gender: "Female" },
+					{ name: "US English Male", displayName: "美式英语男声", language: "en-US", gender: "Male" },
+				];
+			}
+
+			async testConnection() {
+				if (!this.apiKey) {
+					return false;
+				}
+
+				try {
+					await this.loadSDK();
+					return !!window.responsiveVoice;
+				} catch (e) {
+					console.error("ResponsiveVoice connection test failed:", e);
+					return false;
+				}
+			}
+		}
+
+		/**
+		 * 讯飞 TTS 适配器
+		 * 使用 WebSocket 协议直连讯飞服务器，HMAC-SHA256 鉴权
+		 */
+		class XunfeiTTSAdapter extends TTSProviderAdapter {
+			constructor(config) {
+				super(config);
+				this.appId = config.appId || "";
+				this.apiKey = config.apiKey || "";
+				this.apiSecret = config.apiSecret || "";
+				this.host = "tts-api.xfyun.cn";
+				this.path = "/v2/tts";
+			}
+
+			/**
+			 * 使用 Web Crypto API 进行 HMAC-SHA256 签名
+			 * @param {string} message - 待签名内容
+			 * @param {string} secret - 密钥
+			 * @returns {Promise<string>} base64 编码的签名
+			 */
+			async hmacSha256(message, secret) {
+				const encoder = new TextEncoder();
+				const keyData = encoder.encode(secret);
+				const msgData = encoder.encode(message);
+
+				const key = await crypto.subtle.importKey(
+					"raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+				);
+				const signature = await crypto.subtle.sign("HMAC", key, msgData);
+				return btoa(String.fromCharCode(...new Uint8Array(signature)));
+			}
+
+			/**
+			 * 生成鉴权 WebSocket URL
+			 * @returns {Promise<string>}
+			 */
+			async buildAuthUrl() {
+				const date = new Date().toUTCString();
+				const signatureOrigin = `host: ${this.host}\ndate: ${date}\nGET ${this.path} HTTP/1.1`;
+				const signature = await this.hmacSha256(signatureOrigin, this.apiSecret);
+
+				const authorizationOrigin = `api_key="${this.apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
+				const authorization = btoa(authorizationOrigin);
+
+				const params = new URLSearchParams({
+					authorization: authorization,
+					date: date,
+					host: this.host,
+				});
+
+				return `wss://${this.host}${this.path}?${params.toString()}`;
+			}
+
+			/**
+			 * 将 0.5-2 的语速转换为讯飞的 0-100
+			 */
+			rateToXunfeiScale(rate) {
+				return Math.round(((rate - 0.5) / 1.5) * 100);
+			}
+
+			/**
+			 * 将 0.5-2 的音调转换为讯飞的 0-100
+			 */
+			pitchToXunfeiScale(pitch) {
+				return Math.round(((pitch - 0.5) / 1.5) * 100);
+			}
+
+			async synthesize(text, voiceConfig) {
+				if (!this.appId || !this.apiKey || !this.apiSecret) {
+					throw new Error("讯飞 TTS 凭证未配置");
+				}
+
+				const url = await this.buildAuthUrl();
+
+				return new Promise((resolve, reject) => {
+					let settled = false;
+					const ws = new WebSocket(url);
+					const audioChunks = [];
+
+					// 15 秒超时
+					const timeout = setTimeout(() => {
+						if (!settled) {
+							settled = true;
+							try { ws.close(); } catch (_) { }
+							reject(new Error("讯飞 TTS 超时（15秒）"));
+						}
+					}, 15000);
+
+					ws.onopen = () => {
+						const request = {
+							common: { app_id: this.appId },
+							business: {
+								aue: "lame",  // mp3 格式
+								sfl: 1,      // 开启流式返回
+								auf: "audio/L16;rate=16000",
+								vcn: voiceConfig.voice || "x4_xiaoyan",
+								speed: this.rateToXunfeiScale(voiceConfig.rate || 1),
+								pitch: this.pitchToXunfeiScale(voiceConfig.pitch || 1),
+								volume: Math.round((voiceConfig.volume || 1) * 100),
+								tte: "UTF8",
+							},
+							data: {
+								status: 2,
+								text: btoa(unescape(encodeURIComponent(text))),
+							},
+						};
+						ws.send(JSON.stringify(request));
+					};
+
+					ws.onmessage = (event) => {
+						try {
+							const resp = JSON.parse(event.data);
+
+							if (resp.code !== 0) {
+								clearTimeout(timeout);
+								ws.close();
+								if (!settled) {
+									settled = true;
+									reject(new Error(`讯飞 TTS 错误: ${resp.code} - ${resp.message}`));
+								}
+								return;
+							}
+
+							if (resp.data && resp.data.audio) {
+								// base64 → Uint8Array
+								const binaryStr = atob(resp.data.audio);
+								const bytes = new Uint8Array(binaryStr.length);
+								for (let i = 0; i < binaryStr.length; i++) {
+									bytes[i] = binaryStr.charCodeAt(i);
+								}
+								audioChunks.push(bytes);
+							}
+
+							// status=2 表示合成结束
+							if (resp.data && resp.data.status === 2) {
+								clearTimeout(timeout);
+								ws.close();
+								if (!settled) {
+									settled = true;
+									// 合并所有音频块
+									const totalLength = audioChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+									const merged = new Uint8Array(totalLength);
+									let offset = 0;
+									for (const chunk of audioChunks) {
+										merged.set(chunk, offset);
+										offset += chunk.length;
+									}
+									console.log(`讯飞 TTS: 收到 ${audioChunks.length} 个音频块, 总大小 ${totalLength} 字节`);
+									const blob = new Blob([merged], { type: "audio/mpeg" });
+									resolve(blob);
+								}
+							}
+						} catch (e) {
+							clearTimeout(timeout);
+							ws.close();
+							if (!settled) {
+								settled = true;
+								reject(e);
+							}
+						}
+					};
+
+					ws.onerror = (e) => {
+						clearTimeout(timeout);
+						if (!settled) {
+							settled = true;
+							reject(new Error("讯飞 WebSocket 连接错误，请检查网络或凭证"));
+						}
+					};
+
+					ws.onclose = (event) => {
+						clearTimeout(timeout);
+						if (!settled) {
+							settled = true;
+							if (audioChunks.length === 0) {
+								reject(new Error(`讯飞 WebSocket 关闭，未收到音频数据 (code: ${event.code})`));
+							}
+						}
+					};
+				});
+			}
+
+			async getVoices() {
+				// V3.0 版本发音人 vcn 名称
+				return [
+					{ name: "x4_xiaoyan", displayName: "小燕（标准女声）", language: "zh-CN", gender: "Female" },
+					{ name: "x4_yezi", displayName: "小露（标准女声）", language: "zh-CN", gender: "Female" },
+					{ name: "aisjiuxu", displayName: "许久（标准男声）", language: "zh-CN", gender: "Male" },
+					{ name: "aisjinger", displayName: "小婧（标准女声）", language: "zh-CN", gender: "Female" },
+					{ name: "aisbabyxu", displayName: "许小宝（童声）", language: "zh-CN", gender: "Male" },
+				];
+			}
+
+			async testConnection() {
+				if (!this.appId || !this.apiKey || !this.apiSecret) {
+					return false;
+				}
+
+				try {
+					const blob = await this.synthesize("测试", {
+						voice: "x4_xiaoyan",
+						rate: 1,
+						pitch: 1,
+						volume: 1,
+					});
+					return blob && blob.size > 0;
+				} catch (e) {
+					console.error("讯飞连接测试失败:", e);
+					return false;
+				}
+			}
+		}
+
+
+		/**
+		 * 腾讯云 TTS 适配器
+		 * 使用 WebSocket 协议直连 tts.cloud.tencent.com
+		 * 鉴权方式：HMAC-SHA1 签名
+		 */
+		class TencentTTSAdapter extends TTSProviderAdapter {
+			constructor(config) {
+				super(config);
+				this.appId = config.appId || "";
+				this.secretId = config.secretId || "";
+				this.secretKey = config.secretKey || "";
+				// 腾讯云 WebSocket 地址
+				this.url = "wss://tts.cloud.tencent.com/stream_ws";
+			}
+
+			// HMAC-SHA1 签名
+			async hmacSha1(message, secret) {
+				const encoder = new TextEncoder();
+				const keyData = encoder.encode(secret);
+				const msgData = encoder.encode(message);
+
+				const cryptoKey = await crypto.subtle.importKey(
+					"raw",
+					keyData,
+					{ name: "HMAC", hash: "SHA-1" },
+					false,
+					["sign"]
+				);
+
+				const signature = await crypto.subtle.sign("HMAC", cryptoKey, msgData);
+				// ArrayBuffer -> Base64
+				return btoa(String.fromCharCode(...new Uint8Array(signature)));
+			}
+
+			async getSignature(params) {
+				// 1. 参数排序
+				const sortedKeys = Object.keys(params).sort();
+				let strParam = "";
+				for (const key of sortedKeys) {
+					strParam += (strParam ? "&" : "") + key + "=" + params[key];
+				}
+
+				// 2. 拼接签名原文
+				// GETtts.cloud.tencent.com/stream_ws?...
+				const source = "GETtts.cloud.tencent.com/stream_ws?" + strParam;
+
+				// 3. 计算签名
+				return await this.hmacSha1(source, this.secretKey);
+			}
+
+			async synthesize(text, voiceConfig) {
+				if (!this.appId || !this.secretId || !this.secretKey) {
+					throw new Error("请先配置腾讯云 AppID, SecretId 和 SecretKey");
+				}
+
+				// 生成 SessionId (UUID v4)
+				const sessionId = crypto.randomUUID();
+
+				// 构造请求参数
+				const params = {
+					Action: "TextToStreamAudioWS",
+					AppId: parseInt(this.appId),
+					Codec: "mp3",
+					Expired: Math.floor(Date.now() / 1000) + 3600, // 1小时后过期
+					ModelType: 1, // 默认模型
+					Nonce: Math.floor(Math.random() * 10000000), // 随机正整数
+					SampleRate: 16000,
+					SecretId: this.secretId,
+					SessionId: sessionId,
+					Speed: Math.max(-2, Math.min(6, Math.round((voiceConfig.rate - 1) * 2))), // 映射 0.1-10 到 -2~6 (粗略) -> 实际 rate 0.5~2.0 -> -2~2
+					Text: text,
+					Timestamp: Math.floor(Date.now() / 1000),
+					VoiceType: parseInt(voiceConfig.voice) || 101001, // 默认智语，防止 NaN
+					Volume: Math.max(0, Math.min(10, Math.round(voiceConfig.volume * 10))), // 0-10
+				};
+
+				// 处理语速映射: ccfolia 0.1~2.0~10.0 -> tencent -2~6
+				// 假设 ccfolia rate 1.0 = tencent 0
+				// ccfolia < 1.0 -> -2 ~ 0
+				// ccfolia > 1.0 -> 0 ~ 6
+				let speed = 0;
+				if (voiceConfig.rate < 1) {
+					speed = Math.max(-2, Math.round((voiceConfig.rate - 1) * 2)); // 0.5 -> -1
+				} else {
+					speed = Math.min(6, Math.round((voiceConfig.rate - 1) * 2)); // 2.0 -> 2
+				}
+				params.Speed = speed;
+
+
+				// 计算签名
+				const signature = await this.getSignature(params);
+
+				// 构造 WebSocket URL
+				const queryParts = [];
+				for (const key of Object.keys(params).sort()) {
+					queryParts.push(`${key}=${encodeURIComponent(params[key])}`);
+				}
+				queryParts.push(`Signature=${encodeURIComponent(signature)}`);
+				const url = `${this.url}?${queryParts.join("&")}`;
+
+				return new Promise((resolve, reject) => {
+					let settled = false;
+					const ws = new WebSocket(url);
+					const audioChunks = [];
+
+					// 15 秒超时
+					const timeout = setTimeout(() => {
+						if (!settled) {
+							settled = true;
+							try { ws.close(); } catch (_) { }
+							reject(new Error("腾讯云 TTS 超时（15秒）"));
+						}
+					}, 15000);
+
+					ws.onmessage = (event) => {
+						try {
+							// 腾讯云返回的是 binary 或 text
+							if (typeof event.data === 'string') {
+								const resp = JSON.parse(event.data);
+								if (resp.Response && resp.Response.Error) {
+									clearTimeout(timeout);
+									ws.close();
+									if (!settled) {
+										settled = true;
+										reject(new Error(`腾讯云 TTS 错误: ${resp.Response.Error.Code} - ${resp.Response.Error.Message}`));
+									}
+								}
+							} else if (event.data instanceof Blob) {
+								// 收到二进制音频数据
+								// 需要读取 Blob 为 ArrayBuffer 才能合并? 
+								// 或者直接 push Blob? 
+								// 腾讯云 WebSocket 返回的是原生二进制流吗？
+								// 根据文档，返回的是二进制流。WebSocket API binaryType 默认是 blob。
+								// 我们需要把它转成 Uint8Array 方便合并，或者最后合并 Blob。
+								const reader = new FileReader();
+								reader.onload = () => {
+									audioChunks.push(new Uint8Array(reader.result));
+								};
+								reader.readAsArrayBuffer(event.data);
+							}
+						} catch (e) {
+							// 解析错误忽略
+						}
+					};
+
+					// 腾讯云 stream_ws 接口返回逻辑：
+					// 持续收到二进制帧。
+					// 结束时？文档说：最终返回一个结束标志？
+					// 实际测试中，腾讯云 WebSocket 在发送完音频后会断开连接吗？
+					// 或者发送一个特殊的 JSON 包？
+					// 查阅文档：客户端收到所有音频数据后，Server 端会主动关闭连接。
+
+					// 修正：我们要设置 binaryType
+					ws.binaryType = "arraybuffer";
+					ws.onmessage = (event) => {
+						if (typeof event.data === 'string') {
+							// 可能是错误信息
+							try {
+								const resp = JSON.parse(event.data);
+								if (resp.Response && resp.Response.Error) {
+									clearTimeout(timeout);
+									ws.close();
+									if (!settled) {
+										settled = true;
+										reject(new Error(`腾讯云 TTS 错误: ${resp.Response.Error.Code} - ${resp.Response.Error.Message}`));
+									}
+								}
+							} catch (e) { }
+						} else {
+							// 二进制音频数据
+							audioChunks.push(new Uint8Array(event.data));
+						}
+					};
+
+					ws.onerror = (e) => {
+						clearTimeout(timeout);
+						if (!settled) {
+							settled = true;
+							reject(new Error("腾讯云 WebSocket 连接错误"));
+						}
+					};
+
+					ws.onclose = (event) => {
+						clearTimeout(timeout);
+						if (!settled) {
+							settled = true;
+							if (audioChunks.length > 0) {
+								console.log(`腾讯云 TTS: 收到 ${audioChunks.length} 个音频块`);
+								const totalLength = audioChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+								const merged = new Uint8Array(totalLength);
+								let offset = 0;
+								for (const chunk of audioChunks) {
+									merged.set(chunk, offset);
+									offset += chunk.length;
+								}
+								resolve(new Blob([merged], { type: "audio/mpeg" }));
+							} else {
+								reject(new Error(`腾讯云 WebSocket 关闭，未收到音频数据 (code: ${event.code})`));
+							}
+						}
+					};
+				});
+			}
+
+			async getVoices() {
+				// 腾讯云 TTS 音色列表
+				// 整理自用户提供的 2026-02-02 列表
+				return [
+					// === 超自然大模型 ===
+					{ name: "502007", displayName: "智小虎（聊天童声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "502006", displayName: "智小悟（聊天男声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "502005", displayName: "智小解（解说男声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "502004", displayName: "智小满（营销女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+					{ name: "502003", displayName: "智小敏（聊天女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+					{ name: "502001", displayName: "智小柔（聊天女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+					{ name: "602004", displayName: "暖心阿灿（聊天男声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "602005", displayName: "专业梓欣（聊天女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+					{ name: "603000", displayName: "懂事少年（特色男声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "603001", displayName: "潇湘妹妹（特色女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+					{ name: "603002", displayName: "软萌心心（特色男童声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "603003", displayName: "随和老李（聊天男声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "603004", displayName: "温柔小柠（聊天女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+					{ name: "603005", displayName: "知心大林（聊天男声）", language: "zh-CN", gender: "Male", category: "超自然大模型" },
+					{ name: "602003", displayName: "爱小悠（聊天女声）", language: "zh-CN", gender: "Female", category: "超自然大模型" },
+
+					// === 大模型音色 ===
+					{ name: "501000", displayName: "智斌（阅读男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "501001", displayName: "智兰（资讯女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "501002", displayName: "智菊（阅读女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "501003", displayName: "智宇（阅读男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "501004", displayName: "月华（聊天女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "501005", displayName: "飞镜（聊天男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "501006", displayName: "千嶂（聊天男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "501007", displayName: "浅草（聊天男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "501008", displayName: "WeJames（外语男声）", language: "en-US", gender: "Male", category: "大模型音色" },
+					{ name: "501009", displayName: "WeWinny（外语女声）", language: "en-US", gender: "Female", category: "大模型音色" },
+					{ name: "601008", displayName: "爱小豪（聊天男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "601009", displayName: "爱小芊（聊天女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "601010", displayName: "爱小娇（聊天女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "601011", displayName: "爱小川（聊天男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+					{ name: "601012", displayName: "爱小璟（特色女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "601013", displayName: "爱小伊（阅读女声）", language: "zh-CN", gender: "Female", category: "大模型音色" },
+					{ name: "601014", displayName: "爱小简（聊天男声）", language: "zh-CN", gender: "Male", category: "大模型音色" },
+
+					// === 精品音色 ===
+					{ name: "101050", displayName: "WeJack（英文男声）", language: "en-US", gender: "Male", category: "精品音色" },
+					{ name: "101055", displayName: "智付（通用女声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+					{ name: "101013", displayName: "智辉（新闻男声）", language: "zh-CN", gender: "Male", category: "精品音色" },
+					{ name: "101019", displayName: "智彤（粤语女声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+					{ name: "101030", displayName: "智柯（通用男声）", language: "zh-CN", gender: "Male", category: "精品音色" },
+					{ name: "101054", displayName: "智友（通用男声）", language: "zh-CN", gender: "Male", category: "精品音色" },
+					{ name: "101027", displayName: "智梅（通用女声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+					{ name: "101026", displayName: "智希（通用女声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+					{ name: "101004", displayName: "智云（通用男声）", language: "zh-CN", gender: "Male", category: "精品音色" },
+					{ name: "101015", displayName: "智萌（男童声）", language: "zh-CN", gender: "Male", category: "精品音色" },
+					{ name: "101011", displayName: "智燕（新闻女声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+					{ name: "101001", displayName: "智瑜（情感女声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+					{ name: "101021", displayName: "智瑞（新闻男声）", language: "zh-CN", gender: "Male", category: "精品音色" },
+					{ name: "101016", displayName: "智甜（女童声）", language: "zh-CN", gender: "Female", category: "精品音色" },
+				];
+			}
+
+			async testConnection() {
+				if (!this.appId || !this.secretId || !this.secretKey) {
+					return false;
+				}
+
+				try {
+					const blob = await this.synthesize("测试", {
+						voice: "101001",
+						rate: 1,
+						pitch: 1,
+						volume: 1,
+					});
+					return blob && blob.size > 0;
+				} catch (e) {
+					console.error("腾讯云连接测试失败:", e);
+					return false;
+				}
+			}
+		}
+
 		// 注册内置渠道
 		TTSProviderRegistry.register("free", {
 			name: "免费 (浏览器)",
@@ -18477,6 +19333,50 @@
 			defaultConfig: {
 				appKey: "",
 				token: "",
+			},
+		});
+
+		TTSProviderRegistry.register("responsivevoice", {
+			name: "ResponsiveVoice",
+			Adapter: ResponsiveVoiceTTSAdapter,
+			isPaid: true,
+			configFields: [
+				{ key: "apiKey", label: "API Key", type: "password", required: true },
+			],
+			defaultConfig: {
+				apiKey: "",
+			},
+		});
+
+		TTSProviderRegistry.register("xunfei", {
+			name: "讯飞 TTS",
+			Adapter: XunfeiTTSAdapter,
+			isPaid: true,
+			configFields: [
+				{ key: "appId", label: "APPID", type: "text", required: true },
+				{ key: "apiKey", label: "APIKey", type: "password", required: true },
+				{ key: "apiSecret", label: "APISecret", type: "password", required: true },
+			],
+			defaultConfig: {
+				appId: "",
+				apiKey: "",
+				apiSecret: "",
+			},
+		});
+
+		TTSProviderRegistry.register("tencent", {
+			name: "腾讯云 TTS",
+			Adapter: TencentTTSAdapter,
+			isPaid: true,
+			configFields: [
+				{ key: "appId", label: "AppID", type: "text", required: true },
+				{ key: "secretId", label: "SecretId", type: "password", required: true },
+				{ key: "secretKey", label: "SecretKey", type: "password", required: true },
+			],
+			defaultConfig: {
+				appId: "",
+				secretId: "",
+				secretKey: "",
 			},
 		});
 
@@ -18761,6 +19661,14 @@
 					aliyun: {
 						appKey: "",
 						token: "",
+					},
+					responsivevoice: {
+						apiKey: "",
+					},
+					xunfei: {
+						appId: "",
+						apiKey: "",
+						apiSecret: "",
 					},
 				},
 				voiceMap: {},
@@ -23722,55 +24630,126 @@
 			const char = state.characters[characterName];
 			if (!char) return;
 
-			// Initialize voice if not exists
-			if (!char.voice) {
-				char.voice = { enabled: false, voiceName: "", rate: 1, pitch: 1, volume: 1 };
-			}
-
 			DOM.quickTtsTitle.textContent = `TTS设置 - ${characterName}`;
 
-			// Populate voice options
-			const voiceGroups = { zh: [], ja: [], en: [], other: [] };
-			TTSManager.voices.forEach((v) => {
-				if (v.lang.startsWith("zh")) voiceGroups.zh.push(v);
-				else if (v.lang.startsWith("ja")) voiceGroups.ja.push(v);
-				else if (v.lang.startsWith("en")) voiceGroups.en.push(v);
-				else voiceGroups.other.push(v);
-			});
+			// Get current config from Manager
+			const voiceConfig = TTSConfigManager.getVoiceConfig(characterName);
+			let currentProvider = voiceConfig.provider || "free";
+			let currentVoice = voiceConfig.voice || "";
 
-			let options = '<option value="">不使用语音</option>';
-			if (voiceGroups.zh.length > 0) {
-				options += '<optgroup label="中文">';
-				voiceGroups.zh.forEach((v) => {
-					const selected = char.voice.voiceName === v.name ? "selected" : "";
-					options += `<option value="${v.name}" ${selected}>${v.name}</option>`;
-				});
-				options += "</optgroup>";
-			}
-			if (voiceGroups.ja.length > 0) {
-				options += '<optgroup label="日语">';
-				voiceGroups.ja.forEach((v) => {
-					const selected = char.voice.voiceName === v.name ? "selected" : "";
-					options += `<option value="${v.name}" ${selected}>${v.name}</option>`;
-				});
-				options += "</optgroup>";
-			}
-			if (voiceGroups.en.length > 0) {
-				options += '<optgroup label="英语">';
-				voiceGroups.en.forEach((v) => {
-					const selected = char.voice.voiceName === v.name ? "selected" : "";
-					options += `<option value="${v.name}" ${selected}>${v.name}</option>`;
-				});
-				options += "</optgroup>";
+			// Populate providers
+			const providers = TTSProviderRegistry.getAll();
+			DOM.quickTtsProvider.innerHTML = providers
+				.map((p) => {
+					const selected = p.id === currentProvider ? "selected" : "";
+					return `<option value="${p.id}" ${selected}>${p.name}</option>`;
+				})
+				.join("");
+
+			// Internal function to load voices and populate dropdowns
+			async function loadAndPopulateVoices(providerId) {
+				DOM.quickTtsCategory.innerHTML = '<option value="">加载中...</option>';
+				DOM.quickTtsVoice.innerHTML = '<option value="">加载中...</option>';
+
+				try {
+					const voices = await loadVoicesForProvider(providerId);
+
+					if (voices.length === 0) {
+						DOM.quickTtsCategory.innerHTML = '<option value="">请先配置 API</option>';
+						DOM.quickTtsVoice.innerHTML = '<option value="">请先配置 API</option>';
+						return;
+					}
+
+					// Group by category
+					const groupMap = {};
+					voices.forEach(v => {
+						let cat = v.category;
+						if (!cat && v.language) {
+							if (v.language.startsWith("zh")) cat = "中文";
+							else if (v.language.startsWith("ja")) cat = "日语";
+							else if (v.language.startsWith("en")) cat = "英语";
+						}
+						cat = cat || "其他";
+
+						if (!groupMap[cat]) groupMap[cat] = [];
+						groupMap[cat].push(v);
+					});
+
+					const catKeys = Object.keys(groupMap);
+					const hasMultipleCategories = catKeys.length > 1;
+
+					// Toggle category display
+					DOM.quickTtsCategory.closest('.form-group').style.display = hasMultipleCategories ? '' : 'none';
+
+					// Sort categories
+					const categoryOrder = ["超自然大模型", "大模型音色", "精品音色", "中文", "日语", "英语", "其他"];
+					const sortedCats = catKeys.sort((a, b) => {
+						const iA = categoryOrder.indexOf(a), iB = categoryOrder.indexOf(b);
+						if (iA !== -1 && iB !== -1) return iA - iB;
+						if (iA !== -1) return -1;
+						if (iB !== -1) return 1;
+						return a.localeCompare(b);
+					});
+
+					// Find active category
+					let activeCat = sortedCats[0];
+					if (currentVoice) {
+						for (const cat of sortedCats) {
+							if (groupMap[cat].some(v => v.name === currentVoice)) {
+								activeCat = cat;
+								break;
+							}
+						}
+					}
+
+					// Populate categories
+					DOM.quickTtsCategory.innerHTML = sortedCats.map(cat => {
+						const sel = cat === activeCat ? 'selected' : '';
+						return `<option value="${cat}" ${sel}>${cat}（${groupMap[cat].length}）</option>`;
+					}).join('');
+
+					// Helper to fill voices
+					const fillVoices = (cat) => {
+						const catVoices = groupMap[cat] || [];
+						DOM.quickTtsVoice.innerHTML = catVoices.map(v => {
+							const sel = v.name === currentVoice ? 'selected' : '';
+							return `<option value="${v.name}" ${sel}>${v.displayName || v.name}</option>`;
+						}).join('');
+					};
+
+					fillVoices(activeCat);
+
+					// Category change handler
+					DOM.quickTtsCategory.onchange = () => {
+						fillVoices(DOM.quickTtsCategory.value);
+						// Update current voice on category switch (optional, maybe select first?)
+						// currentVoice = DOM.quickTtsVoice.value;
+					};
+
+				} catch (e) {
+					console.error("Failed to load voices:", e);
+					DOM.quickTtsCategory.innerHTML = '<option value="">加载失败</option>';
+					DOM.quickTtsVoice.innerHTML = '<option value="">加载失败</option>';
+				}
 			}
 
-			DOM.quickTtsVoice.innerHTML = options;
-			DOM.quickTtsRate.value = char.voice.rate || 1;
-			DOM.quickTtsRateValue.textContent = char.voice.rate || 1;
-			DOM.quickTtsPitch.value = char.voice.pitch || 1;
-			DOM.quickTtsPitchValue.textContent = char.voice.pitch || 1;
-			DOM.quickTtsVolume.value = char.voice.volume || 1;
-			DOM.quickTtsVolumeValue.textContent = char.voice.volume || 1;
+			// Initial load
+			loadAndPopulateVoices(currentProvider);
+
+			// Provider change handler
+			DOM.quickTtsProvider.onchange = (e) => {
+				currentProvider = e.target.value;
+				currentVoice = ""; // Reset voice on provider change
+				loadAndPopulateVoices(currentProvider);
+			};
+
+			// Sync values
+			DOM.quickTtsRate.value = voiceConfig.rate || 1;
+			DOM.quickTtsRateValue.textContent = voiceConfig.rate || 1;
+			DOM.quickTtsPitch.value = voiceConfig.pitch || 1;
+			DOM.quickTtsPitchValue.textContent = voiceConfig.pitch || 1;
+			DOM.quickTtsVolume.value = voiceConfig.volume || 1;
+			DOM.quickTtsVolumeValue.textContent = voiceConfig.volume || 1;
 
 			DOM.modalQuickTts.classList.add("visible");
 		}
@@ -23791,34 +24770,90 @@
 			const char = state.characters[quickTtsCharacterName];
 			if (!char) return;
 
-			char.voice = {
-				enabled: !!DOM.quickTtsVoice.value,
-				voiceName: DOM.quickTtsVoice.value,
+			const voiceConfig = {
+				provider: DOM.quickTtsProvider.value,
+				voice: DOM.quickTtsVoice.value,
 				rate: parseFloat(DOM.quickTtsRate.value),
 				pitch: parseFloat(DOM.quickTtsPitch.value),
 				volume: parseFloat(DOM.quickTtsVolume.value),
 			};
 
+			// Save to Manager
+			TTSConfigManager.saveVoiceConfig(quickTtsCharacterName, voiceConfig);
+
+			// Legacy sync
+			char.voice.enabled = !!voiceConfig.voice;
+			char.voice.voiceName = voiceConfig.voice; // Note: for paid providers this might be cleaner to just store it, but manager handles it.
+			char.voice.rate = voiceConfig.rate;
+			char.voice.pitch = voiceConfig.pitch;
+			char.voice.volume = voiceConfig.volume;
+
+			// Update UI
+			if (typeof renderTTSConfiguredCharacters === "function") {
+				renderTTSConfiguredCharacters();
+			}
+
 			state.meta.lastModified = Date.now();
 			closeQuickTtsModal();
+
+			// Show success feedback? Or just close.
 		}
 
 		/**
 		 * Test quick TTS voice
 		 */
-		function testQuickTtsVoice() {
+		async function testQuickTtsVoice() {
+			const providerId = DOM.quickTtsProvider.value;
 			const voiceName = DOM.quickTtsVoice.value;
 			if (!voiceName) return;
 
 			const testText = quickTtsCharacterName ? `你好，我是${quickTtsCharacterName}` : "这是一段测试语音";
 			const config = {
+				provider: providerId,
 				voiceName: voiceName,
 				rate: parseFloat(DOM.quickTtsRate.value),
 				pitch: parseFloat(DOM.quickTtsPitch.value),
 				volume: parseFloat(DOM.quickTtsVolume.value),
 			};
 
-			TTSManager.speak(testText, config);
+			if (!providerId || providerId === "free") {
+				TTSManager.speak(testText, config);
+			} else {
+				const testBtn = document.getElementById("quick-tts-test");
+				if (testBtn) {
+					testBtn.disabled = true;
+					testBtn.textContent = "⏳ 合成中...";
+				}
+
+				try {
+					const providerConfig = TTSConfigManager.getProviderConfig(providerId);
+					const adapter = TTSProviderRegistry.createAdapter(providerId, providerConfig);
+
+					// Adapter expects 'voice' property, TTSManager expects 'voiceName'
+					// Ensure compatibility
+					const adapterConfig = {
+						...config,
+						voice: voiceName
+					};
+
+					const audioBlob = await adapter.synthesize(testText, adapterConfig);
+					if (audioBlob) {
+						const audioUrl = URL.createObjectURL(audioBlob);
+						const audio = new Audio(audioUrl);
+						audio.volume = config.volume;
+						audio.onended = () => URL.revokeObjectURL(audioUrl);
+						await audio.play();
+					}
+				} catch (e) {
+					console.error("Quick TTS Preview failed:", e);
+					alert("试听失败: " + e.message);
+				} finally {
+					if (testBtn) {
+						testBtn.disabled = false;
+						testBtn.textContent = "🔊 试听";
+					}
+				}
+			}
 		}
 
 		/**
@@ -24477,6 +25512,25 @@
 			DOM.aliyunToken.value = aliyunConfig.token || "";
 			updateProviderStatus("aliyun", !!(aliyunConfig.appKey && aliyunConfig.token));
 
+			// 加载 ResponsiveVoice 配置
+			const rvConfig = settings.providerConfigs.responsivevoice || {};
+			DOM.responsivevoiceApikey.value = rvConfig.apiKey || "";
+			updateProviderStatus("responsivevoice", !!rvConfig.apiKey);
+
+			// 加载讯飞配置
+			const xfConfig = settings.providerConfigs.xunfei || {};
+			DOM.xunfeiAppid.value = xfConfig.appId || "";
+			DOM.xunfeiApikey.value = xfConfig.apiKey || "";
+			DOM.xunfeiApisecret.value = xfConfig.apiSecret || "";
+			updateProviderStatus("xunfei", !!(xfConfig.appId && xfConfig.apiKey && xfConfig.apiSecret));
+
+			// 加载腾讯云配置
+			const tencentConfig = settings.providerConfigs.tencent || {};
+			DOM.tencentAppid.value = tencentConfig.appId || "";
+			DOM.tencentSecretid.value = tencentConfig.secretId || "";
+			DOM.tencentSecretkey.value = tencentConfig.secretKey || "";
+			updateProviderStatus("tencent", !!(tencentConfig.appId && tencentConfig.secretId && tencentConfig.secretKey));
+
 			// 渲染已配置角色列表
 			renderTTSConfiguredCharacters();
 		}
@@ -24487,7 +25541,12 @@
 		 * @param {boolean} configured - Whether configured
 		 */
 		function updateProviderStatus(provider, configured) {
-			const statusEl = provider === "azure" ? DOM.azureStatus : DOM.aliyunStatus;
+			let statusEl;
+			if (provider === "azure") statusEl = DOM.azureStatus;
+			else if (provider === "aliyun") statusEl = DOM.aliyunStatus;
+			else if (provider === "responsivevoice") statusEl = DOM.responsivevoiceStatus;
+			else if (provider === "xunfei") statusEl = DOM.xunfeiStatus;
+			else if (provider === "tencent") statusEl = DOM.tencentStatus;
 			if (statusEl) {
 				statusEl.textContent = configured ? "已配置" : "未配置";
 				statusEl.style.color = configured ? "var(--success-color)" : "var(--text-secondary)";
@@ -24555,6 +25614,34 @@
 				!!(settings.providerConfigs.aliyun.appKey && settings.providerConfigs.aliyun.token)
 			);
 
+			// 保存 ResponsiveVoice 配置
+			settings.providerConfigs.responsivevoice = {
+				apiKey: DOM.responsivevoiceApikey.value.trim(),
+			};
+			updateProviderStatus("responsivevoice", !!settings.providerConfigs.responsivevoice.apiKey);
+
+			// 保存讯飞配置
+			settings.providerConfigs.xunfei = {
+				appId: DOM.xunfeiAppid.value.trim(),
+				apiKey: DOM.xunfeiApikey.value.trim(),
+				apiSecret: DOM.xunfeiApisecret.value.trim(),
+			};
+			updateProviderStatus(
+				"xunfei",
+				!!(settings.providerConfigs.xunfei.appId && settings.providerConfigs.xunfei.apiKey && settings.providerConfigs.xunfei.apiSecret)
+			);
+
+			// 保存腾讯云配置
+			settings.providerConfigs.tencent = {
+				appId: DOM.tencentAppid.value.trim(),
+				secretId: DOM.tencentSecretid.value.trim(),
+				secretKey: DOM.tencentSecretkey.value.trim(),
+			};
+			updateProviderStatus(
+				"tencent",
+				!!(settings.providerConfigs.tencent.appId && settings.providerConfigs.tencent.secretId && settings.providerConfigs.tencent.secretKey)
+			);
+
 			TTSConfigManager.saveSettings(settings);
 		}
 
@@ -24576,6 +25663,13 @@
 		DOM.azureRegion?.addEventListener("change", saveTTSApiConfig);
 		DOM.aliyunAppkey?.addEventListener("change", saveTTSApiConfig);
 		DOM.aliyunToken?.addEventListener("change", saveTTSApiConfig);
+		DOM.responsivevoiceApikey?.addEventListener("change", saveTTSApiConfig);
+		DOM.xunfeiAppid?.addEventListener("change", saveTTSApiConfig);
+		DOM.xunfeiApikey?.addEventListener("change", saveTTSApiConfig);
+		DOM.xunfeiApisecret?.addEventListener("change", saveTTSApiConfig);
+		DOM.tencentAppid?.addEventListener("change", saveTTSApiConfig);
+		DOM.tencentSecretid?.addEventListener("change", saveTTSApiConfig);
+		DOM.tencentSecretkey?.addEventListener("change", saveTTSApiConfig);
 
 		// Test connection buttons
 		DOM.btnTestAzure?.addEventListener("click", async () => {
@@ -24640,6 +25734,100 @@
 			}
 		});
 
+		DOM.btnTestResponsivevoice?.addEventListener("click", async () => {
+			const btn = DOM.btnTestResponsivevoice;
+			btn.disabled = true;
+			btn.textContent = "测试中...";
+
+			try {
+				const config = {
+					apiKey: DOM.responsivevoiceApikey.value.trim(),
+				};
+				const adapter = new ResponsiveVoiceTTSAdapter(config);
+				const success = await adapter.testConnection();
+
+				if (success) {
+					DOM.responsivevoiceStatus.textContent = "连接成功";
+					DOM.responsivevoiceStatus.style.color = "var(--success-color)";
+					saveTTSApiConfig();
+				} else {
+					DOM.responsivevoiceStatus.textContent = "连接失败";
+					DOM.responsivevoiceStatus.style.color = "var(--error-color)";
+				}
+			} catch (e) {
+				DOM.responsivevoiceStatus.textContent = "连接失败";
+				DOM.responsivevoiceStatus.style.color = "var(--error-color)";
+				console.error("ResponsiveVoice test failed:", e);
+			} finally {
+				btn.disabled = false;
+				btn.textContent = "测试连接";
+			}
+		});
+
+		DOM.btnTestXunfei?.addEventListener("click", async () => {
+			const btn = DOM.btnTestXunfei;
+			btn.disabled = true;
+			btn.textContent = "测试中...";
+
+			try {
+				const config = {
+					appId: DOM.xunfeiAppid.value.trim(),
+					apiKey: DOM.xunfeiApikey.value.trim(),
+					apiSecret: DOM.xunfeiApisecret.value.trim(),
+				};
+				const adapter = new XunfeiTTSAdapter(config);
+				const success = await adapter.testConnection();
+
+				if (success) {
+					DOM.xunfeiStatus.textContent = "连接成功";
+					DOM.xunfeiStatus.style.color = "var(--success-color)";
+					saveTTSApiConfig();
+				} else {
+					DOM.xunfeiStatus.textContent = "连接失败";
+					DOM.xunfeiStatus.style.color = "var(--error-color)";
+				}
+			} catch (e) {
+				DOM.xunfeiStatus.textContent = "连接失败";
+				DOM.xunfeiStatus.style.color = "var(--error-color)";
+				console.error("讯飞 test failed:", e);
+			} finally {
+				btn.disabled = false;
+				btn.textContent = "测试连接";
+			}
+		});
+
+		DOM.btnTestTencent?.addEventListener("click", async () => {
+			const btn = DOM.btnTestTencent;
+			btn.disabled = true;
+			btn.textContent = "测试中...";
+
+			try {
+				const config = {
+					appId: DOM.tencentAppid.value.trim(),
+					secretId: DOM.tencentSecretid.value.trim(),
+					secretKey: DOM.tencentSecretkey.value.trim(),
+				};
+				const adapter = new TencentTTSAdapter(config);
+				const success = await adapter.testConnection();
+
+				if (success) {
+					DOM.tencentStatus.textContent = "连接成功";
+					DOM.tencentStatus.style.color = "var(--success-color)";
+					saveTTSApiConfig();
+				} else {
+					DOM.tencentStatus.textContent = "连接失败";
+					DOM.tencentStatus.style.color = "var(--error-color)";
+				}
+			} catch (e) {
+				DOM.tencentStatus.textContent = "连接失败";
+				DOM.tencentStatus.style.color = "var(--error-color)";
+				console.error("腾讯云 test failed:", e);
+			} finally {
+				btn.disabled = false;
+				btn.textContent = "测试连接";
+			}
+		});
+
 		// ============================================================
 		// Batch Synthesis (Task 10)
 		// ============================================================
@@ -24684,6 +25872,30 @@
 					};
 				}
 
+				// 尝试讯飞
+				const xunfeiConfig = TTSConfigManager.getProviderConfig("xunfei");
+				if (xunfeiConfig && xunfeiConfig.appId && xunfeiConfig.apiKey && xunfeiConfig.apiSecret) {
+					return {
+						provider: "xunfei",
+						voice: "x4_xiaoyan", // 默认小燕
+						rate: voiceConfig.rate || 1,
+						pitch: voiceConfig.pitch || 1,
+						volume: voiceConfig.volume || 1,
+					};
+				}
+
+				// 尝试腾讯云
+				const tencentConfig = TTSConfigManager.getProviderConfig("tencent");
+				if (tencentConfig && tencentConfig.appId && tencentConfig.secretId && tencentConfig.secretKey) {
+					return {
+						provider: "tencent",
+						voice: "101001", // 默认智语
+						rate: voiceConfig.rate || 1,
+						pitch: voiceConfig.pitch || 1,
+						volume: voiceConfig.volume || 1,
+					};
+				}
+
 				// 无可用付费渠道，返回 null
 				return null;
 			}
@@ -24709,8 +25921,14 @@
 			const hasAzure = azureConfig && azureConfig.apiKey;
 			const hasAliyun = aliyunConfig && aliyunConfig.appKey && aliyunConfig.token;
 
-			if (!hasAzure && !hasAliyun) {
-				alert("请先配置至少一个付费 TTS 渠道（Azure 或阿里云）");
+			const xunfeiConfig = TTSConfigManager.getProviderConfig("xunfei");
+			const hasXunfei = xunfeiConfig && xunfeiConfig.appId && xunfeiConfig.apiKey && xunfeiConfig.apiSecret;
+
+			const tencentConfig = TTSConfigManager.getProviderConfig("tencent");
+			const hasTencent = tencentConfig && tencentConfig.appId && tencentConfig.secretId && tencentConfig.secretKey;
+
+			if (!hasAzure && !hasAliyun && !hasXunfei && !hasTencent) {
+				alert("请先配置至少一个付费 TTS 渠道（Azure、阿里云、讯飞或腾讯云）");
 				return;
 			}
 
@@ -24758,43 +25976,62 @@
 			updateProgress();
 
 			try {
+				// 并发控制
+				const CONCURRENCY_LIMIT = 3; // WebSocket 连接数限制，保守设为 3
+				const executing = new Set();
+
 				for (const { index, msg, voiceConfig } of messagesToSynthesize) {
 					// 检查是否取消
 					if (batchSynthesisAbortController.signal.aborted) {
 						break;
 					}
 
-					try {
-						// 更新消息状态
-						msg.audioStatus = "synthesizing";
-						updateMessageSynthesisStatus(index);
-
-						// 获取适配器
-						const providerConfig = TTSConfigManager.getProviderConfig(voiceConfig.provider);
-						const adapter = TTSProviderRegistry.createAdapter(voiceConfig.provider, providerConfig);
-
-						// 合成音频
-						const audioBlob = await adapter.synthesize(msg.text, voiceConfig);
-
-						if (audioBlob && !batchSynthesisAbortController.signal.aborted) {
-							// 生成文件名并保存
-							const fileName = generateAudioFileName(msg.name, msg.text, msg.id);
-							await AudioFileManager.saveAudioFile(audioBlob, fileName);
-
-							// 更新消息状态
-							msg.audioPath = fileName;
-							msg.audioStatus = "done";
-							msg.audioNeedsResync = false;
-						}
-					} catch (e) {
-						console.error(`Failed to synthesize message ${index}:`, e);
-						msg.audioStatus = "error";
+					// 等待并发槽位
+					while (executing.size >= CONCURRENCY_LIMIT) {
+						await Promise.race(executing);
 					}
 
-					completed++;
-					updateProgress();
-					updateMessageSynthesisStatus(index);
+					const task = async () => {
+						if (batchSynthesisAbortController.signal.aborted) return;
+
+						try {
+							// 更新消息状态
+							msg.audioStatus = "synthesizing";
+							updateMessageSynthesisStatus(index);
+
+							// 获取适配器
+							const providerConfig = TTSConfigManager.getProviderConfig(voiceConfig.provider);
+							const adapter = TTSProviderRegistry.createAdapter(voiceConfig.provider, providerConfig);
+
+							// 合成音频
+							const audioBlob = await adapter.synthesize(msg.text, voiceConfig);
+
+							if (audioBlob && !batchSynthesisAbortController.signal.aborted) {
+								// 生成文件名并保存
+								const fileName = generateAudioFileName(msg.name, msg.text, msg.id);
+								await AudioFileManager.saveAudioFile(audioBlob, fileName);
+
+								// 更新消息状态
+								msg.audioPath = fileName;
+								msg.audioStatus = "done";
+								msg.audioNeedsResync = false;
+							}
+						} catch (e) {
+							console.error(`Failed to synthesize message ${index}:`, e);
+							msg.audioStatus = "error";
+						} finally {
+							completed++;
+							updateProgress();
+							updateMessageSynthesisStatus(index);
+						}
+					};
+
+					const p = task().then(() => executing.delete(p));
+					executing.add(p);
 				}
+
+				// 等待剩余任务完成
+				await Promise.all(executing);
 			} finally {
 				// 恢复 UI
 				isBatchSynthesizing = false;
