@@ -46,6 +46,18 @@
 			background: var(--bg-dark);
 		}
 
+		/* Hide number input spinners */
+		input[type=number].no-spinner::-webkit-inner-spin-button,
+		input[type=number].no-spinner::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		input[type=number].no-spinner {
+			-moz-appearance: textfield;
+			/* Firefox */
+		}
+
 		/* Firefox scrollbar */
 		* {
 			scrollbar-width: thin;
@@ -1825,6 +1837,11 @@
 			outline: none;
 			border-color: var(--primary-color);
 			box-shadow: 0 0 0 3px rgba(94, 129, 172, 0.3);
+		}
+
+		#quick-tts-voice:focus {
+			box-shadow: none;
+			border-color: var(--border-color);
 		}
 
 		/* === Prefix Tags === */
@@ -7136,54 +7153,96 @@
 
 	<!-- Quick TTS Settings Modal -->
 	<div class="modal-overlay" id="modal-quick-tts">
-		<div class="modal" style="width: 380px">
+		<div class="modal" style="width: 550px; max-width: 95vw;">
 			<div class="modal-header">
 				<h3 class="modal-title" id="quick-tts-title">TTS设置</h3>
 				<button class="modal-close" id="modal-quick-tts-close">&times;</button>
 			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="form-label">TTS 渠道</label>
-					<select id="quick-tts-provider" class="form-input" style="margin-bottom: 8px"></select>
-				</div>
-				<div class="form-group">
-					<label class="form-label">音色分类</label>
-					<select id="quick-tts-category" class="form-input"></select>
-				</div>
-				<div class="form-group">
-					<label class="form-label">选择音色</label>
-					<select id="quick-tts-voice" class="form-input"></select>
-				</div>
-				<div class="form-group">
-					<label class="form-label">
-						语速:
-						<span id="quick-tts-rate-value">1</span>
-					</label>
-					<input type="range" id="quick-tts-rate" class="form-range" min="0.5" max="2" step="0.1" value="1" />
-				</div>
-				<div class="form-group">
-					<label class="form-label">
-						音调:
-						<span id="quick-tts-pitch-value">1</span>
-					</label>
-					<input type="range" id="quick-tts-pitch" class="form-range" min="0.5" max="2" step="0.1"
-						value="1" />
-				</div>
-				<div class="form-group">
-					<label class="form-label">
-						音量:
-						<span id="quick-tts-volume-value">1</span>
-					</label>
-					<input type="range" id="quick-tts-volume" class="form-range" min="0" max="1" step="0.1" value="1" />
-				</div>
-				<div style="display: flex; gap: 8px; margin-top: 12px">
-					<button class="btn btn-secondary" id="quick-tts-test" style="flex: 1">🔊 试听</button>
-					<button class="btn btn-secondary" id="quick-tts-reset" style="flex: 1">🔄 重置</button>
+			<div class="modal-body" style="padding: 0;">
+				<div style="display: flex; height: 320px;">
+					<!-- Left Column: Source Selection -->
+					<div
+						style="flex: 1; padding: 20px; background: var(--bg-secondary); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 15px;">
+						<div class="form-group" style="margin-bottom: 0;">
+							<label class="form-label">TTS 渠道</label>
+							<select id="quick-tts-provider" class="form-input"></select>
+						</div>
+						<div class="form-group" style="margin-bottom: 0;">
+							<label class="form-label">音色分类</label>
+							<select id="quick-tts-category" class="form-input"></select>
+						</div>
+						<div class="form-group" style="margin-bottom: 0; flex: 1;">
+							<label class="form-label">选择音色</label>
+							<select id="quick-tts-voice" class="form-input" size="5" style="height: 70%;"></select>
+						</div>
+					</div>
+
+					<!-- Right Column: Parameters -->
+					<div style="flex: 1; padding: 20px; display: flex; flex-direction: column; position: relative;">
+						<!-- Header with Test Button in Top Right -->
+						<div
+							style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+							<h4 style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">⚙️ 参数调优</h4>
+							<button class="btn btn-secondary btn-sm" id="quick-tts-test"
+								style="display: flex; align-items: center; gap: 4px; padding: 4px 12px;">
+								<span>🔊</span> 试听
+							</button>
+						</div>
+
+						<!-- Sliders -->
+						<div style="display: flex; flex-direction: column; gap: 45px; flex: 1;">
+							<div class="form-group" style="margin-bottom: 0;">
+								<div
+									style="display: flex; justify-content: space-between; margin-bottom: 4px; align-items: center;">
+									<label class="form-label" style="margin-bottom: 0;">语速</label>
+									<input type="number" id="quick-tts-rate-input" class="form-input no-spinner"
+										style="display: inline-block; width: 60px; padding: 2px 4px; text-align: right; font-size: 0.85rem; color: var(--primary-color); border: none; background: transparent;"
+										min="0.5" max="2" step="0.01" value="1" />
+								</div>
+								<div style="display: flex; align-items: center; gap: 8px;">
+									<input type="range" id="quick-tts-rate" class="form-range" min="0.5" max="2"
+										step="0.01" value="1" style="flex: 1;" />
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom: 0;">
+								<div
+									style="display: flex; justify-content: space-between; margin-bottom: 4px; align-items: center;">
+									<label class="form-label" style="margin-bottom: 0;">音调</label>
+									<input type="number" id="quick-tts-pitch-input" class="form-input no-spinner"
+										style="display: inline-block; width: 60px; padding: 2px 4px; text-align: right; font-size: 0.85rem; color: var(--primary-color); border: none; background: transparent;"
+										min="0.5" max="2" step="0.01" value="1" />
+								</div>
+								<div style="display: flex; align-items: center; gap: 8px;">
+									<input type="range" id="quick-tts-pitch" class="form-range" min="0.5" max="2"
+										step="0.01" value="1" style="flex: 1;" />
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom: 0;">
+								<div
+									style="display: flex; justify-content: space-between; margin-bottom: 4px; align-items: center;">
+									<label class="form-label" style="margin-bottom: 0;">音量</label>
+									<div style="display: flex; align-items: center;">
+										<input type="number" id="quick-tts-volume-input" class="form-input no-spinner"
+											style="display: inline-block; width: 50px; padding: 2px 4px; text-align: right; font-size: 0.85rem; color: var(--primary-color); border: none; background: transparent;"
+											min="0" max="100" step="1" value="100" />
+										<span style="font-size: 0.85rem; color: var(--primary-color);">%</span>
+									</div>
+								</div>
+								<div style="display: flex; align-items: center; gap: 8px;">
+									<input type="range" id="quick-tts-volume" class="form-range" min="0" max="100"
+										step="1" value="100" style="flex: 1;" />
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="modal-footer">
-				<button class="btn btn-secondary" id="modal-quick-tts-cancel">取消</button>
-				<button class="btn btn-primary" id="modal-quick-tts-save">保存</button>
+			<div class="modal-footer" style="justify-content: space-between;">
+				<button class="btn btn-secondary btn-sm" id="quick-tts-reset">🔄 重置参数</button>
+				<div style="display: flex; gap: 8px;">
+					<button class="btn btn-secondary" id="modal-quick-tts-cancel">取消</button>
+					<button class="btn btn-primary" id="modal-quick-tts-save">保存</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -7505,11 +7564,11 @@
 			quickTtsCategory: document.getElementById("quick-tts-category"),
 			quickTtsVoice: document.getElementById("quick-tts-voice"),
 			quickTtsRate: document.getElementById("quick-tts-rate"),
-			quickTtsRateValue: document.getElementById("quick-tts-rate-value"),
+			quickTtsRateValue: document.getElementById("quick-tts-rate-input"),
 			quickTtsPitch: document.getElementById("quick-tts-pitch"),
-			quickTtsPitchValue: document.getElementById("quick-tts-pitch-value"),
+			quickTtsPitchValue: document.getElementById("quick-tts-pitch-input"),
 			quickTtsVolume: document.getElementById("quick-tts-volume"),
-			quickTtsVolumeValue: document.getElementById("quick-tts-volume-value"),
+			quickTtsVolumeValue: document.getElementById("quick-tts-volume-input"),
 			quickTtsTest: document.getElementById("quick-tts-test"),
 			quickTtsReset: document.getElementById("quick-tts-reset"),
 			historyPanel: document.getElementById("history-panel"),
@@ -24745,11 +24804,12 @@
 
 			// Sync values
 			DOM.quickTtsRate.value = voiceConfig.rate || 1;
-			DOM.quickTtsRateValue.textContent = voiceConfig.rate || 1;
+			DOM.quickTtsRateValue.value = voiceConfig.rate || 1;
 			DOM.quickTtsPitch.value = voiceConfig.pitch || 1;
-			DOM.quickTtsPitchValue.textContent = voiceConfig.pitch || 1;
-			DOM.quickTtsVolume.value = voiceConfig.volume || 1;
-			DOM.quickTtsVolumeValue.textContent = voiceConfig.volume || 1;
+			DOM.quickTtsPitchValue.value = voiceConfig.pitch || 1;
+			const vol = voiceConfig.volume !== undefined ? voiceConfig.volume : 1;
+			DOM.quickTtsVolume.value = Math.round(vol * 100);
+			DOM.quickTtsVolumeValue.value = Math.round(vol * 100);
 
 			DOM.modalQuickTts.classList.add("visible");
 		}
@@ -24775,7 +24835,7 @@
 				voice: DOM.quickTtsVoice.value,
 				rate: parseFloat(DOM.quickTtsRate.value),
 				pitch: parseFloat(DOM.quickTtsPitch.value),
-				volume: parseFloat(DOM.quickTtsVolume.value),
+				volume: parseFloat(DOM.quickTtsVolume.value) / 100,
 			};
 
 			// Save to Manager
@@ -24813,7 +24873,7 @@
 				voiceName: voiceName,
 				rate: parseFloat(DOM.quickTtsRate.value),
 				pitch: parseFloat(DOM.quickTtsPitch.value),
-				volume: parseFloat(DOM.quickTtsVolume.value),
+				volume: parseFloat(DOM.quickTtsVolume.value) / 100,
 			};
 
 			if (!providerId || providerId === "free") {
@@ -24862,11 +24922,11 @@
 		function resetQuickTtsSettings() {
 			DOM.quickTtsVoice.value = "";
 			DOM.quickTtsRate.value = 1;
-			DOM.quickTtsRateValue.textContent = "1";
+			DOM.quickTtsRateValue.value = 1;
 			DOM.quickTtsPitch.value = 1;
-			DOM.quickTtsPitchValue.textContent = "1";
-			DOM.quickTtsVolume.value = 1;
-			DOM.quickTtsVolumeValue.textContent = "1";
+			DOM.quickTtsPitchValue.value = 1;
+			DOM.quickTtsVolume.value = 100;
+			DOM.quickTtsVolumeValue.value = 100;
 		}
 
 		// Quick TTS modal event listeners
@@ -24879,14 +24939,65 @@
 
 		// Quick TTS range input listeners
 		DOM.quickTtsRate.addEventListener("input", (e) => {
-			DOM.quickTtsRateValue.textContent = e.target.value;
+			DOM.quickTtsRateValue.value = e.target.value;
 		});
 		DOM.quickTtsPitch.addEventListener("input", (e) => {
-			DOM.quickTtsPitchValue.textContent = e.target.value;
+			DOM.quickTtsPitchValue.value = e.target.value;
 		});
 		DOM.quickTtsVolume.addEventListener("input", (e) => {
-			DOM.quickTtsVolumeValue.textContent = e.target.value;
+			DOM.quickTtsVolumeValue.value = e.target.value;
 		});
+
+		// Helper to setup precise input syncing and validation
+		function setupPreciseInput(slider, input, min, max, step, isInt = false) {
+			input.addEventListener("input", (e) => {
+				// Optional: update slider while typing if valid?
+				// Or wait for change/blur? Let's update if valid
+				const val = parseFloat(e.target.value);
+				if (!isNaN(val) && val >= min && val <= max) {
+					slider.value = val;
+				}
+			});
+
+			const validate = (e) => {
+				let val = parseFloat(e.target.value);
+				if (isNaN(val)) {
+					// Revert to slider value
+					e.target.value = slider.value;
+					return;
+				}
+
+				// Clamp
+				if (val < min) val = min;
+				if (val > max) val = max;
+
+				// Format
+				if (isInt) {
+					val = Math.round(val);
+				} else {
+					// Round to nearest step
+					// Avoid floating point issues
+					const factor = 1 / step;
+					val = Math.round(val * factor) / factor;
+				}
+
+				e.target.value = val;
+				slider.value = val;
+			};
+
+			input.addEventListener("change", validate);
+			input.addEventListener("blur", validate);
+		}
+
+		// Setup inputs
+		// Rate: 0.5 - 2, step 0.01
+		setupPreciseInput(DOM.quickTtsRate, document.getElementById("quick-tts-rate-input"), 0.5, 2, 0.01);
+
+		// Pitch: 0.5 - 2, step 0.01
+		setupPreciseInput(DOM.quickTtsPitch, document.getElementById("quick-tts-pitch-input"), 0.5, 2, 0.01);
+
+		// Volume: 0 - 100, step 1, integer
+		setupPreciseInput(DOM.quickTtsVolume, document.getElementById("quick-tts-volume-input"), 0, 100, 1, true);
 
 		// Portrait context menu event listener
 		DOM.portraitContextMenu.addEventListener("click", handlePortraitMenuAction);
