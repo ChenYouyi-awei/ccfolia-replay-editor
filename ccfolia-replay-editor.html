@@ -3936,14 +3936,114 @@
 			border-color: var(--border-light) !important;
 		}
 
+		/* TTS Provider List - Compact Pills Style */
+		#tts-provider-list {
+			display: block;
+			/* Stack vertically */
+		}
+
+		.tts-provider-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			/* Spread items */
+			padding: 10px 4px;
+			background: transparent;
+			border: none;
+			border-bottom: 1px solid var(--border-color);
+			border-radius: 0;
+			margin-bottom: 0;
+			font-size: 0.85rem;
+		}
+
+		.tts-provider-row:last-child {
+			border-bottom: none;
+		}
+
+		.tts-provider-row:hover {
+			background: var(--bg-hover);
+		}
+
+		.tts-provider-row .provider-name {
+			font-weight: 500;
+			color: var(--text-primary);
+			flex: 1;
+			/* Take up space */
+		}
+
+		.tts-provider-row .provider-status {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 0.8rem;
+			color: var(--text-secondary);
+			margin-right: 12px;
+		}
+
+		/* Restore dot indicator styling for status, but keep text visible if desired or just use dot */
+		.tts-provider-row .provider-status::before {
+			content: '';
+			display: inline-block;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background-color: var(--text-secondary);
+		}
+
+		.tts-provider-row.configured .provider-status::before {
+			background-color: var(--success-color);
+		}
+
+		.tts-provider-row.configured .provider-status {
+			color: var(--success-color);
+		}
+
+		.tts-provider-row .btn-provider-config {
+			padding: 4px 8px;
+			/* Button style again */
+			width: auto;
+			height: auto;
+			border-radius: var(--radius-sm);
+			background: var(--bg-secondary);
+			border: 1px solid var(--border-color);
+			color: var(--text-primary);
+			font-size: 0.8rem;
+			line-height: 1.4;
+			margin-left: 0;
+		}
+
+		.tts-provider-row .btn-provider-config:hover {
+			border-color: var(--primary-color);
+			color: var(--primary-color);
+			background: var(--bg-hover);
+		}
+
+		/* Configured Characters - Modern List Style */
+		#tts-configured-chars {
+
+			/* Restoring box style requested by user but with list layout */
+			padding: 8px;
+			background: var(--bg-input);
+			border: 1px solid var(--border-color);
+			border-radius: var(--radius-md);
+			display: block;
+			max-height: 200px;
+			overflow-y: auto;
+		}
+
 		.tts-configured-char-item {
 			display: flex;
 			align-items: center;
-			gap: 8px;
-			padding: 6px 8px;
+			justify-content: space-between;
+			padding: 8px 4px;
+			background: transparent;
+			border: none;
 			border-bottom: 1px solid var(--border-color);
-			cursor: pointer;
-			transition: background 0.2s;
+			border-radius: 0;
+			margin-bottom: 0;
+			width: 100%;
+			font-size: 0.85rem;
+			user-select: none;
 		}
 
 		.tts-configured-char-item:last-child {
@@ -3951,24 +4051,62 @@
 		}
 
 		.tts-configured-char-item:hover {
-			background: var(--bg-secondary);
+			background: var(--bg-hover);
 		}
 
 		.tts-configured-char-item .char-name {
-			flex: 1;
-			font-size: 0.85rem;
+			font-weight: 500;
 			color: var(--text-primary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
 		}
 
 		.tts-configured-char-item .char-provider {
-			font-size: 0.75rem;
+			font-size: 0.7rem;
 			color: var(--text-secondary);
-			padding: 2px 6px;
-			background: var(--bg-secondary);
-			border-radius: var(--radius-sm);
+			opacity: 0.8;
+			padding: 0;
+			background: none;
+			/* Remove badge background */
+		}
+
+		/* Status Colors for providers */
+		.tts-provider-row.status-success .provider-status::before {
+			background-color: var(--success-color);
+		}
+
+		.tts-provider-row.status-success .provider-status {
+			color: var(--success-color);
+		}
+
+		.tts-provider-row.status-error .provider-status::before {
+			background-color: var(--error-color);
+		}
+
+		.tts-provider-row.status-error .provider-status {
+			color: var(--error-color);
+		}
+
+		.tts-provider-row.status-checking .provider-status::before {
+			background-color: var(--warning-color);
+		}
+
+		.tts-provider-row.status-checking .provider-status {
+			color: var(--warning-color);
+		}
+
+		@keyframes spin {
+			from {
+				transform: rotate(0deg);
+			}
+
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		.spinning {
+			animation: spin 1s linear infinite;
+			pointer-events: none;
+			opacity: 0.7;
 		}
 
 		.tts-status-badge {
@@ -4466,6 +4604,7 @@
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			text-align: center;
 			z-index: 1;
 		}
 
@@ -5745,16 +5884,8 @@
 						</div>
 						<div class="section-body">
 							<div class="section-body-inner">
-								<!-- 启用开关 -->
-								<div class="form-group">
-									<label class="flex items-center gap-2" style="cursor: pointer">
-										<input type="checkbox" id="tts-enabled" />
-										<span>启用付费 TTS 功能</span>
-									</label>
-									<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
-										启用后可使用 Azure TTS、阿里云 TTS、讯飞 TTS 或 ResponsiveVoice 合成高质量语音
-									</div>
-								</div>
+
+
 
 								<!-- 输出文件夹 -->
 								<div class="form-group" id="tts-folder-group">
@@ -5780,159 +5911,16 @@
 									</div>
 								</div>
 
-								<!-- API 配置 -->
+								<!-- API 配置 (由 JS renderProviderList() 动态填充) -->
 								<div class="form-group" id="tts-api-configs">
 									<label class="form-label"
-										style="display: flex; align-items: center; justify-content: space-between">
-										<span>API 配置</span>
+										style="display: flex; align-items: center; justify-content: space-between;">
+										API 配置
+										<button id="btn-refresh-tts-status" title="刷新连接状态"
+											style="background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 0; font-size: 0.9rem;">🔃</button>
 									</label>
-
-									<!-- Azure TTS -->
-									<div class="tts-api-group" style="
-												margin-bottom: 12px;
-												padding: 10px;
-												background: var(--bg-input);
-												border-radius: var(--radius-md);
-												border: 1px solid var(--border-color);
-											">
-										<div
-											style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-											<span style="font-weight: 500; font-size: 0.85rem">Azure TTS</span>
-											<span id="azure-status"
-												style="font-size: 0.75rem; color: var(--text-secondary)">未配置</span>
-										</div>
-										<input type="password" class="form-input" id="azure-api-key"
-											placeholder="API Key" style="margin-bottom: 6px; font-size: 0.85rem" />
-										<select class="form-input" id="azure-region"
-											style="margin-bottom: 6px; font-size: 0.85rem">
-											<option value="eastasia">东亚 (eastasia)</option>
-											<option value="southeastasia">东南亚 (southeastasia)</option>
-											<option value="japaneast">日本东部 (japaneast)</option>
-											<option value="japanwest">日本西部 (japanwest)</option>
-											<option value="koreacentral">韩国中部 (koreacentral)</option>
-											<option value="westus">美西 (westus)</option>
-											<option value="westus2">美西2 (westus2)</option>
-											<option value="eastus">美东 (eastus)</option>
-											<option value="westeurope">西欧 (westeurope)</option>
-										</select>
-										<button class="btn btn-secondary" id="btn-test-azure"
-											style="width: 100%; font-size: 0.75rem">
-											测试连接
-										</button>
-									</div>
-
-									<!-- 阿里云 TTS -->
-									<div class="tts-api-group" style="
-												padding: 10px;
-												background: var(--bg-input);
-												border-radius: var(--radius-md);
-												border: 1px solid var(--border-color);
-											">
-										<div
-											style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-											<span style="font-weight: 500; font-size: 0.85rem">阿里云 TTS</span>
-											<span id="aliyun-status"
-												style="font-size: 0.75rem; color: var(--text-secondary)">未配置</span>
-										</div>
-										<input type="text" class="form-input" id="aliyun-appkey" placeholder="AppKey"
-											style="margin-bottom: 6px; font-size: 0.85rem" />
-										<input type="password" class="form-input" id="aliyun-token" placeholder="Token"
-											style="margin-bottom: 6px; font-size: 0.85rem" />
-										<button class="btn btn-secondary" id="btn-test-aliyun"
-											style="width: 100%; font-size: 0.75rem">
-											测试连接
-										</button>
-									</div>
-
-									<!-- ResponsiveVoice TTS -->
-									<div class="tts-api-group" style="
-												margin-top: 12px;
-												padding: 10px;
-												background: var(--bg-input);
-												border-radius: var(--radius-md);
-												border: 1px solid var(--border-color);
-											">
-										<div
-											style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-											<span style="font-weight: 500; font-size: 0.85rem">ResponsiveVoice</span>
-											<span id="responsivevoice-status"
-												style="font-size: 0.75rem; color: var(--text-secondary)">未配置</span>
-										</div>
-										<input type="password" class="form-input" id="responsivevoice-apikey"
-											placeholder="API Key" style="margin-bottom: 6px; font-size: 0.85rem" />
-										<div
-											style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 6px">
-											在 <a href="https://responsivevoice.org/" target="_blank"
-												style="color: var(--primary-color)">responsivevoice.org</a> 获取 API
-											Key（实时播放，不保存音频文件）
-										</div>
-										<button class="btn btn-secondary" id="btn-test-responsivevoice"
-											style="width: 100%; font-size: 0.75rem">
-											测试连接
-										</button>
-									</div>
-
-									<!-- 讯飞 TTS -->
-									<div class="tts-api-group" style="
-												margin-top: 12px;
-												padding: 10px;
-												background: var(--bg-input);
-												border-radius: var(--radius-md);
-												border: 1px solid var(--border-color);
-											">
-										<div
-											style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-											<span style="font-weight: 500; font-size: 0.85rem">讯飞 TTS</span>
-											<span id="xunfei-status"
-												style="font-size: 0.75rem; color: var(--text-secondary)">未配置</span>
-										</div>
-										<input type="text" class="form-input" id="xunfei-appid" placeholder="APPID"
-											style="margin-bottom: 6px; font-size: 0.85rem" />
-										<input type="password" class="form-input" id="xunfei-apikey"
-											placeholder="APIKey" style="margin-bottom: 6px; font-size: 0.85rem" />
-										<input type="password" class="form-input" id="xunfei-apisecret"
-											placeholder="APISecret" style="margin-bottom: 6px; font-size: 0.85rem" />
-										<div
-											style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 6px">
-											在 <a href="https://www.xfyun.cn/" target="_blank"
-												style="color: var(--primary-color)">讯飞开放平台</a> 注册获取凭证
-										</div>
-										<button class="btn btn-secondary" id="btn-test-xunfei"
-											style="width: 100%; font-size: 0.75rem">
-											测试连接
-										</button>
-									</div>
-								</div>
-
-								<!-- 腾讯云配置 -->
-								<div class="card" style="margin-bottom: 12px; border: 1px solid var(--border-color)">
-									<div class="card-header" style="font-weight: 600; font-size: 0.9rem">
-										腾讯云 TTS 配置
-										<span id="tencent-status"
-											style="margin-left: 8px; font-size: 0.75rem; color: var(--text-secondary)">
-											未配置
-										</span>
-									</div>
-									<div class="card-body" style="padding: 12px">
-										<div
-											style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px">
-											需 AppID, SecretId 和 SecretKey。免费 800 万字符/月。
-										</div>
-										<input type="text" class="form-input" id="tencent-appid" placeholder="AppID"
-											style="margin-bottom: 6px; font-size: 0.85rem" />
-										<input type="password" class="form-input" id="tencent-secretid"
-											placeholder="SecretId" style="margin-bottom: 6px; font-size: 0.85rem" />
-										<input type="password" class="form-input" id="tencent-secretkey"
-											placeholder="SecretKey" style="margin-bottom: 6px; font-size: 0.85rem" />
-										<div
-											style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 6px">
-											在 <a href="https://console.cloud.tencent.com/cam/capi" target="_blank"
-												style="color: var(--primary-color)">腾讯云控制台</a> 获取凭证
-										</div>
-										<button class="btn btn-secondary" id="btn-test-tencent"
-											style="width: 100%; font-size: 0.75rem">
-											测试连接
-										</button>
+									<div id="tts-provider-list">
+										<!-- 由 renderProviderList() 动态渲染 -->
 									</div>
 								</div>
 
@@ -5946,15 +5934,8 @@
 											)
 										</span>
 									</label>
-									<div id="tts-configured-chars" style="
-												max-height: 150px;
-												overflow-y: auto;
-												padding: 8px;
-												background: var(--bg-input);
-												border-radius: var(--radius-md);
-												border: 1px solid var(--border-color);
-											">
-										<span style="color: var(--text-secondary); font-size: 0.8rem">暂无已配置角色</span>
+									<div id="tts-configured-chars">
+										<!-- 由 JS renderTTSConfiguredCharacters() 动态渲染 -->
 									</div>
 									<div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px">
 										💡 在角色详情页的"语音"标签中配置角色的 TTS 渠道和音色
@@ -5995,10 +5976,11 @@
 								</div>
 							</div>
 						</div>
-					</section>
 				</div>
-			</aside>
-		</main>
+				</section>
+	</div>
+	</aside>
+	</main>
 	</div>
 
 	<!-- Edit Message Modal -->
@@ -7165,7 +7147,11 @@
 						style="flex: 1; padding: 20px; background: var(--bg-secondary); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 15px;">
 						<div class="form-group" style="margin-bottom: 0;">
 							<label class="form-label">TTS 渠道</label>
-							<select id="quick-tts-provider" class="form-input"></select>
+							<div style="display: flex; gap: 6px; align-items: center;">
+								<select id="quick-tts-provider" class="form-input" style="flex: 1;"></select>
+								<button class="btn btn-secondary btn-sm" id="quick-tts-provider-config" title="配置渠道 API"
+									style="padding: 4px 8px; font-size: 0.85rem; line-height: 1;">⚙️</button>
+							</div>
 						</div>
 						<div class="form-group" style="margin-bottom: 0;">
 							<label class="form-label">音色分类</label>
@@ -7755,30 +7741,8 @@
 			btnBgmCustom: document.getElementById("btn-bgm-custom"),
 
 			// TTS config panel
-			ttsEnabled: document.getElementById("tts-enabled"),
 			ttsFolderName: document.getElementById("tts-folder-name"),
 			btnSelectTtsFolder: document.getElementById("btn-select-tts-folder"),
-			azureApiKey: document.getElementById("azure-api-key"),
-			azureRegion: document.getElementById("azure-region"),
-			azureStatus: document.getElementById("azure-status"),
-			btnTestAzure: document.getElementById("btn-test-azure"),
-			aliyunAppkey: document.getElementById("aliyun-appkey"),
-			aliyunToken: document.getElementById("aliyun-token"),
-			aliyunStatus: document.getElementById("aliyun-status"),
-			btnTestAliyun: document.getElementById("btn-test-aliyun"),
-			responsivevoiceApikey: document.getElementById("responsivevoice-apikey"),
-			responsivevoiceStatus: document.getElementById("responsivevoice-status"),
-			btnTestResponsivevoice: document.getElementById("btn-test-responsivevoice"),
-			xunfeiAppid: document.getElementById("xunfei-appid"),
-			xunfeiApikey: document.getElementById("xunfei-apikey"),
-			xunfeiApisecret: document.getElementById("xunfei-apisecret"),
-			xunfeiStatus: document.getElementById("xunfei-status"),
-			btnTestXunfei: document.getElementById("btn-test-xunfei"),
-			tencentAppid: document.getElementById("tencent-appid"),
-			tencentSecretid: document.getElementById("tencent-secretid"),
-			tencentSecretkey: document.getElementById("tencent-secretkey"),
-			tencentStatus: document.getElementById("tencent-status"),
-			btnTestTencent: document.getElementById("btn-test-tencent"),
 			ttsCharCount: document.getElementById("tts-char-count"),
 			ttsConfiguredChars: document.getElementById("tts-configured-chars"),
 			btnBatchSynthesize: document.getElementById("btn-batch-synthesize"),
@@ -8056,31 +8020,93 @@
 		}
 
 		/**
-		 * Generate audio filename for TTS
-		 * Format: {characterName}_{textPrefix}_{messageId}.mp3
+		 * Generate safe audio filename with voice config details
+		 * Format: {name}_{text}_{provider}_{voice}_r{rate}_p{pitch}_v{vol}_{id}.mp3
 		 * @param {string} characterName - Character name
 		 * @param {string} text - Message text
 		 * @param {string} messageId - Message ID
+		 * @param {Object} [voiceConfig] - Voice configuration
 		 * @returns {string} Safe filename
 		 */
-		function generateAudioFileName(characterName, text, messageId) {
+		function generateAudioFileName(characterName, text, messageId, voiceConfig) {
 			// Characters not allowed in filenames: < > : " / \ | ? * and newlines
 			const illegalChars = /[<>:"/\\|?*\n\r]/g;
+			const clean = (s, maxLen) => (s || "").replace(illegalChars, "").replace(/\s+/g, " ").trim().slice(0, maxLen);
 
 			// Clean character name
-			const cleanName = (characterName || "unknown").replace(illegalChars, "_").trim().slice(0, 20); // Limit name length
+			const cleanName = clean(characterName, 20) || "unknown";
 
 			// Clean and truncate text (max 10 chars)
-			const cleanText = (text || "").replace(illegalChars, "").replace(/\s+/g, " ").trim().slice(0, 10);
+			const cleanText = clean(text, 10);
 
-			// Build filename
+			// Build filename parts
 			const parts = [cleanName];
 			if (cleanText) {
 				parts.push(cleanText);
 			}
+
+			// Add voice config details if available
+			if (voiceConfig) {
+				const provider = clean(voiceConfig.provider, 10) || "unknown";
+				const voice = clean(voiceConfig.voice, 20) || "default";
+				const rate = voiceConfig.rate != null ? `r${voiceConfig.rate}` : "r1";
+				const pitch = voiceConfig.pitch != null ? `p${voiceConfig.pitch}` : "p1";
+				const volume = voiceConfig.volume != null ? `v${voiceConfig.volume}` : "v1";
+				parts.push(provider, voice, rate, pitch, volume);
+			}
+
 			parts.push(messageId);
 
 			return parts.join("_") + ".mp3";
+		}
+
+		/**
+		 * 当角色语音配置变更时，清除该角色所有已合成的音频
+		 * @param {string} characterName - 角色名
+		 * @returns {Promise<number>} 清除的消息数量
+		 */
+		async function invalidateCharacterAudio(characterName) {
+			let count = 0;
+			for (const msg of state.editedMessages) {
+				if (!msg || msg.name !== characterName) continue;
+				if (!msg.audioPath && msg.audioStatus !== "done") continue;
+
+				// 删除旧的 MP3 文件
+				if (msg.audioPath) {
+					await AudioFileManager.deleteAudioFile(msg.audioPath).catch(() => { });
+				}
+
+				// 清空音频状态，下次合成会重新生成
+				msg.audioPath = "";
+				msg.audioStatus = "";
+				msg.audioNeedsResync = false;
+				count++;
+			}
+
+			if (count > 0) {
+				console.log(`已清除角色「${characterName}」的 ${count} 条音频记录`);
+			}
+			return count;
+		}
+
+		/**
+		 * 比较两个音色配置是否有差异
+		 * @param {Object} oldConfig - 旧配置
+		 * @param {Object} newConfig - 新配置
+		 * @returns {boolean} 是否有差异
+		 */
+		function isVoiceConfigChanged(oldConfig, newConfig) {
+			if (!oldConfig || !newConfig) return true;
+			const keys = ["provider", "voice", "rate", "pitch", "volume"];
+			return keys.some(k => {
+				// 用数值比较避免浮点问题
+				const a = oldConfig[k];
+				const b = newConfig[k];
+				if (typeof a === "number" && typeof b === "number") {
+					return Math.abs(a - b) > 0.001;
+				}
+				return a !== b;
+			});
 		}
 
 		/**
@@ -9819,9 +9845,13 @@
 						<div class="grid-row-2">
 							<div class="setting-item">
 								<label class="form-label">TTS 渠道</label>
-								<select id="tts-provider-select" class="form-input">
-									${renderProviderOptions()}
-								</select>
+								<div style="display: flex; gap: 6px; align-items: center;">
+									<select id="tts-provider-select" class="form-input" style="flex: 1;">
+										${renderProviderOptions()}
+									</select>
+									<button class="btn btn-secondary btn-sm" id="detail-tts-provider-config"
+										title="配置渠道 API" style="padding: 4px 8px; font-size: 0.85rem; line-height: 1;">⚙️</button>
+								</div>
 							</div>
 
 							<div class="setting-item">
@@ -9901,6 +9931,22 @@
 			const freeVoiceGroup = document.getElementById("free-voice-group");
 			const paidVoiceSelect = document.getElementById("paid-voice-select");
 			const paidVoiceCategory = document.getElementById("paid-voice-category");
+
+			// 渠道配置齿轮按钮
+			const detailConfigBtn = document.getElementById("detail-tts-provider-config");
+			if (detailConfigBtn) {
+				detailConfigBtn.addEventListener("click", () => {
+					const selectedProvider = providerSelect?.value || "free";
+					if (selectedProvider !== "free") {
+						openProviderConfigModal(selectedProvider, () => {
+							// 配置保存后重新加载音色列表
+							if (providerSelect) {
+								providerSelect.dispatchEvent(new Event("change"));
+							}
+						});
+					}
+				});
+			}
 
 			// 分类排序顺序
 			const categoryOrder = ["超自然大模型", "大模型音色", "精品音色", "中文", "日语", "英语", "其他"];
@@ -10122,7 +10168,7 @@
 			// 保存配置按钮
 			const saveBtn = document.getElementById("btn-save-tts-config");
 			if (saveBtn) {
-				saveBtn.addEventListener("click", () => {
+				saveBtn.addEventListener("click", async () => {
 					const voiceConfig = {
 						provider: currentProvider,
 						voice:
@@ -10133,6 +10179,13 @@
 						pitch: parseFloat(pitchSlider?.value || 1),
 						volume: parseFloat(volumeSlider?.value || 1),
 					};
+
+					// 检查配置是否有变化，有变化则清除旧音频
+					const oldConfig = TTSConfigManager.getVoiceConfig(characterName);
+					let clearedCount = 0;
+					if (isVoiceConfigChanged(oldConfig, voiceConfig)) {
+						clearedCount = await invalidateCharacterAudio(characterName);
+					}
 
 					// 保存到 TTSConfigManager
 					TTSConfigManager.saveVoiceConfig(characterName, voiceConfig);
@@ -10148,7 +10201,11 @@
 						renderTTSConfiguredCharacters();
 					}
 
-					alert("语音配置已保存");
+					if (clearedCount > 0) {
+						alert(`语音配置已保存，已清除 ${clearedCount} 条旧音频，下次合成将使用新配置`);
+					} else {
+						alert("语音配置已保存");
+					}
 				});
 			}
 
@@ -19382,7 +19439,7 @@
 		});
 
 		TTSProviderRegistry.register("aliyun", {
-			name: "阿里云 TTS",
+			name: "阿里云 TTS（暂不可用）",
 			Adapter: AliyunTTSAdapter,
 			isPaid: true,
 			configFields: [
@@ -19699,6 +19756,261 @@
 		};
 
 		// ============================================================
+		// TTS Provider Config Modal - 渠道配置弹窗系统
+		// ============================================================
+
+		/**
+		 * 各 TTS 渠道的配置字段元数据
+		 * 用于动态生成渠道配置弹窗的表单
+		 */
+		const TTS_PROVIDER_META = {
+			azure: {
+				name: "Azure TTS",
+				helpUrl: "https://portal.azure.com/",
+				helpText: "在 Azure 门户创建「语音服务」资源获取 Key",
+				adapterClass: AzureTTSAdapter,
+				fields: [
+					{ key: "apiKey", label: "API Key", type: "password", placeholder: "API Key" },
+					{
+						key: "region", label: "区域", type: "select", options: [
+							{ value: "eastasia", label: "东亚 (eastasia)" },
+							{ value: "southeastasia", label: "东南亚 (southeastasia)" },
+							{ value: "japaneast", label: "日本东部 (japaneast)" },
+							{ value: "japanwest", label: "日本西部 (japanwest)" },
+							{ value: "koreacentral", label: "韩国中部 (koreacentral)" },
+							{ value: "westus", label: "美西 (westus)" },
+							{ value: "westus2", label: "美西2 (westus2)" },
+							{ value: "eastus", label: "美东 (eastus)" },
+							{ value: "westeurope", label: "西欧 (westeurope)" },
+						]
+					},
+				],
+				isConfigured: (config) => !!config.apiKey,
+			},
+			aliyun: {
+				name: "阿里云 TTS（暂不可用）",
+				helpUrl: "https://nls-portal.console.aliyun.com/",
+				helpText: "在阿里云智能语音交互控制台获取 AppKey 和 Token",
+				adapterClass: AliyunTTSAdapter,
+				fields: [
+					{ key: "appKey", label: "AppKey", type: "text", placeholder: "AppKey" },
+					{ key: "token", label: "Token", type: "password", placeholder: "Token" },
+				],
+				isConfigured: (config) => !!(config.appKey && config.token),
+			},
+			responsivevoice: {
+				name: "ResponsiveVoice",
+				helpUrl: "https://responsivevoice.org/",
+				helpText: "在 responsivevoice.org 获取 API Key（实时播放，不保存音频文件）",
+				adapterClass: ResponsiveVoiceTTSAdapter,
+				fields: [
+					{ key: "apiKey", label: "API Key", type: "password", placeholder: "API Key" },
+				],
+				isConfigured: (config) => !!config.apiKey,
+			},
+			xunfei: {
+				name: "讯飞 TTS",
+				helpUrl: "https://www.xfyun.cn/",
+				helpText: "在讯飞开放平台注册获取凭证",
+				adapterClass: XunfeiTTSAdapter,
+				fields: [
+					{ key: "appId", label: "APPID", type: "text", placeholder: "APPID" },
+					{ key: "apiKey", label: "APIKey", type: "password", placeholder: "APIKey" },
+					{ key: "apiSecret", label: "APISecret", type: "password", placeholder: "APISecret" },
+				],
+				isConfigured: (config) => !!(config.appId && config.apiKey && config.apiSecret),
+			},
+			tencent: {
+				name: "腾讯云 TTS",
+				helpUrl: "https://console.cloud.tencent.com/cam/capi",
+				helpText: "在腾讯云控制台获取凭证。免费 800 万字符/月",
+				adapterClass: TencentTTSAdapter,
+				fields: [
+					{ key: "appId", label: "AppID", type: "text", placeholder: "AppID" },
+					{ key: "secretId", label: "SecretId", type: "password", placeholder: "SecretId" },
+					{ key: "secretKey", label: "SecretKey", type: "password", placeholder: "SecretKey" },
+				],
+				isConfigured: (config) => !!(config.appId && config.secretId && config.secretKey),
+			},
+		};
+
+		/**
+		 * 打开渠道配置弹窗
+		 * @param {string} providerId - 渠道 ID (如 'azure', 'aliyun')
+		 * @param {Function} [onSaved] - 保存后的回调
+		 */
+		function openProviderConfigModal(providerId, onSaved) {
+			const meta = TTS_PROVIDER_META[providerId];
+			if (!meta) {
+				console.error(`Unknown provider: ${providerId}`);
+				return;
+			}
+
+			// 获取当前配置
+			const currentConfig = TTSConfigManager.getProviderConfig(providerId);
+
+			// 创建弹窗 overlay
+			const overlay = document.createElement("div");
+			overlay.className = "modal-overlay visible";
+			overlay.style.zIndex = "10001"; // 确保在其他弹窗之上
+			overlay.id = `modal-provider-config-${providerId}`;
+
+			// 生成表单字段 HTML
+			const fieldsHtml = meta.fields.map(field => {
+				if (field.type === "select") {
+					const optionsHtml = field.options.map(opt => {
+						const selected = (currentConfig[field.key] || "") === opt.value ? "selected" : "";
+						return `<option value="${opt.value}" ${selected}>${opt.label}</option>`;
+					}).join("");
+					return `
+						<div style="margin-bottom: 8px;">
+							<label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">${field.label}</label>
+							<select class="form-input" data-key="${field.key}" style="font-size: 0.85rem;">
+								${optionsHtml}
+							</select>
+						</div>`;
+				} else {
+					return `
+						<div style="margin-bottom: 8px;">
+							<label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">${field.label}</label>
+							<input type="${field.type}" class="form-input" data-key="${field.key}"
+								placeholder="${field.placeholder}" value="${currentConfig[field.key] || ""}"
+								style="font-size: 0.85rem;" />
+						</div>`;
+				}
+			}).join("");
+
+			overlay.innerHTML = `
+				<div class="modal" style="width: 400px; max-width: 90vw;">
+					<div class="modal-header">
+						<h3 class="modal-title">${meta.name} 配置</h3>
+						<button class="modal-close" id="provider-config-close">&times;</button>
+					</div>
+					<div class="modal-body" style="padding: 16px;">
+						${fieldsHtml}
+						<div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px;">
+							<a href="${meta.helpUrl}" target="_blank" style="color: var(--primary-color);">${meta.helpText}</a>
+						</div>
+						<div id="provider-config-status" style="margin-top: 10px; font-size: 0.8rem; text-align: center; min-height: 1.2em;"></div>
+					</div>
+					<div class="modal-footer" style="justify-content: space-between;">
+						<button class="btn btn-secondary btn-sm" id="provider-config-test">🔗 测试连接</button>
+						<div style="display: flex; gap: 8px;">
+							<button class="btn btn-secondary" id="provider-config-cancel">取消</button>
+							<button class="btn btn-primary" id="provider-config-save">保存</button>
+						</div>
+					</div>
+				</div>
+			`;
+
+			document.body.appendChild(overlay);
+
+			// 获取弹窗内元素
+			const closeBtn = overlay.querySelector("#provider-config-close");
+			const cancelBtn = overlay.querySelector("#provider-config-cancel");
+			const saveBtn = overlay.querySelector("#provider-config-save");
+			const testBtn = overlay.querySelector("#provider-config-test");
+			const statusEl = overlay.querySelector("#provider-config-status");
+
+			/** 收集表单数据 */
+			function collectFormData() {
+				const data = {};
+				overlay.querySelectorAll("[data-key]").forEach(el => {
+					data[el.dataset.key] = el.value.trim();
+				});
+				return data;
+			}
+
+			/** 关闭弹窗 */
+			function closeModal() {
+				overlay.classList.remove("visible");
+				setTimeout(() => overlay.remove(), 200);
+			}
+
+			// 关闭事件
+			closeBtn.addEventListener("click", closeModal);
+			cancelBtn.addEventListener("click", closeModal);
+			overlay.addEventListener("click", (e) => {
+				if (e.target === overlay) closeModal();
+			});
+
+			// 测试连接
+			testBtn.addEventListener("click", async () => {
+				testBtn.disabled = true;
+				testBtn.textContent = "测试中...";
+				statusEl.textContent = "";
+				statusEl.style.color = "";
+
+				try {
+					const formData = collectFormData();
+					const AdapterClass = meta.adapterClass;
+					const adapter = new AdapterClass(formData);
+					const success = await adapter.testConnection();
+
+					if (success) {
+						statusEl.textContent = "✅ 连接成功";
+						statusEl.style.color = "var(--success-color)";
+					} else {
+						statusEl.textContent = "❌ 连接失败";
+						statusEl.style.color = "var(--error-color)";
+					}
+				} catch (e) {
+					statusEl.textContent = `❌ ${e.message || "连接失败"}`;
+					statusEl.style.color = "var(--error-color)";
+					console.error(`${meta.name} test failed:`, e);
+				} finally {
+					testBtn.disabled = false;
+					testBtn.textContent = "🔗 测试连接";
+				}
+			});
+
+			// 保存
+			saveBtn.addEventListener("click", () => {
+				const formData = collectFormData();
+				TTSConfigManager.saveProviderConfig(providerId, formData);
+				// 清除音色缓存，因为凭证可能变了
+				clearVoiceListCache(providerId);
+				// 更新设置面板的渠道列表
+				renderProviderList();
+				closeModal();
+				if (onSaved) onSaved(providerId, formData);
+			});
+		}
+
+		/**
+		 * 渲染设置面板的渠道列表
+		 * 将所有渠道显示为紧凑的行：名称 | 状态 | ⚙️ 配置按钮
+		 */
+		function renderProviderList() {
+			const container = document.getElementById("tts-provider-list");
+			if (!container) return;
+
+			const html = Object.entries(TTS_PROVIDER_META).map(([id, meta]) => {
+				const config = TTSConfigManager.getProviderConfig(id);
+				const configured = meta.isConfigured(config);
+				const statusText = configured ? "已配置" : "未配置";
+				const statusColor = configured ? "var(--success-color)" : "var(--text-secondary)";
+				const rowClass = configured ? "tts-provider-row configured" : "tts-provider-row";
+
+				return `
+					<div class="${rowClass}" data-provider="${id}">
+						<span class="provider-name">${meta.name}</span>
+						<span class="provider-status" style="color: ${statusColor};">${statusText}</span>
+						<button class="btn-provider-config" data-provider-id="${id}" title="配置 ${meta.name}">⚙️</button>
+					</div>`;
+			}).join("");
+
+			container.innerHTML = html;
+
+			// 绑定点击事件
+			container.querySelectorAll(".btn-provider-config").forEach(btn => {
+				btn.addEventListener("click", () => {
+					openProviderConfigModal(btn.dataset.providerId);
+				});
+			});
+		}
+
+		// ============================================================
 		// TTS Config Manager - TTS 配置管理器
 		// ============================================================
 
@@ -19711,7 +20023,7 @@
 
 			/** @type {Object} 默认配置 */
 			defaultSettings: {
-				enabled: false,
+				enabled: true,
 				providerConfigs: {
 					azure: {
 						apiKey: "",
@@ -19758,6 +20070,8 @@
 						this._settings = JSON.parse(stored);
 						// 合并默认值以确保新字段存在
 						this._settings = this.mergeWithDefaults(this._settings);
+						// 强制开启，因为 UI 开关已移除
+						this._settings.enabled = true;
 					} else {
 						this._settings = JSON.parse(JSON.stringify(this.defaultSettings));
 					}
@@ -19980,22 +20294,23 @@
 				// 取消所有进行中的任务
 				this.cancelAll();
 
+				// 没有输出文件夹时不预合成（避免浪费 API 费用）
+				if (!AudioFileManager.hasOutputFolder()) {
+					console.log("SynthesisQueue: 跳过预合成（未选择输出文件夹）");
+					return;
+				}
+
 				const messages = state.editedMessages;
 				if (!messages || messages.length === 0) return;
 
 				const center = this.centerIndex;
 				const newQueue = [];
 
-				// 按优先级添加任务
-				for (let offset = 0; offset <= this.PRELOAD_RANGE; offset++) {
-					if (offset === 0) {
-						// 当前位置
-						this.addTaskIfNeeded(center, 0, newQueue);
-					} else {
-						// 前后位置
-						this.addTaskIfNeeded(center - offset, offset, newQueue);
-						this.addTaskIfNeeded(center + offset, offset, newQueue);
-					}
+				// 按优先级添加任务（从 offset=1 开始，当前消息由 synthesizeAndPlay 处理）
+				for (let offset = 1; offset <= this.PRELOAD_RANGE; offset++) {
+					// 前后位置
+					this.addTaskIfNeeded(center - offset, offset, newQueue);
+					this.addTaskIfNeeded(center + offset, offset, newQueue);
 				}
 
 				this.queue = newQueue;
@@ -20025,6 +20340,7 @@
 
 				// 跳过已有音频文件且不需要重新合成的
 				if (msg.audioPath && msg.audioStatus === "done" && !msg.audioNeedsResync) return;
+
 
 				// 检查是否已在队列中
 				const existingTask = queue.find((t) => t.messageId === msg.id);
@@ -20076,19 +20392,25 @@
 					}
 
 					if (audioBlob) {
-						// 生成文件名并保存
-						const fileName = generateAudioFileName(task.characterName, task.text, task.messageId);
-						await AudioFileManager.saveAudioFile(audioBlob, fileName);
+						if (AudioFileManager.hasOutputFolder()) {
+							// 生成文件名并保存
+							const fileName = generateAudioFileName(task.characterName, task.text, task.messageId, task.voiceConfig);
+							await AudioFileManager.saveAudioFile(audioBlob, fileName);
 
-						// 更新消息状态
-						this.updateMessageAudioPath(task.messageId, fileName);
-						this.updateMessageStatus(task.messageId, "done");
+							// 更新消息状态
+							this.updateMessageAudioPath(task.messageId, fileName);
+							this.updateMessageStatus(task.messageId, "done");
 
-						console.log(`Synthesis complete: ${task.messageId} -> ${fileName}`);
+							console.log(`Synthesis complete: ${task.messageId} -> ${fileName}`);
+						} else {
+							console.warn(`Synthesis complete but no output folder selected, skipping save for: ${task.messageId}`);
+						}
 					}
 				} catch (e) {
 					if (e.name === "AbortError" || task.abortController.signal.aborted) {
 						console.log(`Task aborted: ${task.messageId}`);
+						// 重置状态，避免 audioStatus 永远卡在 "synthesizing"
+						this.updateMessageStatus(task.messageId, "");
 					} else {
 						console.error(`Synthesis failed for ${task.messageId}:`, e);
 						this.updateMessageStatus(task.messageId, "error");
@@ -20112,11 +20434,13 @@
 					this.currentAbortController.abort();
 				}
 
-				// 取消队列中所有任务
+				// 取消队列中所有任务，并重置其状态
 				this.queue.forEach((task) => {
 					if (task.abortController) {
 						task.abortController.abort();
 					}
+					// 重置被取消任务的合成状态
+					this.updateMessageStatus(task.messageId, "");
 				});
 
 				this.queue = [];
@@ -20237,7 +20561,16 @@
 			async playMessage(msg, messageIndex) {
 				if (!msg || !msg.text || !msg.name) return;
 
+				// 快照当前消息索引，用于异步完成后判断用户是否已切走
+				const snapshotIndex = currentMessageIndex;
+
 				const source = await this.getPlaybackSource(msg);
+
+				// getPlaybackSource 是异步的，检查用户是否已切走
+				if (currentMessageIndex !== snapshotIndex) {
+					console.log(`[TTS] 获取播放源期间用户已切走 (${snapshotIndex} → ${currentMessageIndex})，跳过播放`);
+					return;
+				}
 
 				switch (source.type) {
 					case "free":
@@ -20250,8 +20583,8 @@
 						return this.playLocalAudio(source.url);
 
 					case "synthesize":
-						// 即时合成并播放
-						return this.synthesizeAndPlay(msg, source.voiceConfig);
+						// 即时合成并播放（传入快照索引用于合成后检查）
+						return this.synthesizeAndPlay(msg, source.voiceConfig, snapshotIndex);
 				}
 			},
 
@@ -20295,7 +20628,7 @@
 			 * @param {Object} voiceConfig - 音色配置
 			 * @returns {Promise<void>}
 			 */
-			async synthesizeAndPlay(msg, voiceConfig) {
+			async synthesizeAndPlay(msg, voiceConfig, snapshotIndex) {
 				try {
 					// 更新状态为合成中
 					msg.audioStatus = "synthesizing";
@@ -20308,13 +20641,19 @@
 					const audioBlob = await adapter.synthesize(msg.text, voiceConfig);
 
 					if (audioBlob) {
-						// 如果有输出文件夹，保存文件
+						// 无论是否切走，都保存文件（不浪费合成费用）
 						if (AudioFileManager.hasOutputFolder()) {
-							const fileName = generateAudioFileName(msg.name, msg.text, msg.id);
+							const fileName = generateAudioFileName(msg.name, msg.text, msg.id, voiceConfig);
 							await AudioFileManager.saveAudioFile(audioBlob, fileName);
 							msg.audioPath = fileName;
 							msg.audioStatus = "done";
 							msg.audioNeedsResync = false;
+						}
+
+						// 合成完成后检查用户是否已切走
+						if (snapshotIndex != null && currentMessageIndex !== snapshotIndex) {
+							console.log(`[TTS] 合成完成但用户已切走 (${snapshotIndex} → ${currentMessageIndex})，跳过播放`);
+							return;
 						}
 
 						// 播放音频
@@ -20323,6 +20662,12 @@
 				} catch (e) {
 					console.error("Synthesis and play failed:", e);
 					msg.audioStatus = "error";
+
+					// 如果用户已切走，连回退播放也不做
+					if (snapshotIndex != null && currentMessageIndex !== snapshotIndex) {
+						return;
+					}
+
 					// 回退到免费TTS
 					const freeConfig = TTSManager.getEffectiveVoiceConfig(msg.name);
 					return TTSManager.speak(msg.text, freeConfig);
@@ -22785,7 +23130,19 @@
 					}
 
 					// 触发预合成队列
-					SynthesisQueue.updateCenter(index);
+					if (AudioFileManager.hasOutputFolder()) {
+						SynthesisQueue.updateCenter(index);
+					} else if (!SynthesisQueue._folderWarningShown) {
+						SynthesisQueue._folderWarningShown = true;
+						console.warn("[TTS] 未选择音频输出文件夹，无法预合成和保存音频文件");
+						// 显示一次性提示
+						const toast = document.createElement("div");
+						toast.textContent = "⚠️ 未选择音频输出文件夹，合成的音频无法保存。请在 TTS 设置中选择输出文件夹。";
+						toast.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ff9800;color:#fff;padding:12px 24px;border-radius:8px;z-index:99999;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);cursor:pointer;";
+						toast.onclick = () => toast.remove();
+						document.body.appendChild(toast);
+						setTimeout(() => toast.remove(), 8000);
+					}
 				} else {
 					// 使用免费 TTS
 					const freeVoiceConfig = TTSManager.getEffectiveVoiceConfig(msg.name);
@@ -24825,7 +25182,7 @@
 		/**
 		 * Save quick TTS settings
 		 */
-		function saveQuickTtsSettings() {
+		async function saveQuickTtsSettings() {
 			if (!quickTtsCharacterName) return;
 			const char = state.characters[quickTtsCharacterName];
 			if (!char) return;
@@ -24838,12 +25195,19 @@
 				volume: parseFloat(DOM.quickTtsVolume.value) / 100,
 			};
 
+			// 检查配置是否有变化，有变化则清除旧音频
+			const oldConfig = TTSConfigManager.getVoiceConfig(quickTtsCharacterName);
+			let clearedCount = 0;
+			if (isVoiceConfigChanged(oldConfig, voiceConfig)) {
+				clearedCount = await invalidateCharacterAudio(quickTtsCharacterName);
+			}
+
 			// Save to Manager
 			TTSConfigManager.saveVoiceConfig(quickTtsCharacterName, voiceConfig);
 
 			// Legacy sync
 			char.voice.enabled = !!voiceConfig.voice;
-			char.voice.voiceName = voiceConfig.voice; // Note: for paid providers this might be cleaner to just store it, but manager handles it.
+			char.voice.voiceName = voiceConfig.voice;
 			char.voice.rate = voiceConfig.rate;
 			char.voice.pitch = voiceConfig.pitch;
 			char.voice.volume = voiceConfig.volume;
@@ -24854,9 +25218,12 @@
 			}
 
 			state.meta.lastModified = Date.now();
-			closeQuickTtsModal();
 
-			// Show success feedback? Or just close.
+			if (clearedCount > 0) {
+				console.log(`快捷面板：已清除角色「${quickTtsCharacterName}」的 ${clearedCount} 条旧音频`);
+			}
+
+			closeQuickTtsModal();
 		}
 
 		/**
@@ -25597,6 +25964,73 @@
 		// ============================================================
 
 		/**
+		 * 检查所有已配置 TTS 渠道的连接状态
+		 */
+		async function checkAllProviderConnections() {
+			const btn = document.getElementById("btn-refresh-tts-status");
+			if (btn) {
+				btn.classList.add("spinning");
+				btn.disabled = true;
+			}
+
+			const verifyPromises = Object.entries(TTS_PROVIDER_META).map(async ([id, meta]) => {
+				const row = document.querySelector(`.tts-provider-row[data-provider="${id}"]`);
+				if (!row) return;
+
+				const config = TTSConfigManager.getProviderConfig(id);
+				const statusSpan = row.querySelector(".provider-status");
+
+				// 清除可能存在的 inline style color，以便 CSS class 生效
+				statusSpan.style.removeProperty("color");
+
+				// 重置状态类
+				row.classList.remove("configured", "status-success", "status-error", "status-checking");
+
+				if (!meta.isConfigured(config)) {
+					// 未配置保持原样
+					statusSpan.textContent = "未配置";
+					statusSpan.style.color = "var(--text-secondary)";
+					return;
+				}
+
+				// 设置为检测中
+				row.classList.add("status-checking");
+				statusSpan.textContent = "检测中...";
+
+				try {
+					const AdapterClass = meta.adapterClass;
+					let success = false;
+					if (AdapterClass) {
+						const adapter = new AdapterClass(config);
+						success = await adapter.testConnection();
+					}
+
+					row.classList.remove("status-checking");
+
+					if (success) {
+						row.classList.add("status-success");
+						statusSpan.textContent = "已配置";
+					} else {
+						row.classList.add("status-error");
+						statusSpan.textContent = "连接失败";
+					}
+				} catch (e) {
+					console.error(`Check failed for ${id}:`, e);
+					row.classList.remove("status-checking");
+					row.classList.add("status-error");
+					statusSpan.textContent = "连接错误";
+				}
+			});
+
+			await Promise.all(verifyPromises);
+
+			if (btn) {
+				btn.classList.remove("spinning");
+				btn.disabled = false;
+			}
+		}
+
+		/**
 		 * Initialize TTS panel
 		 */
 		async function initTTSPanel() {
@@ -25609,59 +26043,34 @@
 
 			// 加载配置
 			const settings = TTSConfigManager.getSettings();
-			DOM.ttsEnabled.checked = settings.enabled;
+			// TTS 默认开启，不再需要检查 checked 状态
 
-			// 加载 Azure 配置
-			const azureConfig = settings.providerConfigs.azure || {};
-			DOM.azureApiKey.value = azureConfig.apiKey || "";
-			DOM.azureRegion.value = azureConfig.region || "eastasia";
-			updateProviderStatus("azure", !!azureConfig.apiKey);
-
-			// 加载阿里云配置
-			const aliyunConfig = settings.providerConfigs.aliyun || {};
-			DOM.aliyunAppkey.value = aliyunConfig.appKey || "";
-			DOM.aliyunToken.value = aliyunConfig.token || "";
-			updateProviderStatus("aliyun", !!(aliyunConfig.appKey && aliyunConfig.token));
-
-			// 加载 ResponsiveVoice 配置
-			const rvConfig = settings.providerConfigs.responsivevoice || {};
-			DOM.responsivevoiceApikey.value = rvConfig.apiKey || "";
-			updateProviderStatus("responsivevoice", !!rvConfig.apiKey);
-
-			// 加载讯飞配置
-			const xfConfig = settings.providerConfigs.xunfei || {};
-			DOM.xunfeiAppid.value = xfConfig.appId || "";
-			DOM.xunfeiApikey.value = xfConfig.apiKey || "";
-			DOM.xunfeiApisecret.value = xfConfig.apiSecret || "";
-			updateProviderStatus("xunfei", !!(xfConfig.appId && xfConfig.apiKey && xfConfig.apiSecret));
-
-			// 加载腾讯云配置
-			const tencentConfig = settings.providerConfigs.tencent || {};
-			DOM.tencentAppid.value = tencentConfig.appId || "";
-			DOM.tencentSecretid.value = tencentConfig.secretId || "";
-			DOM.tencentSecretkey.value = tencentConfig.secretKey || "";
-			updateProviderStatus("tencent", !!(tencentConfig.appId && tencentConfig.secretId && tencentConfig.secretKey));
+			// 渲染渠道列表（取代旧的逐个填入输入框）
+			renderProviderList();
 
 			// 渲染已配置角色列表
 			renderTTSConfiguredCharacters();
+
+			// 绑定刷新按钮事件
+			const btnRefresh = document.getElementById("btn-refresh-tts-status");
+			if (btnRefresh) {
+				btnRefresh.addEventListener("click", () => {
+					checkAllProviderConnections();
+				});
+			}
+
+			// 页面加载时自动检测一次
+			setTimeout(() => {
+				checkAllProviderConnections();
+			}, 500);
 		}
 
 		/**
 		 * Update provider status display
-		 * @param {string} provider - Provider ID
-		 * @param {boolean} configured - Whether configured
+		 * 现在直接刷新整个渠道列表即可
 		 */
-		function updateProviderStatus(provider, configured) {
-			let statusEl;
-			if (provider === "azure") statusEl = DOM.azureStatus;
-			else if (provider === "aliyun") statusEl = DOM.aliyunStatus;
-			else if (provider === "responsivevoice") statusEl = DOM.responsivevoiceStatus;
-			else if (provider === "xunfei") statusEl = DOM.xunfeiStatus;
-			else if (provider === "tencent") statusEl = DOM.tencentStatus;
-			if (statusEl) {
-				statusEl.textContent = configured ? "已配置" : "未配置";
-				statusEl.style.color = configured ? "var(--success-color)" : "var(--text-secondary)";
-			}
+		function updateProviderStatus() {
+			renderProviderList();
 		}
 
 		/**
@@ -25702,64 +26111,7 @@
 			});
 		}
 
-		/**
-		 * Save TTS API configuration
-		 */
-		function saveTTSApiConfig() {
-			const settings = TTSConfigManager.getSettings();
 
-			// 保存 Azure 配置
-			settings.providerConfigs.azure = {
-				apiKey: DOM.azureApiKey.value.trim(),
-				region: DOM.azureRegion.value,
-			};
-			updateProviderStatus("azure", !!settings.providerConfigs.azure.apiKey);
-
-			// 保存阿里云配置
-			settings.providerConfigs.aliyun = {
-				appKey: DOM.aliyunAppkey.value.trim(),
-				token: DOM.aliyunToken.value.trim(),
-			};
-			updateProviderStatus(
-				"aliyun",
-				!!(settings.providerConfigs.aliyun.appKey && settings.providerConfigs.aliyun.token)
-			);
-
-			// 保存 ResponsiveVoice 配置
-			settings.providerConfigs.responsivevoice = {
-				apiKey: DOM.responsivevoiceApikey.value.trim(),
-			};
-			updateProviderStatus("responsivevoice", !!settings.providerConfigs.responsivevoice.apiKey);
-
-			// 保存讯飞配置
-			settings.providerConfigs.xunfei = {
-				appId: DOM.xunfeiAppid.value.trim(),
-				apiKey: DOM.xunfeiApikey.value.trim(),
-				apiSecret: DOM.xunfeiApisecret.value.trim(),
-			};
-			updateProviderStatus(
-				"xunfei",
-				!!(settings.providerConfigs.xunfei.appId && settings.providerConfigs.xunfei.apiKey && settings.providerConfigs.xunfei.apiSecret)
-			);
-
-			// 保存腾讯云配置
-			settings.providerConfigs.tencent = {
-				appId: DOM.tencentAppid.value.trim(),
-				secretId: DOM.tencentSecretid.value.trim(),
-				secretKey: DOM.tencentSecretkey.value.trim(),
-			};
-			updateProviderStatus(
-				"tencent",
-				!!(settings.providerConfigs.tencent.appId && settings.providerConfigs.tencent.secretId && settings.providerConfigs.tencent.secretKey)
-			);
-
-			TTSConfigManager.saveSettings(settings);
-		}
-
-		// TTS Panel Event Listeners
-		DOM.ttsEnabled?.addEventListener("change", () => {
-			TTSConfigManager.setEnabled(DOM.ttsEnabled.checked);
-		});
 
 		DOM.btnSelectTtsFolder?.addEventListener("click", async () => {
 			const success = await AudioFileManager.selectOutputFolder();
@@ -25769,173 +26121,14 @@
 			}
 		});
 
-		// Auto-save API config on input change
-		DOM.azureApiKey?.addEventListener("change", saveTTSApiConfig);
-		DOM.azureRegion?.addEventListener("change", saveTTSApiConfig);
-		DOM.aliyunAppkey?.addEventListener("change", saveTTSApiConfig);
-		DOM.aliyunToken?.addEventListener("change", saveTTSApiConfig);
-		DOM.responsivevoiceApikey?.addEventListener("change", saveTTSApiConfig);
-		DOM.xunfeiAppid?.addEventListener("change", saveTTSApiConfig);
-		DOM.xunfeiApikey?.addEventListener("change", saveTTSApiConfig);
-		DOM.xunfeiApisecret?.addEventListener("change", saveTTSApiConfig);
-		DOM.tencentAppid?.addEventListener("change", saveTTSApiConfig);
-		DOM.tencentSecretid?.addEventListener("change", saveTTSApiConfig);
-		DOM.tencentSecretkey?.addEventListener("change", saveTTSApiConfig);
-
-		// Test connection buttons
-		DOM.btnTestAzure?.addEventListener("click", async () => {
-			const btn = DOM.btnTestAzure;
-			btn.disabled = true;
-			btn.textContent = "测试中...";
-
-			try {
-				const config = {
-					apiKey: DOM.azureApiKey.value.trim(),
-					region: DOM.azureRegion.value,
-				};
-				const adapter = new AzureTTSAdapter(config);
-				const success = await adapter.testConnection();
-
-				if (success) {
-					DOM.azureStatus.textContent = "连接成功";
-					DOM.azureStatus.style.color = "var(--success-color)";
-					saveTTSApiConfig();
-				} else {
-					DOM.azureStatus.textContent = "连接失败";
-					DOM.azureStatus.style.color = "var(--error-color)";
-				}
-			} catch (e) {
-				DOM.azureStatus.textContent = "连接失败";
-				DOM.azureStatus.style.color = "var(--error-color)";
-				console.error("Azure test failed:", e);
-			} finally {
-				btn.disabled = false;
-				btn.textContent = "测试连接";
-			}
-		});
-
-		DOM.btnTestAliyun?.addEventListener("click", async () => {
-			const btn = DOM.btnTestAliyun;
-			btn.disabled = true;
-			btn.textContent = "测试中...";
-
-			try {
-				const config = {
-					appKey: DOM.aliyunAppkey.value.trim(),
-					token: DOM.aliyunToken.value.trim(),
-				};
-				const adapter = new AliyunTTSAdapter(config);
-				const success = await adapter.testConnection();
-
-				if (success) {
-					DOM.aliyunStatus.textContent = "连接成功";
-					DOM.aliyunStatus.style.color = "var(--success-color)";
-					saveTTSApiConfig();
-				} else {
-					DOM.aliyunStatus.textContent = "连接失败";
-					DOM.aliyunStatus.style.color = "var(--error-color)";
-				}
-			} catch (e) {
-				DOM.aliyunStatus.textContent = "连接失败";
-				DOM.aliyunStatus.style.color = "var(--error-color)";
-				console.error("Aliyun test failed:", e);
-			} finally {
-				btn.disabled = false;
-				btn.textContent = "测试连接";
-			}
-		});
-
-		DOM.btnTestResponsivevoice?.addEventListener("click", async () => {
-			const btn = DOM.btnTestResponsivevoice;
-			btn.disabled = true;
-			btn.textContent = "测试中...";
-
-			try {
-				const config = {
-					apiKey: DOM.responsivevoiceApikey.value.trim(),
-				};
-				const adapter = new ResponsiveVoiceTTSAdapter(config);
-				const success = await adapter.testConnection();
-
-				if (success) {
-					DOM.responsivevoiceStatus.textContent = "连接成功";
-					DOM.responsivevoiceStatus.style.color = "var(--success-color)";
-					saveTTSApiConfig();
-				} else {
-					DOM.responsivevoiceStatus.textContent = "连接失败";
-					DOM.responsivevoiceStatus.style.color = "var(--error-color)";
-				}
-			} catch (e) {
-				DOM.responsivevoiceStatus.textContent = "连接失败";
-				DOM.responsivevoiceStatus.style.color = "var(--error-color)";
-				console.error("ResponsiveVoice test failed:", e);
-			} finally {
-				btn.disabled = false;
-				btn.textContent = "测试连接";
-			}
-		});
-
-		DOM.btnTestXunfei?.addEventListener("click", async () => {
-			const btn = DOM.btnTestXunfei;
-			btn.disabled = true;
-			btn.textContent = "测试中...";
-
-			try {
-				const config = {
-					appId: DOM.xunfeiAppid.value.trim(),
-					apiKey: DOM.xunfeiApikey.value.trim(),
-					apiSecret: DOM.xunfeiApisecret.value.trim(),
-				};
-				const adapter = new XunfeiTTSAdapter(config);
-				const success = await adapter.testConnection();
-
-				if (success) {
-					DOM.xunfeiStatus.textContent = "连接成功";
-					DOM.xunfeiStatus.style.color = "var(--success-color)";
-					saveTTSApiConfig();
-				} else {
-					DOM.xunfeiStatus.textContent = "连接失败";
-					DOM.xunfeiStatus.style.color = "var(--error-color)";
-				}
-			} catch (e) {
-				DOM.xunfeiStatus.textContent = "连接失败";
-				DOM.xunfeiStatus.style.color = "var(--error-color)";
-				console.error("讯飞 test failed:", e);
-			} finally {
-				btn.disabled = false;
-				btn.textContent = "测试连接";
-			}
-		});
-
-		DOM.btnTestTencent?.addEventListener("click", async () => {
-			const btn = DOM.btnTestTencent;
-			btn.disabled = true;
-			btn.textContent = "测试中...";
-
-			try {
-				const config = {
-					appId: DOM.tencentAppid.value.trim(),
-					secretId: DOM.tencentSecretid.value.trim(),
-					secretKey: DOM.tencentSecretkey.value.trim(),
-				};
-				const adapter = new TencentTTSAdapter(config);
-				const success = await adapter.testConnection();
-
-				if (success) {
-					DOM.tencentStatus.textContent = "连接成功";
-					DOM.tencentStatus.style.color = "var(--success-color)";
-					saveTTSApiConfig();
-				} else {
-					DOM.tencentStatus.textContent = "连接失败";
-					DOM.tencentStatus.style.color = "var(--error-color)";
-				}
-			} catch (e) {
-				DOM.tencentStatus.textContent = "连接失败";
-				DOM.tencentStatus.style.color = "var(--error-color)";
-				console.error("腾讯云 test failed:", e);
-			} finally {
-				btn.disabled = false;
-				btn.textContent = "测试连接";
+		// Quick TTS 弹窗齿轮按钮
+		document.getElementById("quick-tts-provider-config")?.addEventListener("click", () => {
+			const quickProvider = DOM.quickTtsProvider?.value;
+			if (quickProvider && quickProvider !== "free") {
+				openProviderConfigModal(quickProvider, () => {
+					// 配置保存后刷新音色列表
+					DOM.quickTtsProvider?.dispatchEvent(new Event("change"));
+				});
 			}
 		});
 
@@ -26119,7 +26312,7 @@
 
 							if (audioBlob && !batchSynthesisAbortController.signal.aborted) {
 								// 生成文件名并保存
-								const fileName = generateAudioFileName(msg.name, msg.text, msg.id);
+								const fileName = generateAudioFileName(msg.name, msg.text, msg.id, voiceConfig);
 								await AudioFileManager.saveAudioFile(audioBlob, fileName);
 
 								// 更新消息状态
