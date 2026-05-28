@@ -883,6 +883,12 @@
 				color: var(--text-primary);
 			}
 
+			.portrait-canvas-inner .canvas-dialogue-name,
+			.portrait-canvas-inner .canvas-dialogue-text {
+				pointer-events: none;
+				user-select: none;
+			}
+
 			/* Single portrait (default) */
 			.portrait-image {
 				max-height: 90%;
@@ -12401,10 +12407,10 @@
 				const portraitWidthPct = 15;
 				const portraitHeightPct = 45;
 
-				// 均匀分布在底部，留出对话框空间（底部约25%）
+				// 均匀分布，y为立绘底边到画布底部的距离百分比（左下角锚点）
 				const spacing = 100 / (total + 1);
 				const xPct = spacing * (index + 1) - portraitWidthPct / 2;
-				const yPct = 100 - portraitHeightPct - 28; // 28% 给对话框
+				const yPct = 28; // 底边距画布底部28%（给对话框留空间）
 
 				return {
 					x: Math.max(0, Math.min(xPct, 100 - portraitWidthPct)),
@@ -12479,16 +12485,18 @@
 			 */
 			function applyPortraitPosition(wrapper, position) {
 				if (state.portraitConfig.scaleMode === "canvas") {
-					// Canvas mode: use percentage of canvas
+					// Canvas mode: y=底边距底部距离（左下角锚点）
 					const pixel = percentToPixel(position);
 					wrapper.style.left = `${pixel.x}px`;
-					wrapper.style.top = `${pixel.y}px`;
+					wrapper.style.bottom = `${pixel.y}px`;
+					wrapper.style.top = "auto";
 					wrapper.style.width = `${pixel.width}px`;
 					wrapper.style.height = `${pixel.height}px`;
 				} else {
-					// Percent mode: use CSS percentage
+					// Percent mode: y=底边距底部距离（左下角锚点）
 					wrapper.style.left = `${position.x}%`;
-					wrapper.style.top = `${position.y}%`;
+					wrapper.style.bottom = `${position.y}%`;
+					wrapper.style.top = "auto";
 					wrapper.style.width = `${position.width}%`;
 					wrapper.style.height = `${position.height}%`;
 				}
@@ -13261,28 +13269,29 @@
 				const clientX = e.touches ? e.touches[0].clientX : e.clientX;
 				const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-				let currentLeft, currentTop, currentWidth, currentHeight, scale;
+				let currentLeft, currentBottom, currentWidth, currentHeight, scale;
 
 				if (state.portraitConfig.scaleMode === "canvas") {
-					// Canvas mode: read from style (canvas pixel coordinates)
+					// Canvas mode: read from style (左下角锚点)
 					currentLeft = parseFloat(wrapper.style.left) || 0;
-					currentTop = parseFloat(wrapper.style.top) || 0;
+					currentBottom = parseFloat(wrapper.style.bottom) || 0;
 					currentWidth = parseFloat(wrapper.style.width) || 200;
 					currentHeight = parseFloat(wrapper.style.height) || 300;
 					scale = state.portraitConfig.currentScale || 1;
 				} else {
-					// Percent mode: use getBoundingClientRect for actual screen position
+					// Percent mode: use getBoundingClientRect (左下角锚点)
 					const rect = wrapper.getBoundingClientRect();
 					const areaRect = DOM.portraitArea.getBoundingClientRect();
 					currentLeft = rect.left - areaRect.left;
-					currentTop = rect.top - areaRect.top;
+					currentBottom = areaRect.bottom - rect.bottom;
 					currentWidth = rect.width;
 					currentHeight = rect.height;
 					scale = 1;
 
-					// Convert to pixel positioning for dragging
+					// Convert to pixel positioning for dragging (左下角锚点)
 					wrapper.style.left = `${currentLeft}px`;
-					wrapper.style.top = `${currentTop}px`;
+					wrapper.style.bottom = `${currentBottom}px`;
+					wrapper.style.top = "auto";
 					wrapper.style.width = `${currentWidth}px`;
 					wrapper.style.height = `${currentHeight}px`;
 				}
@@ -13293,7 +13302,7 @@
 					startX: clientX,
 					startY: clientY,
 					startLeft: currentLeft,
-					startTop: currentTop,
+					startBottom: currentBottom,
 					startWidth: currentWidth,
 					startHeight: currentHeight,
 					scale: scale,
@@ -13321,28 +13330,29 @@
 				const clientX = e.touches ? e.touches[0].clientX : e.clientX;
 				const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-				let currentLeft, currentTop, currentWidth, currentHeight, scale;
+				let currentLeft, currentBottom, currentWidth, currentHeight, scale;
 
 				if (state.portraitConfig.scaleMode === "canvas") {
-					// Canvas mode: read from style (canvas pixel coordinates)
+					// Canvas mode: read from style (左下角锚点)
 					currentLeft = parseFloat(wrapper.style.left) || 0;
-					currentTop = parseFloat(wrapper.style.top) || 0;
+					currentBottom = parseFloat(wrapper.style.bottom) || 0;
 					currentWidth = parseFloat(wrapper.style.width) || 200;
 					currentHeight = parseFloat(wrapper.style.height) || 300;
 					scale = state.portraitConfig.currentScale || 1;
 				} else {
-					// Percent mode: use getBoundingClientRect for actual screen position
+					// Percent mode: use getBoundingClientRect (左下角锚点)
 					const rect = wrapper.getBoundingClientRect();
 					const areaRect = DOM.portraitArea.getBoundingClientRect();
 					currentLeft = rect.left - areaRect.left;
-					currentTop = rect.top - areaRect.top;
+					currentBottom = areaRect.bottom - rect.bottom;
 					currentWidth = rect.width;
 					currentHeight = rect.height;
 					scale = 1;
 
-					// Convert to pixel positioning for resizing
+					// Convert to pixel positioning for resizing (左下角锚点)
 					wrapper.style.left = `${currentLeft}px`;
-					wrapper.style.top = `${currentTop}px`;
+					wrapper.style.bottom = `${currentBottom}px`;
+					wrapper.style.top = "auto";
 					wrapper.style.width = `${currentWidth}px`;
 					wrapper.style.height = `${currentHeight}px`;
 				}
@@ -13354,7 +13364,7 @@
 					startX: clientX,
 					startY: clientY,
 					startLeft: currentLeft,
-					startTop: currentTop,
+					startBottom: currentBottom,
 					startWidth: currentWidth,
 					startHeight: currentHeight,
 					scale: scale,
@@ -13387,15 +13397,15 @@
 
 				if (portraitDragState.type === "move") {
 					const newLeft = portraitDragState.startLeft + deltaX;
-					const newTop = portraitDragState.startTop + deltaY;
+					const newBottom = portraitDragState.startBottom - deltaY;
 					wrapper.style.left = `${newLeft}px`;
-					wrapper.style.top = `${newTop}px`;
+					wrapper.style.bottom = `${newBottom}px`;
 				} else if (portraitDragState.type === "resize") {
 					const handle = portraitDragState.handle;
 					let newWidth = portraitDragState.startWidth;
 					let newHeight = portraitDragState.startHeight;
 					let newLeft = portraitDragState.startLeft;
-					let newTop = portraitDragState.startTop;
+					let newBottom = portraitDragState.startBottom;
 
 					if (handle.includes("right")) {
 						newWidth = Math.max(100, portraitDragState.startWidth + deltaX);
@@ -13406,16 +13416,16 @@
 					}
 					if (handle.includes("bottom")) {
 						newHeight = Math.max(100, portraitDragState.startHeight + deltaY);
+						newBottom = portraitDragState.startBottom - deltaY;
 					}
 					if (handle.includes("top")) {
 						newHeight = Math.max(100, portraitDragState.startHeight - deltaY);
-						newTop = portraitDragState.startTop + deltaY;
 					}
 
 					wrapper.style.width = `${newWidth}px`;
 					wrapper.style.height = `${newHeight}px`;
 					wrapper.style.left = `${newLeft}px`;
-					wrapper.style.top = `${newTop}px`;
+					wrapper.style.bottom = `${newBottom}px`;
 				}
 			}
 
@@ -13432,20 +13442,20 @@
 					let pixelPos;
 
 					if (state.portraitConfig.scaleMode === "canvas") {
-						// Canvas mode: read directly from style (already in canvas coordinates)
+						// Canvas mode: read directly from style (左下角锚点, y=bottom距离)
 						pixelPos = {
 							x: parseFloat(wrapper.style.left) || 0,
-							y: parseFloat(wrapper.style.top) || 0,
+							y: parseFloat(wrapper.style.bottom) || 0,
 							width: parseFloat(wrapper.style.width) || 200,
 							height: parseFloat(wrapper.style.height) || 300,
 						};
 					} else {
-						// Percent mode: get position relative to portrait area
+						// Percent mode: get position relative to portrait area (左下角锚点)
 						const rect = wrapper.getBoundingClientRect();
 						const areaRect = DOM.portraitArea.getBoundingClientRect();
 						pixelPos = {
 							x: rect.left - areaRect.left,
-							y: rect.top - areaRect.top,
+							y: areaRect.bottom - rect.bottom,
 							width: rect.width,
 							height: rect.height,
 						};
