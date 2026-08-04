@@ -8365,6 +8365,45 @@
 			return null;
 		}
 
+		const CCFOLIA_FIREBASE_API_KEY = "AIzaSyAMlcPs4ekVSBdzpRdEloqQ8lIgP9lEnRI";
+		let ccfoliaAuthCache = null;
+
+		/**
+		 * Get a Firebase anonymous auth token accepted by CCFOLIA Firestore rules
+		 * @returns {Promise<string>} - Firebase ID token
+		 */
+		async function getCcfFirebaseToken() {
+			const now = Date.now();
+			if (ccfoliaAuthCache && ccfoliaAuthCache.expiresAt - 60000 > now) {
+				return ccfoliaAuthCache.idToken;
+			}
+
+			const response = await fetch(
+				`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${CCFOLIA_FIREBASE_API_KEY}`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ returnSecureToken: true }),
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(`Firebase 匿名登录失败: ${response.status}`);
+			}
+
+			const data = await response.json();
+			if (!data.idToken) {
+				throw new Error("Firebase 匿名登录未返回 token");
+			}
+
+			ccfoliaAuthCache = {
+				idToken: data.idToken,
+				expiresAt: now + (Number(data.expiresIn || 3600) * 1000),
+			};
+
+			return ccfoliaAuthCache.idToken;
+		}
+
 		/**
 		 * Fetch room logs from CCFOLIA Firestore API
 		 * @param {string} roomId - The room ID to fetch logs from
@@ -8372,6 +8411,7 @@
 		 */
 		async function fetchRoomLogs(roomId) {
 			const baseUrl = `https://firestore.googleapis.com/v1/projects/ccfolia-160aa/databases/(default)/documents/rooms/${roomId}/messages`;
+			const idToken = await getCcfFirebaseToken();
 			let allLogs = [];
 			let pageToken = "";
 			let hasMore = true;
@@ -8379,16 +8419,25 @@
 			while (hasMore) {
 				let url = `${baseUrl}?pageSize=500`;
 				if (pageToken) {
-					url += `&pageToken=${pageToken}`;
+					url += `&pageToken=${encodeURIComponent(pageToken)}`;
 				}
 
-				const response = await fetch(url);
+				let response;
+				try {
+					response = await fetch(url, {
+						headers: {
+							Authorization: `Bearer ${idToken}`,
+						},
+					});
+				} catch (error) {
+					throw new Error(`连接 CCFOLIA Firestore 失败: ${error.message}`);
+				}
 
 				if (!response.ok) {
 					if (response.status === 404) {
 						throw new Error("房间不存在，请检查房间号");
 					} else if (response.status === 403) {
-						throw new Error("无权访问该房间，可能需要登录 CCFOLIA");
+						throw new Error("无权访问该房间，Firebase 匿名登录态未被该房间接受或房间需要额外权限");
 					}
 					throw new Error(`API 错误: ${response.status}`);
 				}
